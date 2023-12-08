@@ -11,6 +11,9 @@ const Opciones = () => {
     const onPressEditarPerfil = () => {
         navigation.navigate('EditarPerfil');
     }
+    const onPressCambiarContraseña = () => {
+        navigation.navigate('CambiarContraseña');
+    }
 
     return (
         <View style={styles.container}>
@@ -42,6 +45,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5FCFF',
+        paddingVertical: 30,
     },
     imagesContainer: {
         flexDirection: 'row',
