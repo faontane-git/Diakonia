@@ -1,4 +1,5 @@
 import React from 'react';
+import '../estilos/ListaUsuarios.css';
 
 const ListaUsuarios = ({ usuarios }) => {
   return (

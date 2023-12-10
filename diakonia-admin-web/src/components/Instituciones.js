@@ -2,6 +2,7 @@ import React from 'react'
 import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import '../estilos/Instituciones.css';
 
 const Instituciones = () => {
   const navigate = useNavigate();

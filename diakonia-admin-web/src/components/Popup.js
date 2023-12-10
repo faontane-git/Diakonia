@@ -1,4 +1,5 @@
 import React from 'react';
+import '../estilos/Popup.css';
 
 const Popup = ({ titulo, contenido, onClose, onConfirm }) => {
   return (

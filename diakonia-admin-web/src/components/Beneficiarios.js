@@ -3,6 +3,7 @@
 import React from 'react';
 import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
+import '../estilos/Beneficiarios.css';
 
 
 const Beneficiarios = ({ instituciones }) => {

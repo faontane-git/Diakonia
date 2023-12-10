@@ -1,4 +1,5 @@
 import React from 'react';
+import '../estilos/ListaInstituciones.css';
 
 const ListaInstituciones = ({ instituciones }) => {
   return (

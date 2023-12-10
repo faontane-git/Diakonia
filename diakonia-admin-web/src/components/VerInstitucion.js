@@ -1,6 +1,7 @@
 import React from 'react';
 import Cabecera from "./Cabecera";
 import ListaInstituciones from "./ListaInstituciones";
+import '../estilos/VerInstitucion.css';
 
 const VerInstitucion = ({ instituciones }) => {
   // Ejemplo de datos de instituciones

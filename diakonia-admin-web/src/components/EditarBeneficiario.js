@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import Cabecera from "./Cabecera";
 import { useParams,useNavigate } from 'react-router-dom';
-
+import '../estilos/EditarBeneficiario.css';
 
 
 

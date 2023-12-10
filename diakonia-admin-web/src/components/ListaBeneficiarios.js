@@ -5,6 +5,7 @@ import Cabecera from './Cabecera';
 import Popup from './Popup';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import '../estilos/ListaBeneficiarios.css';
 
 const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
   const { institucionId } = useParams();

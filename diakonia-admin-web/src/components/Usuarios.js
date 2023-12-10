@@ -1,6 +1,7 @@
 import React from 'react'
 import Cabecera from "./Cabecera";
 import { useNavigate } from 'react-router-dom';
+import '../estilos/Usuarios.css';
 
 const Usuarios = () => {
   const navigate = useNavigate();

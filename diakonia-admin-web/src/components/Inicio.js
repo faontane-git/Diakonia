@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Cabecera from "./Cabecera";
+import '../estilos/Inicio.css';
 
 function Inicio() {
   return (

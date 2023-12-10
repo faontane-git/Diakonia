@@ -2,6 +2,7 @@ import React from 'react';
 import Cabecera from "./Cabecera";
 
 import ListaUsuarios from './ListaUsuarios';
+import '../estilos/VerUsuario.css';
 
 const VerUsuario = ({ usuarios }) => {
   // Ejemplo de datos de instituciones

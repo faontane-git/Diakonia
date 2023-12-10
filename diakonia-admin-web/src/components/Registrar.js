@@ -3,6 +3,7 @@ import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import '../estilos/Registrar.css';
 
 const RegistroInstitucion = () => {
 
