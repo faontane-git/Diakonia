@@ -9,6 +9,8 @@ import VerInstitucion from "./components/VerInstitucion.js"
 import ListaBeneficiarios from "./components/ListaBeneficiarios.js"
 import EditarBeneficiario from "./components/EditarBeneficiario.js"
 import Login from "./components/login.js"
+import RegistroUsuario from "./components/RegistraUsuario.js"
+import VerUsuarios from "./components/VerUsuarios.js"
 
 
 function Aplicacion() {
@@ -58,6 +60,30 @@ function Aplicacion() {
     },
    
   ];
+  const usuarios = [
+    {
+      id: 1,
+      nombre: 'pepe',
+      contraseña: '12345',
+      usuario: 'user 1',
+      
+    },
+    {
+      id: 3,
+      nombre: 'ana',
+      contraseña: '54321',
+      usuario: 'user 3',
+      
+    },
+    {
+      id:2,
+      nombre: 'titi',
+      contraseña: '45321',
+      usuario: 'user 2',
+      
+    },
+   
+  ];
   return (
     <div className="Aplicacion">
       <Routes>
@@ -72,6 +98,8 @@ function Aplicacion() {
         <Route path="verInstitucion" element={ <VerInstitucion instituciones={instituciones}/> } />
         <Route path="beneficiarios/:institucionId" element={<ListaBeneficiarios instituciones={instituciones}  beneficiarios={beneficiarios} />} />
         <Route path="editar-beneficiario/:institucionId/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones}  beneficiarios={beneficiarios} />} />
+        <Route path="registrarUsuario" element={ <RegistroUsuario /> } />
+        <Route path="verUsuarios" element={ <VerUsuarios usuarios={usuarios}/> } />
       </Routes>
     </div>
   )
