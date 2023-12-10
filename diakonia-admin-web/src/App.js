@@ -8,6 +8,8 @@ import Registrar from "./components/Registrar.js"
 import VerInstitucion from "./components/VerInstitucion.js"
 import ListaBeneficiarios from "./components/ListaBeneficiarios.js"
 import EditarBeneficiario from "./components/EditarBeneficiario.js"
+import Login from "./components/login.js"
+
 
 function Aplicacion() {
   const instituciones = [
@@ -59,8 +61,9 @@ function Aplicacion() {
   return (
     <div className="Aplicacion">
       <Routes>
-        <Route path="/" element={ <Inicio /> } />
-        
+        <Route path="/" element={ <Login /> } />
+
+        <Route path="inicio" element={ <Inicio /> } />
         <Route path="instituciones" element={ <Instituciones /> } />
         <Route path="beneficiarios" element={ <Beneficiarios instituciones={instituciones} /> } />
         <Route path="seguimiento" element={ <Seguimiento /> } />
