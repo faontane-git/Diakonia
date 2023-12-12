@@ -7,7 +7,7 @@ function cabecera() {
     <nav>
       <ul>
         <li>
-        <Link to="/">inicio</Link>
+        <Link to="/inicio">inicio</Link>
         </li>
         <li>
         <Link to="/instituciones">Instituciones</Link>

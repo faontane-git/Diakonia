@@ -11,8 +11,9 @@ import EditarBeneficiario from "./components/EditarBeneficiario.js"
 import Login from "./components/login.js"
 import RegistroUsuario from "./components/RegistraUsuario.js"
 import VerUsuarios from "./components/VerUsuarios.js"
-
-
+import VerAsistencias from "./components/VerAsistencias.js"
+import ListaAsistencias from "./components/ListaAsistencias.js"
+import Nutricion from "./components/Nutricion.js"
 function Aplicacion() {
   const instituciones = [
     {
@@ -84,6 +85,33 @@ function Aplicacion() {
     },
    
   ];
+  
+  const asistencias = [
+    {
+      id: 1,
+      institucionId: 1,
+      nombre: 'benf 1',
+      asistencias: '4',
+      lista: ['24-ene','25-ene','26-ene','27-ene'],
+      
+    },
+    {
+      id: 3,
+      institucionId: 1,
+      nombre: 'benf 3',
+      asistencias: '3',
+      lista: ['24-ene','25-ene','26-ene'],
+      
+    },
+    {
+      id:2,
+      institucionId: 2,
+      nombre: 'benf 2',
+      asistencias: '4',
+      lista: ['24-ene','25-ene','26-ene','27-ene'],
+    },
+   
+  ];
   return (
     <div className="Aplicacion">
       <Routes>
@@ -100,6 +128,11 @@ function Aplicacion() {
         <Route path="editar-beneficiario/:institucionId/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones}  beneficiarios={beneficiarios} />} />
         <Route path="registrarUsuario" element={ <RegistroUsuario /> } />
         <Route path="verUsuarios" element={ <VerUsuarios usuarios={usuarios}/> } />
+        <Route path="asistencias" element={ <VerAsistencias instituciones={instituciones} /> } />
+        <Route path="asistencias/:institucionId" element={<ListaAsistencias instituciones={instituciones}  asistencias={asistencias} />} />
+        <Route path="nutricion" element={ <Nutricion instituciones={instituciones} /> } />
+     
+     
       </Routes>
     </div>
   )
