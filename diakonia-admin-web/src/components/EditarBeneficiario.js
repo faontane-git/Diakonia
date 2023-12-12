@@ -52,7 +52,7 @@ const goListaB = () => {
             onChange={(e) => setEdad(e.target.value)}
           />
         </div>
-        <button type="submit">Registrar</button>
+        <button type="submit">Cambiar datos</button>
       </form>
     </div>
   )

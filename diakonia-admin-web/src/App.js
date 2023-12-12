@@ -14,6 +14,12 @@ import VerUsuarios from "./components/VerUsuarios.js"
 import VerAsistencias from "./components/VerAsistencias.js"
 import ListaAsistencias from "./components/ListaAsistencias.js"
 import Nutricion from "./components/Nutricion.js"
+import ListaNutricion from "./components/ListaNutricion.js"
+import VerGrafica from "./components/Vergrafica.js"
+
+
+
+
 function Aplicacion() {
   const instituciones = [
     {
@@ -112,6 +118,31 @@ function Aplicacion() {
     },
    
   ];
+  const nutricion = [
+    {
+    id: 1,
+    institucionId: 1,
+    nombre: 'benf 1',
+    imc: '40',
+    peso: '45',
+    
+  },
+  {
+    id: 3,
+    institucionId: 1,
+    nombre: 'benf 3',
+    imc: '40',
+    peso: '45',
+    
+  },
+  {
+    id:2,
+    institucionId: 2,
+    nombre: 'benf 2',
+    imc: '40',
+    peso: '45',
+  },
+ ];
   return (
     <div className="Aplicacion">
       <Routes>
@@ -131,8 +162,8 @@ function Aplicacion() {
         <Route path="asistencias" element={ <VerAsistencias instituciones={instituciones} /> } />
         <Route path="asistencias/:institucionId" element={<ListaAsistencias instituciones={instituciones}  asistencias={asistencias} />} />
         <Route path="nutricion" element={ <Nutricion instituciones={instituciones} /> } />
-     
-     
+        <Route path="nutricion/:institucionId" element={<ListaNutricion instituciones={instituciones}  nutricion={nutricion} />} />
+        <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica nutricion={nutricion} />} />
       </Routes>
     </div>
   )
