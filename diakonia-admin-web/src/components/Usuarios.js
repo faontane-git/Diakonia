@@ -5,22 +5,22 @@ import '../estilos/Usuarios.css';
 
 const Usuarios = () => {
   const navigate = useNavigate();
- 
+
 
   const goRegistrar = () => {
-    
-      navigate('/registrarUsuario');
-    }
-    const goVerRegistro = () =>{
-        navigate('/verUsuarios')
-    };
+
+    navigate('/registrarUsuario');
+  }
+  const goVerRegistro = () => {
+    navigate('/verUsuarios')
+  };
 
   return (
-    <div>
-        <Cabecera/>
-        <h1>Usuarios</h1>
-        <button onClick={goRegistrar}>Registrar</button>
-      <button onClick={goVerRegistro}>Ver Usuarios</button>
+    <div className="centered-container">
+      <Cabecera />
+      <h1>Usuarios</h1>
+      <button id="buttonRUsuarios" onClick={goRegistrar}>Registrar</button>
+      <button id="buttonUsuarios" onClick={goVerRegistro}>Ver Usuarios</button>
     </div>
   )
 }

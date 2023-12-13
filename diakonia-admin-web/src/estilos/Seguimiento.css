@@ -1,0 +1,41 @@
+.centered-container {
+    text-align: center;
+}
+
+.centered-container {
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    /* Color del texto, ajusta según tus preferencias */
+    font-size: 24px;
+    /* Tamaño de la fuente, ajusta según tus preferencias */
+    margin-bottom: 20px;
+    /* Espacio inferior del título, ajusta según tus preferencias */
+}
+
+#buttonAsistencias {
+    background-color: #890202;
+    color: white;
+    padding: 10% 10%;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+
+#buttonNutricion {
+    background-color: #890202;
+    color: white;
+    padding: 10% 10%;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #6b0101;
+    /* Cambia el color al pasar el ratón sobre el botón */
+}

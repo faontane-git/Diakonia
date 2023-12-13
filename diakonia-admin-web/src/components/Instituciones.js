@@ -17,11 +17,11 @@ const Instituciones = () => {
     };
 
   return (
-    <div>
+    <div className="centered-container">
       <Cabecera/>
       <h1>Instituciones</h1>
-      <button onClick={goRegistrar}>Registrar</button>
-      <button onClick={goVerRegistro}>Ver Instituciones</button>
+      <button id="buttonRegistrar" onClick={goRegistrar}>Registrar</button>
+      <button id="buttonVerInstituciones" onClick={goVerRegistro}>Ver Instituciones</button>
     </div>
   );
 };

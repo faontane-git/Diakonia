@@ -10,8 +10,7 @@ const Beneficiarios = ({ instituciones }) => {
     return (
       <div>
         <Cabecera />
-        <h1>Esta es la página de Beneficiarios</h1>
-        <h2>Lista de Instituciones</h2>
+        <h1>Beneficiarios</h1>
         <ul>
           {instituciones ? (
             instituciones.map((institucion) => (

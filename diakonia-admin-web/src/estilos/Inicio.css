@@ -1,0 +1,22 @@
+/* Inicio.css */
+
+.centered-container {
+    text-align: center;
+  }
+  
+  .centered-image-container {
+    text-align: center;
+  }
+  
+  .centered-image {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  /* Otros estilos que puedas necesitar para el texto y la imagen */
+  h1 {
+    color: #333; /* Color del texto, ajusta según tus preferencias */
+    font-size: 24px; /* Tamaño de la fuente, ajusta según tus preferencias */
+    margin-bottom: 20px; /* Espacio inferior del título, ajusta según tus preferencias */
+  }
+  

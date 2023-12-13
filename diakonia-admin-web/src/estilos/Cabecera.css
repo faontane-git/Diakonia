@@ -1,0 +1,37 @@
+/* Cabecera.css */
+
+nav {
+    background-color: 'white';
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/*
+#elementos {
+    display: flex;
+    justify-content: center;} */
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+ }
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: #890202;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Clear floats después de los elementos de la lista para que no haya problemas de diseño */
+li::after {
+    content: "";
+    display: table;
+    clear: both;
+}
