@@ -22,7 +22,7 @@ const EditarPerfil = () => {
       <View style={styles.imagesContainer}>
         <Image
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
-          source={require('../assets/imagenes/logoMenu-banco-alimentos.png')}
+          source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
       </View>
 
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   regresarButton: {
     backgroundColor: '#890202',
     padding: 10,
-    width: '100%', // Cambié de '80%' a '100%'
+    width: '100%',  
   },
 });
 

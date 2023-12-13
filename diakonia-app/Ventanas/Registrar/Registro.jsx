@@ -6,7 +6,6 @@ const Seguimiento = () => {
   const navigation = useNavigation();
   const [busqueda, setBusqueda] = useState('');
   const [nutrientes, setNutrientes] = useState([
-    { id: 0, nombre: 'General' },
     { id: 1, nombre: 'Fabrizzio Ontaneda' },
     { id: 2, nombre: 'Joffre Ramírez' },
     { id: 3, nombre: 'Juan Pérez' },
@@ -33,12 +32,12 @@ const Seguimiento = () => {
       <View style={styles.imagesContainer}>
         <Image
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
-          source={require('../assets/imagenes/logoMenu-banco-alimentos.png')}
+          source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Seguimiento Nutricional</Text>
+        <Text style={styles.title}>Registrar Beneficiario</Text>
       </View>
       <TextInput   
         style={styles.buscador}

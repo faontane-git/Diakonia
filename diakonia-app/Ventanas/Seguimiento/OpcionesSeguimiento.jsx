@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet,View,Text,ScrollView,Dimensions,TouchableOpacity,Image}from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const OpcionesSeguimiento = () => {
@@ -9,13 +9,13 @@ const OpcionesSeguimiento = () => {
     navigation.navigate(option);
   };
 
-  
- return (
+
+  return (
     <View style={styles.container}>
       <View style={styles.imagesContainer}>
         <Image
-          style={[styles.image, { marginTop: 0, marginLeft:-70}]} 
-          source={require('../assets/imagenes/logoMenu-banco-alimentos.png')}
+          style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
+          source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
       </View>
       <View style={styles.textContainer}>
@@ -24,58 +24,60 @@ const OpcionesSeguimiento = () => {
       </View>
       <ScrollView>
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Peso')}>
-          <Text style={[styles.text,{ color: 'white' }]}>Peso</Text>
+          <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Peso</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}  onPress={() => handleOptionPress('Talla')}>
-          <Text style={[styles.text,{ color: 'white' }]}>Talla</Text>
+        <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Talla')}>
+          <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Talla</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}  onPress={() => handleOptionPress('Imc')}>
-          <Text style={[styles.text,{ color: 'white' }]}>Imc</Text>
+        <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Imc')}>
+          <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Imc</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Hemoglobina')} >
-          <Text style={[styles.text,{ color: 'white' }]}>Hemoglobina</Text>
+          <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Hemoglobina</Text>
         </TouchableOpacity>
+        {/*  
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Regresar')} >
-          <Text style={[styles.text,{ color: 'white' }]}>Regresar</Text>
+          <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Regresar</Text>
         </TouchableOpacity>
+        */}
       </ScrollView>
     </View>
- );
+  );
 };
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
     paddingVertical: 30,
   },
- imagesContainer: {
+  imagesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 50,
-},
- title: {
+  },
+  title: {
     fontSize: 18,
     color: '#333',
     fontWeight: 'bold',
     alignSelf: 'center',
     textAlign: 'center',
-},
-textContainer:{
-  paddingBottom:10
-},
- option: {
+  },
+  textContainer: {
+    paddingBottom: 10
+  },
+  option: {
     backgroundColor: '#890202',
     borderRadius: 10,
     paddingHorizontal: 20,
     paddingVertical: 15,
     marginBottom: 10,
     marginHorizontal: 20,
- },
- text: {
+  },
+  text: {
     fontSize: 16,
     color: '#333',
- },
+  },
 });
 
 export default OpcionesSeguimiento;

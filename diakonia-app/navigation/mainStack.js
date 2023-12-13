@@ -3,14 +3,22 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {NavigationContainer} from '@react-navigation/native'
 import Home from "../Ventanas/Home"
 import Login from "../Ventanas/Login"
-import Registro from "../Ventanas/Registro"
-import Asistencia from "../Ventanas/Asistencia"
-import VerRegistro from "../Ventanas/VerRegistro"
-import Seguimiento from "../Ventanas/Seguimiento"
-import Opciones from "../Ventanas/Opciones"
-import EditarPerfil from "../Ventanas/EditarPerfil"
-import CambiarContraseña from "../Ventanas/CambiarContraseña"
-import OpcionesSeguimiento from "../Ventanas/OpcionesSeguimiento"
+import Registro from "../Ventanas/Registrar/Registro"
+import Asistencia from "../Ventanas/Asistencia/Asistencia"
+import VerRegistro from "../Ventanas/VerRegistro/VerRegistro"
+import Seguimiento from "../Ventanas/Seguimiento/Seguimiento"
+import Opciones from "../Ventanas/Opciones/Opciones"
+import EditarPerfil from "../Ventanas/Opciones/EditarPerfil"
+import CambiarContraseña from "../Ventanas/Opciones/CambiarContraseña"
+import OpcionesSeguimiento from "../Ventanas/Seguimiento/OpcionesSeguimiento"
+import Peso from "../Ventanas/Seguimiento/Peso"
+import Hemoglobina from "../Ventanas/Seguimiento/Hemoglobina"
+import Talla from "../Ventanas/Seguimiento/Talla"
+import Imc from "../Ventanas/Seguimiento/Imc"
+import Info from "../Ventanas/VerRegistro/Info"
+import TomarAsistencia from "../Ventanas/Asistencia/TomarAsistencia"
+import VerAsistencia from "../Ventanas/Asistencia/VerAsistencia"
+
  
 const Stack = createNativeStackNavigator()
 const MainStack = () => {
@@ -64,6 +72,46 @@ return (
         <Stack.Screen 
             name="OpcionesSeguimiento" 
             component={OpcionesSeguimiento}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="Regresar" 
+            component={Seguimiento}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='Peso'
+            component={Peso}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='Hemoglobina'
+            component={Hemoglobina}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='Talla'
+            component={Talla}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='Imc'
+            component={Imc}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name='Info'
+            component={Info}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='TomarAsistencia'
+            component={TomarAsistencia}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='VerAsistencia'
+            component={VerAsistencia}
             options={{ headerShown: false }} 
         />
     </Stack.Navigator>

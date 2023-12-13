@@ -20,7 +20,7 @@ const Opciones = () => {
             <View style={styles.imagesContainer}>
                 <Image
                     style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
-                    source={require('../assets/imagenes/logoMenu-banco-alimentos.png')}
+                    source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
                 />
             </View>
             <Text style={styles.title}>Opciones</Text>
@@ -29,7 +29,7 @@ const Opciones = () => {
             <View style={styles.buttonsContainer}>
                 <Button title="Editar Datos" onPress={onPressEditarPerfil} color="#890202" />
                 <Text style={{ padding: 10 }} />
-                <Button title="Cambiar Contraseña" onPress={() => { }} color="#890202" />
+                <Button title="Cambiar Contraseña" onPress={onPressCambiarContraseña} color="#890202" />
                 <Text style={{ padding: 10 }} />
             </View>
             <Text style={{ padding: 25 }} />

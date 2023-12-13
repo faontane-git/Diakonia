@@ -32,7 +32,7 @@ const Home = () => {
       </View>
       <ScrollView>
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Registrar')}>
-          <Text style={[styles.text,{ color: 'white' }]}>Registrar a un niño</Text>
+          <Text style={[styles.text,{ color: 'white' }]}>Registrar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option}  onPress={() => handleOptionPress('Asistencia')}>
           <Text style={[styles.text,{ color: 'white' }]}>Asistencia</Text>
