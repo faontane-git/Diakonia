@@ -20,7 +20,7 @@ const Seguimiento = () => {
       <Cabecera />
       <h1>Seguimiento</h1>
       <button id="buttonAsistencias" onClick={goAsistencias}>Asistencias</button>
-      <button id="buttonNutricion" onClick={goNutrición}>Nutrición</button>
+      <button id="buttonNutricion" onClick={goNutrición}>Ver Impacto</button>
     </div>
   );
 };

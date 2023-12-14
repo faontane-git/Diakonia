@@ -1,0 +1,30 @@
+
+#listaInstituciones {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+   }
+  
+  
+#listaInstituciones a {
+    display: block;
+    color: white;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+#listaInstituciones li {
+    text-align: center;
+    /* Alinea el texto al centro */
+    margin-bottom: 10px;
+    /* Ajusta según sea necesario para agregar espacio entre elementos */
+    background-color: #890202;
+    /* Fondo rojo */
+    padding: 10px;
+    /* Ajusta según sea necesario para el espaciado interno */
+    width: 50%;
+}

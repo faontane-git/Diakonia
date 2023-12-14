@@ -1,0 +1,92 @@
+.centered-container {
+    text-align: center;
+}
+
+.centered-container {
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#buttonFRegistrar {
+    background-color: #890202;
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+    width: 10%;
+    height: 40px;  
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #6b0101;
+    /* Cambia el color al pasar el ratón sobre el botón */
+}
+
+#txtNombre {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtNombre label {
+    margin-right: 10px;
+}
+
+#nombre {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtTelefono {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtTelefono label {
+    margin-right: 10px;
+}
+
+#telefono {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+
+#txtDireccion {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtDireccion label {
+    margin-right: 10px;
+}
+
+#direccion {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtServicios {
+    text-align: center;
+    margin-right: 61%;
+    margin-bottom: 10px;
+}
+
+#opcionesServicios {
+    margin-top: 10px;
+    margin-left: 50px;
+}
+
+ 

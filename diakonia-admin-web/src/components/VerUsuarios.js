@@ -11,8 +11,7 @@ const VerUsuario = ({ usuarios }) => {
   return (
     <div>
       <Cabecera />
-      <h1>Ver Instituciones</h1>
-      {/* Muestra la lista de instituciones */}
+       {/* Muestra la lista de instituciones */}
       <ListaUsuarios usuarios={usuarios} />
     </div>
   );

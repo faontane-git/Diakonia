@@ -1,27 +1,43 @@
-/* Cabecera.css */
-
 nav {
     background-color: 'white';
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/*
-#elementos {
-    display: flex;
-    justify-content: center;} */
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
- }
-
-li {
-    float: left;
+#logoBarra {
+    width: 150px;
+    height: auto;
 }
 
-li a {
+#elementos {
+    margin: 0 auto; /* Centra el div 'elementos' horizontalmente */
+}
+
+
+#contenedorCabecera {
+    display: flex;
+    align-items: center; /* Centra verticalmente los elementos en el contenedor */
+  }
+  
+  #logoCabecera {
+    margin-right: 10px; /* Ajusta el margen entre el logo y las opciones de menú */
+  }
+  
+  #listaOpciones {
+    list-style: none;
+    padding: 0;
+    display: flex;
+  }
+  
+  #listaOpciones li {
+    margin-right: 10px; /* Ajusta el margen entre elementos de la lista */
+  }
+  
+  #listaOpciones li:last-child {
+    margin-right: 0; /* Elimina el margen derecho del último elemento de la lista */
+  }
+  
+  
+#opcion a {
     display: block;
     color: #890202;
     padding: 14px 16px;
@@ -30,7 +46,7 @@ li a {
 }
 
 /* Clear floats después de los elementos de la lista para que no haya problemas de diseño */
-li::after {
+#opcion::after {
     content: "";
     display: table;
     clear: both;

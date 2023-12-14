@@ -3,9 +3,9 @@ import '../estilos/ListaUsuarios.css';
 
 const ListaUsuarios = ({ usuarios }) => {
   return (
-    <div>
-      <h2>Lista de Usuarios</h2>
-      <ul>
+    <div className="centered-container">
+      <h1>Lista de Usuarios</h1>
+      <ul id="listaUsuarios">
         {usuarios.map((usuario, index) => (
           <li key={index}>
             <strong>Nombre:</strong> {usuario.nombre},&nbsp;

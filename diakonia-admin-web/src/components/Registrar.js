@@ -20,13 +20,13 @@ const RegistroInstitucion = () => {
   };
 
   return (
-    <div>
-    <Cabecera/>
-      <h2>Registrar Institución</h2>
+    <div className="centered-container">
+      <Cabecera />
+      <h1>Registrar Institución</h1>
       <form onSubmit={handleSubmit}>
-        
-        <div>
-          <label htmlFor="nombre">Nombre:</label>
+
+        <div id="txtNombre">
+          <label htmlFor="nombre"><b>Nombre:</b></label>
           <input
             type="text"
             id="nombre"
@@ -35,9 +35,9 @@ const RegistroInstitucion = () => {
           />
         </div>
 
-        
-        <div>
-          <label htmlFor="telefono">Teléfono:</label>
+
+        <div id="txtTelefono">
+          <label htmlFor="telefono"><b>Teléfono:</b></label>
           <input
             type="text"
             id="telefono"
@@ -46,9 +46,9 @@ const RegistroInstitucion = () => {
           />
         </div>
 
-       
-        <div>
-          <label htmlFor="direccion">Dirección:</label>
+
+        <div id="txtDireccion">
+          <label htmlFor="direccion"><b>Dirección:</b></label>
           <input
             type="text"
             id="direccion"
@@ -57,10 +57,10 @@ const RegistroInstitucion = () => {
           />
         </div>
 
-    
-        <div>
-          <label>Servicios:</label>
-          <div>
+
+        <div id="txtServicios">
+          <label><b>Servicios:</b></label>
+          <div id="opcionesServicios">
             <input
               type="checkbox"
               id="desayuno"
@@ -68,7 +68,7 @@ const RegistroInstitucion = () => {
               onChange={() => setDesayuno(!desayuno)}
             />
             <label htmlFor="desayuno">Desayuno</label>
-          </div>
+        
           <div>
             <input
               type="checkbox"
@@ -78,10 +78,12 @@ const RegistroInstitucion = () => {
             />
             <label htmlFor="almuerzo">Almuerzo</label>
           </div>
+
+          </div>
         </div>
 
-        
-        <button type="submit">Registrar</button>
+
+        <button id="buttonFRegistrar" type="submit">Registrar</button>
       </form>
     </div>
   );

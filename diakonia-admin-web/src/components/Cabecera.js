@@ -1,33 +1,42 @@
-import React from 'react'
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Logo from '../imagenes/logo-banco-alimentos.png';
 import '../estilos/Cabecera.css';
 
-function cabecera() {
+function Cabecera() {
   return (
     <nav>
-      <div id='elementos'>
-        <ul>
-          <li>
-            <Link to="/inicio">Inicio</Link>
-          </li>
-          <li>
-            <Link to="/instituciones">Instituciones</Link>
+      <div id="contenedorCabecera">
+        <div id="logoCabecera">
+          <img id="logoBarra" src={Logo} alt="logo" />
+        </div>
 
-          </li>
-          <li>
-            <Link to="/beneficiarios">Beneficiarios</Link>
-          </li>
-          <li>
-            <Link to="/seguimiento">Seguimiento</Link>
-          </li>
-          <li>
-            <Link to="/usuarios">Usuarios</Link>
-          </li>
-        </ul>
+        <div id='elementos'>
+          <ul id="listaOpciones">
+            <li id="opcion">
+              <Link to="/inicio">Inicio</Link>
+            </li>
+            <li id="opcion">
+              <Link to="/instituciones">Instituciones</Link>
+            </li>
+            <li id="opcion">
+              <Link to="/beneficiarios">Beneficiarios</Link>
+            </li>
+            <li id="opcion">
+              <Link to="/seguimiento">Seguimiento</Link>
+            </li>
+            <li id="opcion">
+              <Link to="/usuarios">Usuarios</Link>
+            </li>
+            <li id="opcion">
+              <Link to="/usuarios">Cerrar Sesión</Link>
+            </li>
+          </ul>
+        </div>
+        
       </div>
     </nav>
-
-  )
+  );
 }
 
-export default cabecera;
+export default Cabecera;

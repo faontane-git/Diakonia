@@ -1,0 +1,52 @@
+/* Estilos para centrar las instituciones */
+.centered-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.centered-container li {
+  margin-bottom: 10px;
+}
+
+.centered-container a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.centered-container a:hover {
+  color: #890202;
+}
+
+/* Estilos para el mensaje cuando no hay instituciones disponibles */
+.centered-container li.no-instituciones {
+  color: #888;
+  font-style: italic;
+}
+
+#listaNutriciones {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#listaNutriciones a {
+  display: block;
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+#listaNutriciones li {
+  text-align: center;
+  margin-bottom: 10px;
+  background-color: #890202;
+  padding: 10px;
+  width: 50%;
+}

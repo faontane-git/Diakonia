@@ -4,7 +4,7 @@ import '../estilos/ListaInstituciones.css';
 const ListaInstituciones = ({ instituciones }) => {
   return (
     <div>
-      <h2>Lista de Instituciones</h2>
+      <h1>Lista de Instituciones</h1>
       <ul>
         {instituciones.map((institucion, index) => (
           <li key={index}>
