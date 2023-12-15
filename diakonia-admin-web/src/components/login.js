@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import Logo  from '../imagenes/logo-banco-alimentos.png'
 import Img1  from '../imagenes/foto1.png'
 import Img2  from '../imagenes/foto2.png'
@@ -7,9 +7,45 @@ import { Link } from 'react-router-dom';
 import '../estilos/login.css';
 import Inicio from './Inicio';
 
-class Login extends React.Component {
-  render() {
-    return (
+import firebaseApp from "../firebase-config";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
+const auth = getAuth(firebaseApp);
+
+function Login() {
+  const firestore = getFirestore(firebaseApp);
+  const [isRegistrando, setIsRegistrando] = useState(false);
+  
+  function submitHandler(e) {
+    e.preventDefault();
+
+    const email = e.target.elements.email.value;
+    const password = e.target.elements.password.value;
+    
+    console.log("submit", email, password);
+    /*const response = signInWithEmailAndPassword(email, password);
+
+    // Si la autenticación falla, muestra un mensaje de error
+    response
+      .catch((error) => {
+        alert("Datos incorrectos");
+      })*/
+      const response = signInWithEmailAndPassword(auth, email, password);
+      response
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert("Datos incorrectos");
+      })
+
+    }
+  
+  return (
       <div className="container">
         <div className="half left">
             <div className='centered-image-container'>
@@ -31,14 +67,22 @@ class Login extends React.Component {
             <div className="white-box">
                 <p className="title-2">Inicie Sesión</p>
                 <div className='formulario'>
-                    <input type="text" placeholder="Correo" className="text-input" />
-                    <input type="password" placeholder="Contraseña" className="text-input" />  
-                    
-                    <Link to="/Inicio" className="submit-button">
-                        Ingresar
-                    </Link>
-                    
-                    <p className="recovery-button">He olvidado mi contraseña</p>
+                <form onSubmit={submitHandler}>
+                  <label>
+                    Correo electrónico:
+                    <input type="email" id="email" />
+                  </label>
+
+                  <label>
+                    Contraseña:
+                    <input type="password" id="password" />
+                  </label>
+                  <input
+                    type="submit"
+                    value="Iniciar sesión"
+                  />
+                </form>
+                
                 </div>
             </div>
         
@@ -47,6 +91,6 @@ class Login extends React.Component {
       </div>
     );
   }
-}
+
 
 export default Login;

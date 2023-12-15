@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 import Logo from '../imagenes/logo-banco-alimentos.png';
 import '../estilos/Cabecera.css';
 
+import firebaseApp from "../firebase-config";
+import { getAuth, signOut } from "firebase/auth";
+const auth = getAuth(firebaseApp);
+
+
 function Cabecera() {
   return (
     <nav>
@@ -29,7 +34,7 @@ function Cabecera() {
               <Link to="/usuarios">Usuarios</Link>
             </li>
             <li id="opcion">
-              <Link to="/usuarios">Cerrar Sesión</Link>
+              <button onClick={() => signOut(auth)}> Cerrar sesión</button>
             </li>
           </ul>
         </div>

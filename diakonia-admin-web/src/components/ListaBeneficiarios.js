@@ -10,7 +10,13 @@ import '../estilos/ListaBeneficiarios.css';
 const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
   const { institucionId } = useParams();
   
-  
+  const navigate = useNavigate();
+ 
+
+  const goAñadirBenef = () => {
+    
+      navigate('añadirBenef');
+    }
 
   
 
@@ -26,6 +32,7 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
     <div>
       <Cabecera/>
       <h2>Lista de Beneficiarios de {institucionSeleccionada.nombre}</h2>
+      <button onClick={goAñadirBenef} >Añadir Benneficiarios</button>
       {/* Aquí deberías mostrar la lista de beneficiarios de la institución */}
       <ul>
         {beneficiariosDeInstitucion.map((beneficiario) => (

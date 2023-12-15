@@ -1,4 +1,13 @@
 import { Routes, Route } from "react-router-dom"
+
+import { useState } from "react"
+
+import firebaseApp from "./firebase-config.js"
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+
+
 import Inicio from "./components/Inicio.js"
 import Instituciones from "./components/Instituciones.js"
 import Beneficiarios from "./components/Beneficiarios.js"
@@ -16,12 +25,17 @@ import ListaAsistencias from "./components/ListaAsistencias.js"
 import Nutricion from "./components/Nutricion.js"
 import ListaNutricion from "./components/ListaNutricion.js"
 import VerGrafica from "./components/Vergrafica.js"
+import LeerExcel from "./components/LeerExcel.js"
+
+
+const auth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
 
 
 
 
 function Aplicacion() {
-  const instituciones = [
+  const [instituciones, setInstituciones] = useState([
     {
       id: 1,
       nombre: 'Institución 1',
@@ -39,34 +53,33 @@ function Aplicacion() {
       almuerzo: true,
     },
     // Agrega más instituciones según sea necesario
-  ];
-  const beneficiarios = [
+  ]);
+  const [beneficiarios, setBeneficiarios] = useState([
     {
       id: 1,
       institucionId: 1,
       nombre: 'benf 1',
-      edad: 15,
-      ubicacion: 'Ciudad A',
-      
+      edad: 15,  
     },
     {
       id: 3,
       institucionId: 1,
       nombre: 'benf 3',
       edad: 16,
-      ubicacion: 'Ciudad A',
-      
     },
     {
       id:2,
       nombre: 'benf 2',
       institucionId: 2,
       edad: 8,
-      ubicacion: 'Ciudad B',
       
     },
    
-  ];
+  ]);
+
+  const agregarBeneficiario = (nuevoBeneficiario) => {
+    setBeneficiarios((prevBeneficiarios) => [...prevBeneficiarios, ...nuevoBeneficiario]);
+  };
   const usuarios = [
     {
       id: 1,
@@ -143,12 +156,29 @@ function Aplicacion() {
     peso: '45',
   },
  ];
+
+ const [user,setUser] = useState(null);
+ onAuthStateChanged(auth, (usuarioFirebase) => {
+  if (usuarioFirebase) {
+    //funcion final
+    setUser(usuarioFirebase)
+    /*if (!user) {
+      setUserWithFirebaseAndRol(usuarioFirebase);
+    }*/
+  } else {
+    setUser(null);
+  }
+});
+
+
   return (
     <div className="Aplicacion">
-      <Routes>
-        <Route path="/" element={ <Login /> } />
 
-        <Route path="inicio" element={ <Inicio /> } />
+{user === null ? <Login/> : 
+      <Routes>
+        
+
+        <Route path="/" element={ <Inicio /> } />
         <Route path="instituciones" element={ <Instituciones /> } />
         <Route path="beneficiarios" element={ <Beneficiarios instituciones={instituciones} /> } />
         <Route path="seguimiento" element={ <Seguimiento /> } />
@@ -164,7 +194,9 @@ function Aplicacion() {
         <Route path="nutricion" element={ <Nutricion instituciones={instituciones} /> } />
         <Route path="nutricion/:institucionId" element={<ListaNutricion instituciones={instituciones}  nutricion={nutricion} />} />
         <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica nutricion={nutricion} />} />
+        <Route path="beneficiarios/:institucionId/añadirbenef" element={ <LeerExcel beneficiarios={beneficiarios} agregarBeneficiario = {agregarBeneficiario}/> } />
       </Routes>
+}
     </div>
   )
 }
