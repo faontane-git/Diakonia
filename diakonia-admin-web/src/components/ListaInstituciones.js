@@ -8,9 +8,10 @@ const ListaInstituciones = ({ instituciones }) => {
       <ul>
         {instituciones.map((institucion, index) => (
           <li key={index}>
+            <strong>id:</strong> {institucion.id},&nbsp;
             <strong>Nombre:</strong> {institucion.nombre},&nbsp;
             <strong>Teléfono:</strong> {institucion.telefono},&nbsp;
-            <strong>Ubicación:</strong> {institucion.ubicacion},&nbsp;
+            <strong>Ubicación:</strong> {institucion.direccion},&nbsp;
             <strong>Servicios:</strong> {institucion.desayuno ? 'Desayuno ' : ''}{institucion.almuerzo ? 'Almuerzo' : ''}
           </li>
         ))}

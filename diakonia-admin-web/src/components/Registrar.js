@@ -5,7 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import '../estilos/Registrar.css';
 
+import firebaseApp from "../firebase-config";
+import { getFirestore, doc, collection, setDoc, addDoc } from "firebase/firestore";
+
 const RegistroInstitucion = () => {
+
+  const navigate = useNavigate();
+const goBack = () => {    
+  navigate('/instituciones');
+}
 
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -13,10 +21,33 @@ const RegistroInstitucion = () => {
   const [desayuno, setDesayuno] = useState(false);
   const [almuerzo, setAlmuerzo] = useState(false);
 
+  const firestore = getFirestore()
+  const InstitucionCollection = collection(firestore, 'instituciones');
+
   // Función para manejar el envío del formulario
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Datos enviados:', { nombre, telefono, direccion, desayuno, almuerzo });
+    const institucion = {
+      nombre:nombre,
+      telefono:telefono,
+      direccion:direccion,
+      desayuno:desayuno,
+      almuerzo:almuerzo
+    }
+    const agregar= addDoc(InstitucionCollection,institucion);
+    agregar
+    .then((funciono) => {
+      alert("Nueva institución añadida");
+      goBack();
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert("Error al agragar institución");
+    })
+
+
+    
+
   };
 
   return (
