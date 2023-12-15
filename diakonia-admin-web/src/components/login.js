@@ -19,8 +19,7 @@ const auth = getAuth(firebaseApp);
 
 function Login() {
   const firestore = getFirestore(firebaseApp);
-  const [isRegistrando, setIsRegistrando] = useState(false);
-
+  
   function submitHandler(e) {
     e.preventDefault();
 

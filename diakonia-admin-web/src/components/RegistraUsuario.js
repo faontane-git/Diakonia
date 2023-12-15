@@ -5,17 +5,52 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import '../estilos/RegistraUsuario.css';
 
-const RegistroUsuario = () => {
+import firebaseApp from "../firebase-config";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
+const auth = getAuth(firebaseApp);
 
-  const [nombre, setNombre] = useState('');
-  const [usuario, setUsuario] = useState('');
+const RegistroUsuario = () => {
+  const firestore = getFirestore(firebaseApp)
+  const navigate = useNavigate();
+ 
+  const goBack = () => {    
+      navigate('/usuarios');
+    }
+
+  const [email, setemail] = useState('');
+  const [rol, setRol] = useState('admin');
   const [contraseña, setContraseña] = useState('');
 
 
+
+
   // Función para manejar el envío del formulario
-  const handleSubmit = (event) => {
+
+  async function registrarUsuario(email, contraseña, rol) {
+    
+    const infoUsuario = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      contraseña
+    ).then((usuarioFirebase) => {
+      alert("se creo el usuario")
+      return usuarioFirebase;
+    });
+
+    console.log(infoUsuario.user.uid);
+    const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
+    setDoc(docuRef, { correo: email, rol: rol });
+  }
+
+
+  function handleSubmit(event) {
     event.preventDefault();
-    console.log('Datos enviados:', { nombre, usuario, contraseña });
+    console.log('rol:',rol)
+    registrarUsuario(email, contraseña, rol);    
   };
 
   return (
@@ -25,27 +60,15 @@ const RegistroUsuario = () => {
       <h1>Registrar Institución</h1>
       <form onSubmit={handleSubmit}>
 
-      <div id="txtUNombre">
-          <label htmlFor="nombre">Nombre:</label>
+      <div id="txtUemail">
+          <label htmlFor="email">Email:</label>
           <input
             type="text"
-            id="nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            id="email"
+            value={email}
+            onChange={(e) => setemail(e.target.value)}
           />
         </div>
-
-
-        <div id="txtUUsuario">
-          <label htmlFor="usuario">Usuario:</label>
-          <input
-            type="text"
-            id="usuario"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-          />
-        </div>
-
 
         <div id="txtUContaseña">
           <label htmlFor="contraseña">Contraseña:</label>
@@ -57,9 +80,14 @@ const RegistroUsuario = () => {
           />
         </div>
 
-
-
-
+        <div id="txtUrol">           
+          <label htmlFor="rol">Rol:</label>
+          <select id="rol" onChange={(e) => setRol(e.target.value)}>
+            <option value="admin">Administrador</option>
+            <option value="editor">Editor</option>
+            <option value="registrador">Registrador</option>
+          </select>
+        </div>
 
         <button id="buttonIRegistrar"type="submit">Registrar</button>
       </form>

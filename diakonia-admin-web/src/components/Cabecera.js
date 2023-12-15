@@ -19,7 +19,7 @@ function Cabecera() {
         <div id='elementos'>
           <ul id="listaOpciones">
             <li id="opcion">
-              <Link to="/inicio">Inicio</Link>
+              <Link to="/">Inicio</Link>
             </li>
             <li id="opcion">
               <Link to="/instituciones">Instituciones</Link>

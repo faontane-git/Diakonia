@@ -158,13 +158,38 @@ function Aplicacion() {
  ];
 
  const [user,setUser] = useState(null);
+
+ 
+ async function getRol(uid) {
+  const docuRef = doc(firestore, `usuarios/${uid}`);
+  const docuCifrada = await getDoc(docuRef);
+  const infoFinal = docuCifrada.data().rol;
+  return infoFinal;
+}
+
+function setUserWithFirebaseAndRol(usuarioFirebase) {
+  getRol(usuarioFirebase.uid).then((rol) => {
+    const userData = {
+      uid: usuarioFirebase.uid,
+      email: usuarioFirebase.email,
+      rol: rol,
+    };
+    setUser(userData);
+    console.log("userData final", userData);
+  });
+}
+
+ 
  onAuthStateChanged(auth, (usuarioFirebase) => {
   if (usuarioFirebase) {
     //funcion final
-    setUser(usuarioFirebase)
-    /*if (!user) {
-      setUserWithFirebaseAndRol(usuarioFirebase);
-    }*/
+    
+    if (!user) {
+      console.log(usuarioFirebase);
+      setUser(usuarioFirebase);
+      console.log(user);
+      //setUserWithFirebaseAndRol(usuarioFirebase);
+    }
   } else {
     setUser(null);
   }

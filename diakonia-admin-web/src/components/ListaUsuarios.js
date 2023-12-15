@@ -8,9 +8,9 @@ const ListaUsuarios = ({ usuarios }) => {
       <ul id="listaUsuarios">
         {usuarios.map((usuario, index) => (
           <li key={index}>
-            <strong>Nombre:</strong> {usuario.nombre},&nbsp;
-            <strong>usuario:</strong> {usuario.usuario},&nbsp;
-            <strong>contraseña:</strong> {usuario.contraseña},&nbsp;
+            <strong>id:</strong> {usuario.id},&nbsp;
+            <strong>Correo:</strong> {usuario.correo},&nbsp;
+            <strong>Rol:</strong> {usuario.rol},&nbsp;
 
           </li>
         ))}
