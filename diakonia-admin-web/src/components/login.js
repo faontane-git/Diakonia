@@ -23,8 +23,8 @@ function Login() {
   function submitHandler(e) {
     e.preventDefault();
 
-    const email = e.target.elements.email.value;
-    const password = e.target.elements.password.value;
+    const email = e.target.elements.txtEmail.value;
+    const password = e.target.elements.txtPassword.value;
 
     console.log("submit", email, password);
     /*const response = signInWithEmailAndPassword(email, password);
@@ -68,10 +68,10 @@ function Login() {
           <div className='formularioInicio'>
             <form id="formInicio" onSubmit={submitHandler}>
        
-              <input type="email" id="email" placeholder="Correo"/>
+              <input type="email" id="txtEmail" placeholder="Correo"/>
               <br></br>
               
-              <input type="password" id="password"  placeholder="Contraseña"/>
+              <input type="password" id="txtPassword"  placeholder="Contraseña"/>
               <br></br>
 
               <input

@@ -76,14 +76,14 @@
   text-align: center;
 }
 
-#email {
+#txtEmail {
   margin-bottom: 15px;
   border-radius: 5px;
   width: 300px;
   height: 25px;
 }
 
-#password {
+#txtPassword {
   margin-bottom: 15px;
   border-radius: 5px;
   width: 300px;
