@@ -5,6 +5,7 @@ import Cabecera from './Cabecera';
 import Popup from './Popup';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import '../estilos/ListaAsistencias.css';
 
 const ListaBeneficiarios = ({ instituciones, asistencias }) => {
   const { institucionId } = useParams();
@@ -17,9 +18,9 @@ const ListaBeneficiarios = ({ instituciones, asistencias }) => {
   );
 
   return (
-    <div>
-      <Cabecera/>
-      <h2>Lista de Asistencias de {institucionSeleccionada.nombre}</h2>
+    <div className="centered-container">
+     <Cabecera/>
+      <h1>Lista de Asistencias de {institucionSeleccionada.nombre}</h1>
       {/* Aquí deberías mostrar la lista de beneficiarios de la institución */}
       <ul>
         {beneficiariosDeInstitucion.map((beneficiario) => (

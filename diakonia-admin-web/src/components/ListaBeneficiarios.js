@@ -29,17 +29,16 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
   );
 
   return (
-    <div>
+    <div className="centered-container">
       <Cabecera/>
       <h2>Lista de Beneficiarios de {institucionSeleccionada.nombre}</h2>
-      <button onClick={goAñadirBenef} >Añadir Benneficiarios</button>
+      <button id="buttonABeneficiarios" onClick={goAñadirBenef} >Añadir Beneficiarios</button>
       {/* Aquí deberías mostrar la lista de beneficiarios de la institución */}
-      <ul>
+      <ul id="listaBeneficiarios">
         {beneficiariosDeInstitucion.map((beneficiario) => (
           <li key={beneficiario.id}>
             {beneficiario.nombre} - {beneficiario.edad} años - {beneficiario.id}
             <Link to={`/editar-beneficiario/${institucionSeleccionada.id}/${beneficiario.id}`}>Editar</Link>
-          
             {/* Puedes mostrar más información sobre cada beneficiario según tu estructura de datos */}
           </li>
         ))}

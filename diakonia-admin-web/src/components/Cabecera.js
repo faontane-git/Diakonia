@@ -33,12 +33,14 @@ function Cabecera() {
             <li id="opcion">
               <Link to="/usuarios">Usuarios</Link>
             </li>
-            <li id="opcion">
-              <button onClick={() => signOut(auth)}> Cerrar sesión</button>
-            </li>
+
           </ul>
         </div>
-        
+
+        <div >
+          <button id="buttonCCerrarSesion" onClick={() => signOut(auth)}> Cerrar sesión</button>
+        </div>
+
       </div>
     </nav>
   );

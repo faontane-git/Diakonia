@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Cabecera from "./Cabecera";
 
-const LeerExcel = ({beneficiarios,agregarBeneficiario}) => {
-    
-    const { institucionId } = useParams();
+
+const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
+
+  const { institucionId } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
 
   const navigate = useNavigate();
- 
-  const goBack = () => {    
-      navigate('/beneficiarios');
-    }
+
+  const goBack = () => {
+    navigate('/beneficiarios');
+  }
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -44,8 +46,8 @@ const LeerExcel = ({beneficiarios,agregarBeneficiario}) => {
       const nuevosBeneficiarios = nombres.map((nombre, index) => ({
         nombre,
         edad: edades[index],
-        institucionId: parseInt(institucionId,10),
-        id: beneficiarios.length+1+index,
+        institucionId: parseInt(institucionId, 10),
+        id: beneficiarios.length + 1 + index,
       }));
 
       // Actualiza el estado con la nueva lista de beneficiarios
@@ -56,29 +58,30 @@ const LeerExcel = ({beneficiarios,agregarBeneficiario}) => {
   };
 
   const añadir = () => {
-    
+
     agregarBeneficiario(Nbeneficiarios);
     console.log(beneficiarios)
     goBack();
-}
+  }
 
   return (
     <div>
-      <input type="file" onChange={handleFileUpload} />
-      <div>
-          <h2>Lista de Beneficiarios:</h2>
-      {Nbeneficiarios.length > 0 && (
+      <div className="centered-container">
+        <Cabecera />
+        <h1>Lista de Beneficiarios</h1>
+        <input type="file" onChange={handleFileUpload} />
+        {Nbeneficiarios.length > 0 && (
           <ul>
             {Nbeneficiarios.map((Nbeneficiario, index) => (
               <li key={index}>
                 Nombre: {Nbeneficiario.nombre}, Edad: {Nbeneficiario.edad}, institucionId: {Nbeneficiario.institucionId}
               </li>
             ))}
-          </ul> 
-      )}
-      {Nbeneficiarios.length > 0 && (
-      <button onClick={añadir}>Añadir</button>
-      )}
+          </ul>
+        )}
+        {Nbeneficiarios.length > 0 && (
+          <button onClick={añadir}>Añadir</button>
+        )}
       </div>
     </div>
   );

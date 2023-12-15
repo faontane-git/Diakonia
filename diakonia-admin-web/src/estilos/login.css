@@ -1,87 +1,105 @@
 .container {
-    display: flex;
-    height: 100vh; /* Utiliza el 100% del alto de la ventana */
-  }
-  
-  .half {
-    flex: 1;
-    box-sizing: border-box;
-  }
-  
-  .left {
-    background-color: #FFFFFF; /* Color de la parte izquierda */
-  }
-  
-  .right {
-    background-color: #890202; /* Color de la parte derecha */
-  }
-  
-  .title {
-    color: white; 
-    text-align: center;
-    font-size: 22px; /* Ajusta el tamaño de la letra según sea necesario */
-  }
+  display: flex;
+  height: 100vh;
+  /* Utiliza el 100% del alto de la ventana */
+}
 
-  .title-2{
-    color: black; 
-    text-align: center;
-    font-size: 25px; /* Ajusta el tamaño de la letra según sea necesario */
-  }
-  
-  .centered-image-container {
-    text-align: center;
-  }
-  
-  .centered-image {
-    max-width: 100%; /* Ajusta el ancho máximo de la imagen según sea necesario */
-    max-height: 100%; /* Ajusta la altura máxima de la imagen según sea necesario */
-  }
+.half {
+  flex: 1;
+  box-sizing: border-box;
+}
 
-  .centered-image2 {
-    max-width: 60%; /* Ajusta el ancho máximo de la imagen según sea necesario */
-    max-height: 60%; /* Ajusta la altura máxima de la imagen según sea necesario */
-  }
+.left {
+  background-color: #FFFFFF;
+  /* Color de la parte izquierda */
+}
 
-  .white-box {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 80%; /* Establece el ancho según sea necesario */
-    height: 70%;
-    margin: auto; /* Centra el bloque horizontalmente */
-  }
+.right {
+  background-color: #890202;
+  /* Color de la parte derecha */
+}
 
-  .formulario {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.title {
+  color: white;
+  text-align: center;
+  font-size: 22px;
+  /* Ajusta el tamaño de la letra según sea necesario */
+}
 
-  .text-input {
-    width: 90%;
-    padding: 12px;  
-    margin: 10px 0;
-    box-sizing: border-box;
-    border-color: 000000;
-    border-radius: 20px;
-    height: 50px; 
-  }  
+.title-2 {
+  color: black;
+  text-align: center;
+  font-size: 25px;
+  /* Ajusta el tamaño de la letra según sea necesario */
+}
 
-  .submit-button {
-    background-color: #890202;
-    color: white;
-    width: 85%;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-top: 50px;
-    text-align: center;
-  }
+.centered-image-container {
+  text-align: center;
+}
 
-  .recovery-button{ 
-    margin-top: 50px;
-    color: #890202;
-   }
+.centered-image {
+  max-width: 100%;
+  /* Ajusta el ancho máximo de la imagen según sea necesario */
+  max-height: 100%;
+  /* Ajusta la altura máxima de la imagen según sea necesario */
+}
+
+.centered-image2 {
+  max-width: 60%;
+  /* Ajusta el ancho máximo de la imagen según sea necesario */
+  max-height: 60%;
+  /* Ajusta la altura máxima de la imagen según sea necesario */
+}
+
+.white-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  /* Establece el ancho según sea necesario */
+  height: 70%;
+  margin: auto;
+  /* Centra el bloque horizontalmente */
+}
+
+
+.formularioInicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+#formInicio {
+  text-align: center;
+}
+
+#email {
+  margin-bottom: 15px;
+  border-radius: 5px;
+  width: 300px;
+  height: 25px;
+}
+
+#password {
+  margin-bottom: 15px;
+  border-radius: 5px;
+  width: 300px;
+  height: 25px;
+}
+
+#submit-button {
+  padding: 10px;
+  background-color: #890202;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 50px;
+}
+
+#submit-button:hover {
+  background-color: #45a049;
+}

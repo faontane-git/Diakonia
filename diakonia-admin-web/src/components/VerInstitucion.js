@@ -10,7 +10,6 @@ const VerInstitucion = ({ instituciones }) => {
   return (
     <div>
       <Cabecera />
-      <h1>Ver Instituciones</h1>
       {/* Muestra la lista de instituciones */}
       <ListaInstituciones instituciones={instituciones} />
     </div>

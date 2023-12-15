@@ -45,9 +45,36 @@ nav {
     font-weight: bold;
 }
 
-/* Clear floats después de los elementos de la lista para que no haya problemas de diseño */
-#opcion::after {
+#buttonCerrar {
+  width: 150px;
+  height: auto;
+}
+
+#buttonCerrar button {
+  display: block;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+ #opcion::after {
     content: "";
     display: table;
     clear: both;
+}
+
+#buttonCCerrarSesion {
+  background-color: #890202;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  margin: 5px;
+  height: 40px;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #6b0101;
+  /* Cambia el color al pasar el ratón sobre el botón */
 }
