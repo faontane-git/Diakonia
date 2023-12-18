@@ -158,7 +158,7 @@ function Aplicacion() {
  ];
 
  const [user,setUser] = useState(null);
-
+ 
  
  async function getRol(uid) {
   const docuRef = doc(firestore, `usuarios/${uid}`);
@@ -175,7 +175,6 @@ function setUserWithFirebaseAndRol(usuarioFirebase) {
       rol: rol,
     };
     setUser(userData);
-    console.log("userData final", userData);
   });
 }
 
@@ -184,11 +183,9 @@ function setUserWithFirebaseAndRol(usuarioFirebase) {
   if (usuarioFirebase) {
     //funcion final
     
-    if (!user) {
-      console.log(usuarioFirebase);
-      setUser(usuarioFirebase);
-      console.log(user);
-      //setUserWithFirebaseAndRol(usuarioFirebase);
+    if (!user) {  
+      //setUser(usuarioFirebase);
+      setUserWithFirebaseAndRol(usuarioFirebase);
     }
   } else {
     setUser(null);
@@ -199,7 +196,7 @@ function setUserWithFirebaseAndRol(usuarioFirebase) {
   return (
     <div className="Aplicacion">
 
-{user === null ? <Login/> : 
+{user === null ? <Login user={user} setUser={setUser}/> : 
       <Routes>
         
 
@@ -210,7 +207,7 @@ function setUserWithFirebaseAndRol(usuarioFirebase) {
         <Route path="usuarios" element={ <Usuarios /> } />
         <Route path="registrar" element={ <Registrar /> } />
         <Route path="verInstitucion" element={ <VerInstitucion instituciones={instituciones}/> } />
-        <Route path="beneficiarios/:institucionId" element={<ListaBeneficiarios instituciones={instituciones}  beneficiarios={beneficiarios} />} />
+        <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios instituciones={instituciones}  beneficiarios={beneficiarios} />} />
         <Route path="editar-beneficiario/:institucionId/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones}  beneficiarios={beneficiarios} />} />
         <Route path="registrarUsuario" element={ <RegistroUsuario /> } />
         <Route path="verUsuarios" element={ <VerUsuarios usuarios={usuarios}/> } />
@@ -219,7 +216,7 @@ function setUserWithFirebaseAndRol(usuarioFirebase) {
         <Route path="nutricion" element={ <Nutricion instituciones={instituciones} /> } />
         <Route path="nutricion/:institucionId" element={<ListaNutricion instituciones={instituciones}  nutricion={nutricion} />} />
         <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica nutricion={nutricion} />} />
-        <Route path="beneficiarios/:institucionId/añadirbenef" element={ <LeerExcel beneficiarios={beneficiarios} agregarBeneficiario = {agregarBeneficiario}/> } />
+        <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={ <LeerExcel beneficiarios={beneficiarios} agregarBeneficiario = {agregarBeneficiario}/> } />
       </Routes>
 }
     </div>

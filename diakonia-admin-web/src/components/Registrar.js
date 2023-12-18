@@ -21,12 +21,13 @@ const goBack = () => {
   const [desayuno, setDesayuno] = useState(false);
   const [almuerzo, setAlmuerzo] = useState(false);
 
-  const firestore = getFirestore()
-  const InstitucionCollection = collection(firestore, 'instituciones');
-
+  
   // Función para manejar el envío del formulario
   const handleSubmit = (event) => {
     event.preventDefault();
+    const firestore = getFirestore()
+    const InstitucionCollection = collection(firestore, 'instituciones');
+
     const institucion = {
       nombre:nombre,
       telefono:telefono,
@@ -44,10 +45,7 @@ const goBack = () => {
       const errorMessage = error.message;
       alert("Error al agragar institución");
     })
-
-
-    
-
+    console.log("crea");
   };
 
   return (

@@ -14,9 +14,10 @@ const VerInstitucion = ({ instituciones }) => {
   useEffect(()=>{
     const querydb= getFirestore();
     const queryCollection = collection(querydb, 'instituciones');
+    console.log("entra")
     getDocs(queryCollection).then(res => setData(res.docs.map(institucion => ({id: institucion.id,...institucion.data()}))))
   
-  })
+  },[])
 
   return (
     <div>

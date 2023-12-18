@@ -17,7 +17,7 @@ import {
 import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
 const auth = getAuth(firebaseApp);
 
-function Login() {
+function Login({user, setUser}) {
   const firestore = getFirestore(firebaseApp);
   
   function submitHandler(e) {
@@ -36,12 +36,19 @@ function Login() {
       })*/
     const response = signInWithEmailAndPassword(auth, email, password);
     response
+      .then((userCredential)=>{
+        return userCredential
+      })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert("Datos incorrectos");
       })
-
+    /*const userlog={
+      correo: response.email,
+      id: response.id
+    }
+    setUser(userlog);*/
   }
 
   return (
