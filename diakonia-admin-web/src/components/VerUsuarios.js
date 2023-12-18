@@ -17,9 +17,11 @@ const VerUsuario = ({ usuarios }) => {
   useEffect(()=>{
     const querydb= getFirestore();
     const queryCollection = collection(querydb, 'usuarios');
-    getDocs(queryCollection).then(res => setData(res.docs.map(usuarios => ({id: usuarios.id,...usuarios.data()}))))
-  
-  })
+    console.log("entra")
+    const report= getDocs(queryCollection).then(res => setData(res.docs.map(usuarios => ({id: usuarios.id,...usuarios.data()}))))
+    /*report
+    .catch((error)=>{})*/
+  },[])
   
 
   return (

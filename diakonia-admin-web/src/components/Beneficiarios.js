@@ -2,18 +2,23 @@ import React, { useState } from 'react';
 import Cabecera from './Cabecera';
 import { Link } from 'react-router-dom';
 import '../estilos/Beneficiarios.css';
+import { useState,  useEffect } from 'react';
+
+import firebaseApp from "../firebase-config";
+import {getFirestore, collection, getDocs} from 'firebase/firestore'
+
 
 const Beneficiarios = ({ instituciones }) => {
-  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  const [data,setData]= useState([]);
 
-  const filteredInstituciones = instituciones.filter((institucion) =>
-    institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  useEffect(()=>{
+    const querydb= getFirestore();
+    const queryCollection = collection(querydb, 'instituciones');
+    console.log("entra")
+    getDocs(queryCollection).then(res => setData(res.docs.map(institucion => ({id: institucion.id,...institucion.data()}))))
+  
+  },[])
   return (
     <div className="centered-container">
       <Cabecera />
@@ -31,7 +36,7 @@ const Beneficiarios = ({ instituciones }) => {
           {filteredInstituciones.length > 0 ? (
             filteredInstituciones.map((institucion) => (
               <li key={institucion.id}>
-                <Link to={`/beneficiarios/${institucion.id}`} className="centered-link">
+                <Link to={`/beneficiarios/${institucion.id}/${institucion.nombre}`} className="centered-link">
                   {institucion.nombre}
                 </Link>
               </li>

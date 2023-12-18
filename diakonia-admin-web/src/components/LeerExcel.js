@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
 
+import { getFirestore, doc, collection, setDoc, addDoc } from "firebase/firestore";
+
 
 const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
 
@@ -40,14 +42,24 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
 
       // Extrae los nombres y edades de los beneficiarios del objeto JSON
       const nombres = jsonData.slice(1).map((fila) => fila[0]);
-      const edades = jsonData.slice(1).map((fila) => fila[1]);
+      const cedula = jsonData.slice(1).map((fila) => fila[1]);
+      const f_nacimiento = jsonData.slice(1).map((fila) => fila[2]);
+      const genero = jsonData.slice(1).map((fila) => fila[3]);
+      const n_contacto = jsonData.slice(1).map((fila) => fila[4]);
+      const n_menores = jsonData.slice(1).map((fila) => fila[5]);
+      const n_mayores = jsonData.slice(1).map((fila) => fila[6]);
+
 
       // Crea una lista de objetos beneficiario
       const nuevosBeneficiarios = nombres.map((nombre, index) => ({
+        institucionId: institucionId,
         nombre,
-        edad: edades[index],
-        institucionId: parseInt(institucionId, 10),
-        id: beneficiarios.length + 1 + index,
+        cedula: cedula[index],
+        fecha_nacimiento: f_nacimiento[index],
+        genero: genero[index],
+        numero_contacto: n_contacto[index],
+        numero_de_personas_menores_en_el_hogar: n_menores[index],
+        numero_de_personas_mayores_en_el_hogar: n_mayores[index],
       }));
 
       // Actualiza el estado con la nueva lista de beneficiarios
@@ -57,10 +69,18 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
     reader.readAsBinaryString(file);
   };
 
-  const añadir = () => {
-
-    agregarBeneficiario(Nbeneficiarios);
-    console.log(beneficiarios)
+  async function añadir() {
+    
+    const firestore = getFirestore()
+    const beneficiarioCollection = collection(firestore, 'beneficiarios');
+    for (const beneficiario of Nbeneficiarios) {
+      await addDoc(beneficiarioCollection, beneficiario).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorMessage)});
+    };
+    alert("se agregarón los beneficiarios");
+    console.log("crea");
     goBack();
   }
 
@@ -74,7 +94,7 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
           <ul>
             {Nbeneficiarios.map((Nbeneficiario, index) => (
               <li key={index}>
-                Nombre: {Nbeneficiario.nombre}, Edad: {Nbeneficiario.edad}, institucionId: {Nbeneficiario.institucionId}
+                Nombre: {Nbeneficiario.nombre}, cedula: {Nbeneficiario.cedula}, fecha_nacimiento: {Nbeneficiario.f_nacimiento},genero: {Nbeneficiario.genero}, contacto: {Nbeneficiario.numero_contacto}, N_menores_Hogar: {Nbeneficiario.numero_de_personas_menores_en_el_hogar}, n_mayores_hogar: {Nbeneficiario.numero_de_personas_mayores_en_el_hogar}
               </li>
             ))}
           </ul>

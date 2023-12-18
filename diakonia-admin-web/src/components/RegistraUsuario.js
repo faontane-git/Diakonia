@@ -9,16 +9,19 @@ import firebaseApp from "../firebase-config";
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  signOut,
+  signInWithCustomToken,
+  getIdToken,
 } from "firebase/auth";
 import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
 const auth = getAuth(firebaseApp);
 
 const RegistroUsuario = () => {
-  const firestore = getFirestore(firebaseApp)
+  
   const navigate = useNavigate();
  
   const goBack = () => {    
-      navigate('/usuarios');
+      navigate('/');
     }
 
   const [email, setemail] = useState('');
@@ -31,19 +34,22 @@ const RegistroUsuario = () => {
   // Función para manejar el envío del formulario
 
   async function registrarUsuario(email, contraseña, rol) {
-    
+    const firestore = getFirestore(firebaseApp);
     const infoUsuario = await createUserWithEmailAndPassword(
       auth,
       email,
-      contraseña
-    ).then((usuarioFirebase) => {
+      contraseña,
+    ).then(async (usuarioFirebase) => {
+      console.log("registro: ",usuarioFirebase.user.uid);
+      const docuRef = doc(firestore, `usuarios/${usuarioFirebase.user.uid}`);
+      await setDoc(docuRef, { correo: email, rol: rol });
+      goBack();
+    signOut(auth);
       alert("se creo el usuario")
       return usuarioFirebase;
     });
-
-    console.log(infoUsuario.user.uid);
-    const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
-    setDoc(docuRef, { correo: email, rol: rol });
+    
+    
   }
 
 
@@ -52,6 +58,7 @@ const RegistroUsuario = () => {
     console.log('rol:',rol)
     registrarUsuario(email, contraseña, rol);    
   };
+
 
   return (
     <div className="centered-container">
