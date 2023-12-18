@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
 
-import { getFirestore, doc, collection, setDoc, addDoc } from "firebase/firestore";
+
+import { getFirestore, doc, collection, setDoc, addDoc, getDoc } from "firebase/firestore";
 
 
 const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
@@ -60,6 +61,16 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
         numero_contacto: n_contacto[index],
         numero_de_personas_menores_en_el_hogar: n_menores[index],
         numero_de_personas_mayores_en_el_hogar: n_mayores[index],
+        dias: [],
+        asistencias: [],
+        registrado: false,
+        primer_Peso:"",
+        primer_Talla:"",
+        primer_HGB:"",
+        segundo_Peso:"",
+        segundo_Talla:"",
+        segundo_HGB:"",
+        
       }));
 
       // Actualiza el estado con la nueva lista de beneficiarios
@@ -72,12 +83,42 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
   async function añadir() {
     
     const firestore = getFirestore()
+
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     for (const beneficiario of Nbeneficiarios) {
-      await addDoc(beneficiarioCollection, beneficiario).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert(errorMessage)});
+      const instColect = collection(firestore,"instituciones");
+      
+
+      const institutionRef =doc(instColect,beneficiario.institucionId);
+
+      getDoc(institutionRef).then((doc) => {
+        if (doc.exists) {
+          // Creamos una nueva variable para el beneficiario
+    
+          // Calculamos la diferencia de días entre las fechas de la institución
+          const days = (Date.parse(doc.data().fecha_final)-Date.parse(doc.data().fecha_inicial))/86400000;
+          console.log(days)
+          // Creamos la lista de fechas
+          for (let i = 0; i <= days; i++) {
+            beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
+          }
+    
+          // Llenamos la lista de asistencias con "-"
+          for (const date of beneficiario.dias) {
+            beneficiario.asistencias.push("-");
+          }
+    
+          // Añadimos el nuevo beneficiario a la colección "asistencias"
+          addDoc(beneficiarioCollection, beneficiario).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorMessage)});
+          
+        } else {
+          // La institución no existe
+        }});
+
+      
     };
     alert("se agregarón los beneficiarios");
     console.log("crea");
