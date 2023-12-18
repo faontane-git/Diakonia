@@ -57,7 +57,7 @@ const RegistroUsuario = () => {
     <div className="centered-container">
       <Cabecera />
 
-      <h1>Registrar Institución</h1>
+      <h1>Registrar Usuario</h1>
       <form onSubmit={handleSubmit}>
 
       <div id="txtUemail">

@@ -7,7 +7,7 @@ const VerAsistencias = ({ instituciones }) => {
   return (
     <div className="centered-container">
       <Cabecera />
-      <h1>Lista de Instituciones</h1>
+      <h1>Seguimiento</h1>
       <div className="list-container-verAsistencias">
         <ul id="verAsistencias">
           {instituciones ? (

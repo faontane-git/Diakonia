@@ -7,6 +7,7 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 const TomarAsistencia = () => {
     const navigation = useNavigation();
     const screenWidth = Dimensions.get('window').width;
+
     const handleOptionPress = (option) => {
         navigation.navigate(option);
     };
@@ -48,7 +49,7 @@ const TomarAsistencia = () => {
                 <View style={styles.inputBoton}>
                     <Button
                         title="Tomar Huella"
-                        onPress={() => console.log('Tomar Huella')}
+                        onPress={() => handleOptionPress('TomarHuella')}
                         style={styles.inputHuella}
                         color={'#890202'}
 

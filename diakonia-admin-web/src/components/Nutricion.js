@@ -11,6 +11,16 @@ const Nutricion = ({ instituciones }) => {
       <Cabecera />
       <h1>Seguimiento</h1>
       <div className="list-container-nutricion">
+
+        <div id="txtUopcion">
+          <select id="opcion">
+            <option value="" disabled selected>Selecciona un rol</option>
+            <option value="desayuno">Desayuno</option>
+            <option value="almuerzo">Almuerzo</option>
+           </select>
+        </div>
+
+
         <ul id="listaNutriciones">
           {instituciones ? (
             instituciones.map((institucion) => (

@@ -18,6 +18,7 @@ import Imc from "../Ventanas/Seguimiento/Imc"
 import Info from "../Ventanas/VerRegistro/Info"
 import TomarAsistencia from "../Ventanas/Asistencia/TomarAsistencia"
 import VerAsistencia from "../Ventanas/Asistencia/VerAsistencia"
+import TomarHuella from "../Ventanas/Asistencia/TomarHuella"
 
  
 const Stack = createNativeStackNavigator()
@@ -112,6 +113,11 @@ return (
         <Stack.Screen
             name='VerAsistencia'
             component={VerAsistencia}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='TomarHuella'
+            component={TomarHuella}
             options={{ headerShown: false }} 
         />
     </Stack.Navigator>

@@ -50,3 +50,19 @@
   padding: 10px;
   width: 50%;
 }
+
+#txtUopcion {
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#txtUopcion label {
+  margin-right: 10px;
+}
+
+#opcion {
+  width: 51%;
+  margin-bottom: 10px;
+  font-size: 18px;
+}

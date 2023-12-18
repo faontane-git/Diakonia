@@ -6,19 +6,18 @@ import '../estilos/Instituciones.css';
 
 const Instituciones = () => {
   const navigate = useNavigate();
- 
+
 
   const goRegistrar = () => {
-    
-      navigate('/registrar');
-    }
-    const goVerRegistro = () =>{
-        navigate('/verInstitucion')
-    };
+    navigate('/registrar');
+  }
+  const goVerRegistro = () => {
+    navigate('/verInstitucion')
+  };
 
   return (
     <div className="centered-container">
-      <Cabecera/>
+      <Cabecera />
       <h1>Instituciones</h1>
       <button id="buttonRegistrar" onClick={goRegistrar}>Registrar</button>
       <button id="buttonVerInstituciones" onClick={goVerRegistro}>Ver Instituciones</button>

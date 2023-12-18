@@ -1,13 +1,12 @@
-
 #listaInstituciones {
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-   }
-  
-  
+}
+
+
 #listaInstituciones a {
     display: block;
     color: white;
@@ -15,7 +14,6 @@
     text-decoration: none;
     font-weight: bold;
 }
-
 
 #listaInstituciones li {
     text-align: center;
@@ -27,4 +25,9 @@
     padding: 10px;
     /* Ajusta según sea necesario para el espaciado interno */
     width: 50%;
+}
+
+.search-container input {
+    width: 51%;
+    height: 25px;
 }
