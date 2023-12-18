@@ -15,17 +15,31 @@
     font-weight: bold;
 }
 
+#especial {
+    text-align: center;
+    /* Alinea el texto al centro */
+    margin-bottom: 10px;
+    /* Ajusta según sea necesario para agregar espacio entre elementos */
+    background-color:white;
+    /* Fondo rojo */
+    padding: 10px;
+    /* Ajusta según sea necesario para el espaciado interno */
+    width: 50%;
+}
+
 #listaInstituciones li {
     text-align: center;
     /* Alinea el texto al centro */
     margin-bottom: 10px;
     /* Ajusta según sea necesario para agregar espacio entre elementos */
     background-color: #890202;
+    color: white;
     /* Fondo rojo */
     padding: 10px;
     /* Ajusta según sea necesario para el espaciado interno */
     width: 50%;
 }
+
 
 .search-container input {
     width: 51%;

@@ -1,43 +1,70 @@
-#listaBeneficiarios {
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+/* ListaBeneficiarios.css */
 
-
-#listaBeneficiarios a {
-  display: block;
-  color: white;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-
-#listaBeneficiarios li {
+.centered-container {
   text-align: center;
-  color: white;
-  margin-bottom: 10px;
-  background-color: #890202;
-  padding: 10px;
-  width: 50%;
+  margin: 20px;
 }
 
-#buttonABeneficiarios {
-  background-color: #890202;
-  color: white;
-  font-size: 16px;
+h2 {
+  color: #333;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
   border: none;
   cursor: pointer;
-  margin: 5px;
-  width: 15%;
-  height: 40px;
-  border-radius: 5px;
 }
 
 button:hover {
-  background-color: #6b0101;
-  /* Cambia el color al pasar el ratón sobre el botón */
+  background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+thead {
+  background-color: #007bff;
+  color: #fff;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+Link {
+  text-decoration: none;
+}
+
+button {
+  padding: 8px 12px;
+  background-color: #890202;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #890202;
+}
+
+.search-container-name input {
+  margin-top: 10px;
+  width: 51%;
+  height: 25px;
 }

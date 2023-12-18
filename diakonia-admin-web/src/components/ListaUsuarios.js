@@ -5,16 +5,24 @@ const ListaUsuarios = ({ usuarios }) => {
   return (
     <div className="centered-container">
       <h1>Lista de Usuarios</h1>
-      <ul id="listaUsuarios">
-        {usuarios.map((usuario, index) => (
-          <li key={index}>
-            <strong>id:</strong> {usuario.id},&nbsp;
-            <strong>Correo:</strong> {usuario.correo},&nbsp;
-            <strong>Rol:</strong> {usuario.rol},&nbsp;
-
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Correo</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          {usuarios.map((usuario, index) => (
+            <tr key={index}>
+              <td>{usuario.id}</td>
+              <td>{usuario.correo}</td>
+              <td>{usuario.rol}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

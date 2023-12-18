@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import { Link } from 'react-router-dom';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import '../estilos/Beneficiarios.css';
-import { useState,  useEffect } from 'react';
+import firebaseApp from '../firebase-config';
 
-import firebaseApp from "../firebase-config";
-import {getFirestore, collection, getDocs} from 'firebase/firestore'
+const Beneficiarios = () => {
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
-
-const Beneficiarios = ({ instituciones }) => {
-
-  const [data,setData]= useState([]);
-
-  useEffect(()=>{
-    const querydb= getFirestore();
+  useEffect(() => {
+    const querydb = getFirestore();
     const queryCollection = collection(querydb, 'instituciones');
-    console.log("entra")
-    getDocs(queryCollection).then(res => setData(res.docs.map(institucion => ({id: institucion.id,...institucion.data()}))))
-  
-  },[])
+
+    getDocs(queryCollection).then((res) =>
+      setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
+    );
+  }, []);
+
+  const filteredData = data.filter((institucion) =>
+    institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="centered-container">
       <Cabecera />
@@ -26,15 +29,15 @@ const Beneficiarios = ({ instituciones }) => {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Buscar Nombre"
+          placeholder="Buscar institución..."
           value={searchTerm}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="list-container">
         <ul id="listaInstituciones">
-          {filteredInstituciones.length > 0 ? (
-            filteredInstituciones.map((institucion) => (
+          {filteredData.length > 0 ? (
+            filteredData.map((institucion) => (
               <li key={institucion.id}>
                 <Link to={`/beneficiarios/${institucion.id}/${institucion.nombre}`} className="centered-link">
                   {institucion.nombre}
@@ -42,7 +45,7 @@ const Beneficiarios = ({ instituciones }) => {
               </li>
             ))
           ) : (
-            <li>No hay instituciones disponibles</li>
+            <li id="especial">¡No hay beneficiarios disponibles!</li>
           )}
         </ul>
       </div>

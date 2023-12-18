@@ -1,41 +1,53 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Cabecera from './Cabecera';
-import Popup from './Popup';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
-
-import {getFirestore, collection, getDocs, query, where} from 'firebase/firestore'
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
 const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
-  const { institucionId, institucionN} = useParams();
-  
+  const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
- 
 
   const goAñadirBenef = () => {
-    
-      navigate('añadirBenef');
-    }
-    const [data,setData]= useState([]);
+    navigate('añadirBenef');
+  };
 
-    useEffect(()=>{
-      const querydb= getFirestore();
-      const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiarios = query(beneficiariosCollection, where("institucionId", "==", institucionId));
-      console.log("entra")
-      getDocs(beneficiarios).then(res => setData(res.docs.map(benf => ({id: benf.id,...benf.data()}))))
-    
-    },[])
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const querydb = getFirestore();
+    const beneficiariosCollection = collection(querydb, 'beneficiarios');
+    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+
+    getDocs(beneficiariosQuery).then((res) =>
+      setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
+    );
+  }, [institucionId]);
+
+  const filteredData = data.filter((beneficiario) =>
+    beneficiario.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div>
-      <Cabecera/>
-      {<h2>Lista de Beneficiarios de {institucionN}</h2>}
-      <button onClick={goAñadirBenef} >Añadir Benneficiarios</button>
-     
+    <div className="centered-container">
+      <Cabecera />
+      <h1>Lista de Beneficiarios de {institucionN}</h1>
+      <button id="buttonABeneficiarios" onClick={goAñadirBenef}>
+        Añadir Beneficiarios
+      </button>
+
+      <div className="search-container-name">
+        <input
+          type="text"
+          placeholder="Buscar por nombre"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -48,8 +60,8 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((beneficiario) => (
-            <tr>
+          {filteredData.map((beneficiario) => (
+            <tr key={beneficiario.id}>
               <td>{beneficiario.nombre}</td>
               <td>{beneficiario.cedula}</td>
               <td>{beneficiario.fecha_nacimiento}</td>
@@ -58,7 +70,12 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
               <td>{beneficiario.numero_de_personas_mayores_en_el_hogar}</td>
               <td>
                 <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
-                <button>Editar</button>
+                  <button>Editar</button>
+                </Link>
+              </td>
+              <td>
+                <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
+                  <button>Eliminar</button>
                 </Link>
               </td>
             </tr>
