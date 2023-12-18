@@ -2,6 +2,7 @@ import React from 'react';
 import Cabecera from "./Cabecera";
 import ListaInstituciones from "./ListaInstituciones";
 import '../estilos/VerInstitucion.css';
+
 import { useState,  useEffect } from 'react';
 
 import firebaseApp from "../firebase-config";
