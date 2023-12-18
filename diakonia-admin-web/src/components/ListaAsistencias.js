@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import '../estilos/ListaAsistencias.css';
 import Cabecera from './Cabecera';
 
-
 const ListaAsistencias = ({ asistencias }) => {
   // Obtener la lista única de meses
   const mesesUnicos = Array.from(
@@ -44,7 +43,7 @@ const ListaAsistencias = ({ asistencias }) => {
       <Cabecera />
       <h1>Asistencias</h1>
 
-       <label>
+      <label>
         Filtrar por mes:
         <select
           value={mesSeleccionado}
@@ -57,6 +56,9 @@ const ListaAsistencias = ({ asistencias }) => {
           ))}
         </select>
       </label>
+
+      {/* Mostrar el mes seleccionado en un h2 */}
+      <h2>{mesSeleccionado}</h2>
 
       <table>
         <thead>

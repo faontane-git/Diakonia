@@ -31,6 +31,7 @@ const ListaInstituciones = ({ instituciones }) => {
             <th>Teléfono</th>
             <th>Ubicación</th>
             <th>Servicios</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -48,8 +49,7 @@ const ListaInstituciones = ({ instituciones }) => {
                 <Link>
                   <button>Editar</button>
                 </Link>
-              </td>
-              <td>
+
                 <Link>
                   <button>Eliminar</button>
                 </Link>

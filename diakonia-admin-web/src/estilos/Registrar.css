@@ -20,7 +20,7 @@ h1 {
     cursor: pointer;
     margin: 5px;
     width: 10%;
-    height: 40px;  
+    height: 40px;
     border-radius: 5px;
 }
 
@@ -89,4 +89,29 @@ button:hover {
     margin-left: 50px;
 }
 
- 
+
+/* Registrar.css */
+
+#rangoFechas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 10px;
+    margin-left: 150px;
+}
+
+#rangoFechas input {
+    margin-bottom: 10px;
+    width: 100%;
+    /* Hace que los inputs ocupen el 100% del ancho disponible */
+    padding: 8px;
+    /* Ajusta el relleno para dar más espacio alrededor del texto en los inputs */
+}
+
+/* Estilos específicos para los inputs de fecha */
+#ff_inicial,
+#ff_final {
+    max-width: 200px;
+    /* Limita el ancho máximo de los inputs de fecha */
+}

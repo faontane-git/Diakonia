@@ -68,3 +68,7 @@ button:hover {
   width: 51%;
   height: 25px;
 }
+
+td button {
+  margin-right: 5px; 
+}

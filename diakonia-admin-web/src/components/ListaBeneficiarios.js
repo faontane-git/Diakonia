@@ -57,6 +57,7 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
             <th>Género</th>
             <th>Número de personas menores en el hogar</th>
             <th>Número de personas mayores en el hogar</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -72,8 +73,7 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
                 <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
                   <button>Editar</button>
                 </Link>
-              </td>
-              <td>
+                
                 <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
                   <button>Eliminar</button>
                 </Link>

@@ -11,9 +11,9 @@ import { getFirestore, doc, collection, setDoc, addDoc } from "firebase/firestor
 const RegistroInstitucion = () => {
 
   const navigate = useNavigate();
-const goBack = () => {    
-  navigate('/instituciones');
-}
+  const goBack = () => {
+    navigate('/instituciones');
+  }
 
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -23,40 +23,40 @@ const goBack = () => {
 
   const [initialDate, setInitialDate] = useState(null);
   const [finalDate, setFinalDate] = useState(null);
-  
+
   // Función para manejar el envío del formulario
   const handleSubmit = (event) => {
     event.preventDefault();
     if (initialDate === null || finalDate === null || initialDate > finalDate) {
       alert("La fecha inicial debe ser anterior a la fecha final.");
       return;
-    }else{
-  
-    const firestore = getFirestore()
-    const InstitucionCollection = collection(firestore, 'instituciones');
+    } else {
 
-    const institucion = {
-      nombre:nombre,
-      telefono:telefono,
-      direccion:direccion,
-      desayuno:desayuno,
-      almuerzo:almuerzo,
-      fecha_inicial:initialDate,
-      fecha_final:finalDate,
+      const firestore = getFirestore()
+      const InstitucionCollection = collection(firestore, 'instituciones');
 
+      const institucion = {
+        nombre: nombre,
+        telefono: telefono,
+        direccion: direccion,
+        desayuno: desayuno,
+        almuerzo: almuerzo,
+        fecha_inicial: initialDate,
+        fecha_final: finalDate,
+
+      }
+      const agregar = addDoc(InstitucionCollection, institucion);
+      agregar
+        .then((funciono) => {
+          alert("Nueva institución añadida");
+          goBack();
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert("Error al agragar institución");
+        })
+      console.log(initialDate, finalDate);
     }
-    const agregar= addDoc(InstitucionCollection,institucion);
-    agregar
-    .then((funciono) => {
-      alert("Nueva institución añadida");
-      goBack();
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert("Error al agragar institución");
-    })
-    console.log(initialDate,finalDate);
-  }
   };
 
   return (
@@ -108,33 +108,35 @@ const goBack = () => {
               onChange={() => setDesayuno(!desayuno)}
             />
             <label htmlFor="desayuno">Desayuno</label>
-        
-          <div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="almuerzo"
+                checked={almuerzo}
+                onChange={() => setAlmuerzo(!almuerzo)}
+              />
+              <label htmlFor="almuerzo">Almuerzo</label>
+            </div>
+          </div>
+          <div id="rangoFechas">
+            <label htmlFor="Fecha_inicial"><b>Fecha_inicial:</b></label>
             <input
-              type="checkbox"
-              id="almuerzo"
-              checked={almuerzo}
-              onChange={() => setAlmuerzo(!almuerzo)}
+              type="date"
+              name="initialDate"
+              placeholder="Fecha inicial"
+              id="ff_inicial"
+              onChange={(e) => setInitialDate(e.target.value)}
             />
-            <label htmlFor="almuerzo">Almuerzo</label>
+            <label htmlFor="Fecha_final"><b>Fecha_final:</b></label>
+            <input
+              type="date"
+              name="finalDate"
+              placeholder="Fecha final"
+              id="ff_final"
+              onChange={(e) => setFinalDate(e.target.value)}
+            />
           </div>
-          </div>
-          <div>
-          <label htmlFor="Fecha_inicial"><b>Fecha_inicial:</b></label>
-          <input
-        type="date"
-        name="initialDate"
-        placeholder="Fecha inicial"
-        onChange={(e) => setInitialDate(e.target.value)}
-      />
-      <label htmlFor="Fecha_final"><b>Fecha_final:</b></label>
-      <input
-        type="date"
-        name="finalDate"
-        placeholder="Fecha final"
-        onChange={(e) => setFinalDate(e.target.value)}
-      />
-</div>
 
         </div>
 

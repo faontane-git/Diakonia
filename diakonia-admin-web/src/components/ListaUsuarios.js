@@ -11,6 +11,7 @@ const ListaUsuarios = ({ usuarios }) => {
             <th>ID</th>
             <th>Correo</th>
             <th>Rol</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -19,6 +20,7 @@ const ListaUsuarios = ({ usuarios }) => {
               <td>{usuario.id}</td>
               <td>{usuario.correo}</td>
               <td>{usuario.rol}</td>
+              <td><button>Eliminar</button></td>
             </tr>
           ))}
         </tbody>
