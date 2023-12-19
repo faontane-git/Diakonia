@@ -1,12 +1,36 @@
 /* styles.css */
 
 .asistencia {
-    background-color: green;
-    color: white;
-  }
-  
-  .falta {
-    background-color: red;
-    color: white;
-  }
-  
+  background-color: green;
+  color: white;
+}
+
+.falta {
+  background-color: red;
+  color: white;
+}
+
+/* En tu archivo de estilos CSS (por ejemplo, ListaAsistencias.css) */
+
+/* Estilos para la etiqueta de selección y el texto "Filtrar por mes" */
+#labelMes {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+/* Estilos para la lista desplegable (select) */
+#mesSeleccionado {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+/* Estilo para las opciones (options) */
+#mesSeleccionado option {
+  background-color: #fff;
+  color: #333;
+}

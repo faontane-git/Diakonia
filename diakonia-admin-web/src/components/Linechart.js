@@ -1,8 +1,9 @@
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
-    CategoryScale,
     LinearScale,
+    CategoryScale,
     PointElement,
     LineElement,
     Title,
@@ -12,8 +13,8 @@ import {
 } from 'chart.js';
 
 ChartJS.register(
-    CategoryScale,
     LinearScale,
+    CategoryScale,
     PointElement,
     LineElement,
     Title,
@@ -29,18 +30,12 @@ export default function LinesChart({ beneficios, meses, datos }) {
             {
                 label: 'Peso lb',
                 data: beneficios,
-                
-              
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 pointRadius: 5,
                 pointBorderColor: 'rgba(255, 99, 132)',
                 pointBackgroundColor: 'rgba(255, 99, 132)',
-            },
-            {
-                label: 'IMC',
-                data: datos,
-            },
+            }
         ],
     };
 

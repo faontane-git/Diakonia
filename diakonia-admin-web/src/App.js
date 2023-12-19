@@ -168,8 +168,7 @@ function Aplicacion() {
         },
       ],
     },
-    // Continuar para más beneficiarios...
-  ];
+   ];
 
 
   const nutricion = [

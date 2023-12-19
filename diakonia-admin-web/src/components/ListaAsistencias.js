@@ -14,6 +14,7 @@ const ListaAsistencias = ({ asistencias }) => {
     )
   );
 
+
   // Estado local para rastrear el mes seleccionado (inicializado en "enero")
   const [mesSeleccionado, setMesSeleccionado] = useState('enero');
   const [diasDelMes, setDiasDelMes] = useState([]);
@@ -33,6 +34,7 @@ const ListaAsistencias = ({ asistencias }) => {
         )
       );
       setDiasDelMes(diasUnicos);
+      console.log(diasUnicos);
     } else {
       setDiasDelMes([]);
     }
@@ -43,9 +45,10 @@ const ListaAsistencias = ({ asistencias }) => {
       <Cabecera />
       <h1>Asistencias</h1>
 
-      <label>
+      <label htmlFor="mesSeleccionado" id="labelMes">
         Filtrar por mes:
         <select
+          id="mesSeleccionado"
           value={mesSeleccionado}
           onChange={(e) => setMesSeleccionado(e.target.value)}
         >
@@ -58,7 +61,7 @@ const ListaAsistencias = ({ asistencias }) => {
       </label>
 
       {/* Mostrar el mes seleccionado en un h2 */}
-      <h2>{mesSeleccionado}</h2>
+      <h2>{mesSeleccionado.toUpperCase()}</h2>
 
       <table>
         <thead>
@@ -67,12 +70,15 @@ const ListaAsistencias = ({ asistencias }) => {
             {diasDelMes.map((dia, index) => (
               <th key={index}>{dia}</th>
             ))}
+            {/* Nueva columna para días asistidos */}
+            <th>Días Asistidos</th>
           </tr>
         </thead>
         <tbody>
           {asistencias.map((beneficiario) => (
             <tr key={beneficiario.id}>
               <td>{beneficiario.nombre}</td>
+
               {diasDelMes.map((dia, index) => {
                 const asistio = beneficiario.instituciones.some(
                   (institucion) =>
@@ -89,14 +95,24 @@ const ListaAsistencias = ({ asistencias }) => {
                 );
 
                 return (
-                  <td
-                    key={index}
-                    className={asistio ? 'asistencia' : 'falta'}
-                  >
+                  <td key={index} className={asistio ? 'asistencia' : 'falta'}>
                     {asistio ? 'A' : 'F'}
                   </td>
                 );
               })}
+              {/* Nueva celda para la cantidad de días asistidos */}
+              <td>
+                {beneficiario.instituciones
+                  .flatMap((institucion) =>
+                    institucion.asistencias
+                      .filter((asistencia) => asistencia.mes === mesSeleccionado)
+                      .reduce(
+                        (total, asistencia) => total + asistencia.cantidad,
+                        0
+                      )
+                  )
+                  .reduce((total, cantidad) => total + cantidad, 0)}
+              </td>
             </tr>
           ))}
         </tbody>

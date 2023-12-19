@@ -29,7 +29,7 @@ const Beneficiarios = () => {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Buscar institución..."
+          placeholder="Buscar institución"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
