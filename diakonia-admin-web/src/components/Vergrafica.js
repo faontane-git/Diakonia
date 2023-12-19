@@ -1,40 +1,58 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import Cabecera from './Cabecera';
 import LinesChart from './Linechart';
 import { useParams } from 'react-router-dom';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import '../estilos/Vergrafica.css';
 
+import {getFirestore, doc,collection, getDoc, query, where, updateDoc} from 'firebase/firestore'
+
 const VerGrafica = ({ nutricion }) => {
-  const { beneficiarioid } = useParams();
-  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  const data = [20, 25, 60, 65, 45, 10, 0, 25, 35, 7, 20, 25];
-  const beneficiarioSeleccionado = nutricion.find((benf) => benf.id === parseInt(beneficiarioid, 10));
+const { institucionId, beneficiarioid } = useParams();
+const [data,setData]= useState({});
+
+useEffect(  () => {
+  async function extraer(){
+  const querydb= getFirestore();
+  const docuRef = collection(querydb, `beneficiarios`);
+  const docuCifrada= doc(docuRef,beneficiarioid);
+  const documento= await getDoc(docuCifrada);
+  
+  setData(documento.data());
+  }
+  extraer();
+  
+}, []);
 
   return (
     <div className="centered-container">
       <Cabecera />
-      <h1>Nutricion gráfica de {beneficiarioSeleccionado.nombre}</h1>
+      <h1>Nutricion gráfica de {data.nombre}</h1>
       <div id="centered-chart-container" className="mb-4 d-flex justify-content-center align-items-center" >
         <div className="d-flex justify-content-center align-items-center bg-light px-2 border border-2 border-primary" style={{ width: "550px", height: "300px" }}>
-          <LinesChart beneficios={data} meses={meses} datos={data} />
+          <LinesChart fechas={data.fecha_seguimiento} peso={data.pesos} talla={data.talla} hgb={data.hgb} />
         </div>
       </div>
       <table className="table">
         <thead>
           <tr>
-            <th>Mes</th>
+            <th>fechas</th>
             <th>Peso</th>
+            <th>talla</th>
+            <th>hgb</th>
           </tr>
         </thead>
+        {console.log(data.fecha_seguimiento)}
         <tbody>
-          {meses.map((mes, index) => (
+          {data.fecha_seguimiento?.map((mes, index) => (
             <tr key={index}>
               <td>{mes}</td>
-              <td>{data[index]}</td>
+              <td>{data.pesos[index]}</td>
+              <td>{data.talla[index]}</td>
+              <td>{data.hgb[index]}</td>
             </tr>
           ))}
-        </tbody>
+          </tbody>
       </table>
     </div>
   );
