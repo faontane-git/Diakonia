@@ -1,122 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import '../estilos/ListaAsistencias.css';
 import Cabecera from './Cabecera';
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
 const ListaAsistencias = ({ asistencias }) => {
-  // Obtener la lista única de meses
-  const mesesUnicos = Array.from(
-    new Set(
-      asistencias.flatMap((beneficiario) =>
-        beneficiario.instituciones.flatMap((institucion) =>
-          institucion.asistencias.map((asistencia) => asistencia.mes)
-        )
-      )
-    )
-  );
-
-
-  // Estado local para rastrear el mes seleccionado (inicializado en "enero")
+  const [data, setData] = useState([]);
+  const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
   const [mesSeleccionado, setMesSeleccionado] = useState('enero');
+
+  const consulta = async () => {
+    const querydb = getFirestore();
+    const beneficiariosCollection = collection(querydb, 'beneficiarios');
+    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', '3qcInlJavqtUX49FsFuw'));
+
+    try {
+      const querySnapshot = await getDocs(beneficiariosQuery);
+      setData(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
+      const arregloNombresFechas = data.map((item) => ({
+        nombre: item.nombre,
+        fechas: item.dias.map((fecha) => convertirTimestampAFecha(fecha))
+      }));
+      setArregloNombresFechas(arregloNombresFechas);
+      console.log(arregloNombresFechas);
+    } catch (error) {
+      console.error('Error al obtener documentos:', error);
+    }
+  };
+
+  const convertirTimestampAFecha = (timestamp) => {
+    const fecha = new Date(timestamp.seconds * 1000);
+    return fecha.toLocaleDateString('es-ES');
+  };
+
+  useEffect(() => {
+    const obtenerDiasDelMes = () => {
+      if (data.length > 0) {
+        const primerBeneficiario = data[0];
+        const fechasMesSeleccionado = primerBeneficiario.dias
+          .filter((fecha) => convertirTimestampAFecha(fecha) === mesSeleccionado);
+        setDiasDelMes(fechasMesSeleccionado);
+      }
+    };
+
+    obtenerDiasDelMes();
+  }, [mesSeleccionado, data]);
+
   const [diasDelMes, setDiasDelMes] = useState([]);
 
-  // Actualizar los días del mes cuando se cambia el mes seleccionado
   useEffect(() => {
-    if (mesSeleccionado) {
-      const diasUnicos = Array.from(
-        new Set(
-          asistencias.flatMap((beneficiario) =>
-            beneficiario.instituciones.flatMap((institucion) =>
-              institucion.asistencias
-                .filter((asistencia) => asistencia.mes === mesSeleccionado)
-                .flatMap((asistencia) => asistencia.dias)
-            )
-          )
-        )
-      );
-      setDiasDelMes(diasUnicos);
-      console.log(diasUnicos);
-    } else {
-      setDiasDelMes([]);
-    }
-  }, [mesSeleccionado, asistencias]);
+    consulta();
+  }, []);
 
   return (
     <div className="centered-container">
       <Cabecera />
       <h1>Asistencias</h1>
 
-      <label htmlFor="mesSeleccionado" id="labelMes">
-        Filtrar por mes:
-        <select
-          id="mesSeleccionado"
-          value={mesSeleccionado}
-          onChange={(e) => setMesSeleccionado(e.target.value)}
-        >
-          {mesesUnicos.map((mes, index) => (
-            <option key={index} value={mes}>
-              {mes}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      {/* Mostrar el mes seleccionado en un h2 */}
-      <h2>{mesSeleccionado.toUpperCase()}</h2>
-
       <table>
         <thead>
           <tr>
-            <th>Beneficiario</th>
-            {diasDelMes.map((dia, index) => (
-              <th key={index}>{dia}</th>
-            ))}
-            {/* Nueva columna para días asistidos */}
-            <th>Días Asistidos</th>
+            <th>Nombre</th>
+            {arregloNombresFechas.length > 0 &&
+              arregloNombresFechas[0].fechas.map((mes, index) => (
+                <th key={index}>{mes}</th>
+              ))}
           </tr>
         </thead>
         <tbody>
-          {asistencias.map((beneficiario) => (
-            <tr key={beneficiario.id}>
-              <td>{beneficiario.nombre}</td>
-
-              {diasDelMes.map((dia, index) => {
-                const asistio = beneficiario.instituciones.some(
-                  (institucion) =>
-                    institucion.asistencias
-                      .filter(
-                        (asistencia) =>
-                          asistencia.mes === mesSeleccionado &&
-                          asistencia.dias.includes(dia)
-                      )
-                      .reduce(
-                        (total, asistencia) => total + asistencia.cantidad,
-                        0
-                      ) > 0
-                );
-
-                return (
-                  <td key={index} className={asistio ? 'asistencia' : 'falta'}>
-                    {asistio ? 'A' : 'F'}
-                  </td>
-                );
-              })}
-              {/* Nueva celda para la cantidad de días asistidos */}
-              <td>
-                {beneficiario.instituciones
-                  .flatMap((institucion) =>
-                    institucion.asistencias
-                      .filter((asistencia) => asistencia.mes === mesSeleccionado)
-                      .reduce(
-                        (total, asistencia) => total + asistencia.cantidad,
-                        0
-                      )
-                  )
-                  .reduce((total, cantidad) => total + cantidad, 0)}
-              </td>
+          {arregloNombresFechas.map((item) => (
+            <tr key={item.nombre}>
+              <td>{item.nombre}</td>
+              {arregloNombresFechas[0].fechas.map((mes, index) => (
+                <td key={index}>{item.fechas.includes(mes) ? 'A' : 'F'}</td>
+              ))}
             </tr>
           ))}
         </tbody>
       </table>
+      <button onClick={consulta}>Consulta</button>
     </div>
   );
 };

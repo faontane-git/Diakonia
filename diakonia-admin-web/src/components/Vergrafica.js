@@ -2,6 +2,7 @@ import React from 'react';
 import Cabecera from './Cabecera';
 import LinesChart from './Linechart';
 import { useParams } from 'react-router-dom';
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import '../estilos/Vergrafica.css';
 
 const VerGrafica = ({ nutricion }) => {
@@ -40,3 +41,4 @@ const VerGrafica = ({ nutricion }) => {
 };
 
 export default VerGrafica;
+ 
