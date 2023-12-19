@@ -16,11 +16,11 @@ useEffect(  () => {
   const docuRef = collection(querydb, `beneficiarios`);
   const docuCifrada= doc(docuRef,beneficiarioid);
   const documento= await getDoc(docuCifrada);
-  //documento.then((datos)=>{return datos})
+  
   setData(documento.data());
   }
   extraer();
-  //console.log(data.fecha_seguimiento);
+  
 }, []);
 
   return (
@@ -37,6 +37,8 @@ useEffect(  () => {
           <tr>
             <th>fechas</th>
             <th>Peso</th>
+            <th>talla</th>
+            <th>hgb</th>
           </tr>
         </thead>
         {console.log(data.fecha_seguimiento)}
@@ -45,6 +47,8 @@ useEffect(  () => {
             <tr key={index}>
               <td>{mes}</td>
               <td>{data.pesos[index]}</td>
+              <td>{data.talla[index]}</td>
+              <td>{data.hgb[index]}</td>
             </tr>
           ))}
           </tbody>
