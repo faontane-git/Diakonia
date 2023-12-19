@@ -4,8 +4,22 @@ import LinesChart from './Linechart'
 import { Link } from 'react-router-dom';
 import '../estilos/Nutricion.css';
 
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
 
 const Nutricion = ({ instituciones }) => {
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const querydb = getFirestore();
+    const queryCollection = collection(querydb, 'instituciones');
+
+    getDocs(queryCollection).then((res) =>
+      setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
+    );
+  }, []);
+
   return (
     <div className="centered-container">
       <Cabecera />
@@ -22,10 +36,10 @@ const Nutricion = ({ instituciones }) => {
 
 
         <ul id="listaNutriciones">
-          {instituciones ? (
-            instituciones.map((institucion) => (
+          {data ? (
+            data.map((institucion) => (
               <li key={institucion.id}>
-                <Link to={`/nutricion/${institucion.id}`}>
+                <Link to={`/nutricion/${institucion.id}/${institucion.nombre}`}>
                   {institucion.nombre}
                 </Link>
               </li>

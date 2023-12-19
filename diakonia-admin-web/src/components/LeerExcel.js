@@ -52,12 +52,11 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
         dias: [],
         asistencias: [],
         registrado: false,
-        primer_Peso:"",
-        primer_Talla:"",
-        primer_HGB:"",
-        segundo_Peso:"",
-        segundo_Talla:"",
-        segundo_HGB:"",    
+        fecha_seguimiento:[],
+        pesos:[],
+        talla:[],
+        hgb:[],
+        
       }));
 
       setNBeneficiarios(nuevosBeneficiarios);
