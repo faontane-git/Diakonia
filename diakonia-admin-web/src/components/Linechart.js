@@ -1,9 +1,8 @@
-import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
-    LinearScale,
     CategoryScale,
+    LinearScale,
     PointElement,
     LineElement,
     Title,
@@ -13,8 +12,8 @@ import {
 } from 'chart.js';
 
 ChartJS.register(
-    LinearScale,
     CategoryScale,
+    LinearScale,
     PointElement,
     LineElement,
     Title,
@@ -23,19 +22,29 @@ ChartJS.register(
     Filler
 );
 
-export default function LinesChart({ beneficios, meses, datos }) {
+export default function LinesChart({ fechas,peso, talla,hgb }) {
     const midata = {
-        labels: meses,
+        labels: fechas,
         datasets: [
             {
-                label: 'Peso lb',
-                data: beneficios,
+                label: 'Peso',
+                data: peso,
+                
+              
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 pointRadius: 5,
                 pointBorderColor: 'rgba(255, 99, 132)',
                 pointBackgroundColor: 'rgba(255, 99, 132)',
-            }
+            },
+            {
+                label: 'Talla',
+                data: talla,
+            },
+            {
+                label:'Hgb',
+                data: hgb,
+            },
         ],
     };
 
