@@ -26,6 +26,7 @@ import Nutricion from "./components/Nutricion.js"
 import ListaNutricion from "./components/ListaNutricion.js"
 import VerGrafica from "./components/Vergrafica.js"
 import LeerExcel from "./components/LeerExcel.js"
+import AñadirNutricion from "./components/AñadirNutricion.js"
 
 
 const auth = getAuth(firebaseApp);
@@ -255,9 +256,10 @@ function Aplicacion() {
           <Route path="asistencias" element={<VerAsistencias instituciones={instituciones} />} />
           <Route path="asistencias/:institucionId" element={<ListaAsistencias instituciones={instituciones} asistencias={asistencias} />} />
           <Route path="nutricion" element={<Nutricion instituciones={instituciones} />} />
-          <Route path="nutricion/:institucionId" element={<ListaNutricion instituciones={instituciones} nutricion={nutricion} />} />
+          <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion instituciones={instituciones} nutricion={nutricion} />} />
           <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica nutricion={nutricion} />} />
           <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={<LeerExcel beneficiarios={beneficiarios} agregarBeneficiario={agregarBeneficiario} />} />
+          <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion />} />
         </Routes>
       }
     </div>

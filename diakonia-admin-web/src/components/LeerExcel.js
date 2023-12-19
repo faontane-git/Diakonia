@@ -64,12 +64,10 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
         dias: [],
         asistencias: [],
         registrado: false,
-        primer_Peso:"",
-        primer_Talla:"",
-        primer_HGB:"",
-        segundo_Peso:"",
-        segundo_Talla:"",
-        segundo_HGB:"",
+        fecha_seguimiento:[],
+        pesos:[],
+        talla:[],
+        hgb:[],
         
       }));
 
@@ -135,7 +133,7 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
           <ul>
             {Nbeneficiarios.map((Nbeneficiario, index) => (
               <li key={index}>
-                Nombre: {Nbeneficiario.nombre}, cedula: {Nbeneficiario.cedula}, fecha_nacimiento: {Nbeneficiario.f_nacimiento},genero: {Nbeneficiario.genero}, contacto: {Nbeneficiario.numero_contacto}, N_menores_Hogar: {Nbeneficiario.numero_de_personas_menores_en_el_hogar}, n_mayores_hogar: {Nbeneficiario.numero_de_personas_mayores_en_el_hogar}
+                Nombre: {Nbeneficiario.nombre}, cedula: {Nbeneficiario.cedula}, fecha_nacimiento: {Nbeneficiario.fecha_nacimiento},genero: {Nbeneficiario.genero}, contacto: {Nbeneficiario.numero_contacto}, N_menores_Hogar: {Nbeneficiario.numero_de_personas_menores_en_el_hogar}, n_mayores_hogar: {Nbeneficiario.numero_de_personas_mayores_en_el_hogar}
               </li>
             ))}
           </ul>

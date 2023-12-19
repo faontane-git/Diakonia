@@ -9,7 +9,6 @@ import { getFirestore, collection, getDocs, query, where } from 'firebase/firest
 const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
   const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
-
   const goAñadirBenef = () => {
     navigate('añadirBenef');
   };
