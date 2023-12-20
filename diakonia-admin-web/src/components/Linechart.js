@@ -22,29 +22,19 @@ ChartJS.register(
     Filler
 );
 
-export default function LinesChart({ fechas,peso, talla,hgb }) {
+export default function LinesChart({ fechas, datos, dato }) {
     const midata = {
         labels: fechas,
         datasets: [
             {
-                label: 'Peso',
-                data: peso,
-                
-              
+                label: dato,
+                data: datos,
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 pointRadius: 5,
                 pointBorderColor: 'rgba(255, 99, 132)',
                 pointBackgroundColor: 'rgba(255, 99, 132)',
-            },
-            {
-                label: 'Talla',
-                data: talla,
-            },
-            {
-                label:'Hgb',
-                data: hgb,
-            },
+            }
         ],
     };
 
