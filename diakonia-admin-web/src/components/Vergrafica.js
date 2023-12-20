@@ -2,10 +2,9 @@ import React,{useState,useEffect} from 'react';
 import Cabecera from './Cabecera';
 import LinesChart from './Linechart';
 import { useParams } from 'react-router-dom';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import {getFirestore, doc,collection, getDoc, query, where, updateDoc} from 'firebase/firestore'
 import '../estilos/Vergrafica.css';
 
-import {getFirestore, doc,collection, getDoc, query, where, updateDoc} from 'firebase/firestore'
 
 const VerGrafica = ({ nutricion }) => {
 const { institucionId, beneficiarioid } = useParams();

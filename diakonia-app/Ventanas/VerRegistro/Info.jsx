@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const Info = () => {
   const navigation = useNavigation();
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [hemoglobina, setHemoglobina] = useState('');
-
+  const route = useRoute();
+  
   const onPressRegresar = () => {
     navigation.navigate('VerRegistro');
   }
@@ -25,49 +24,49 @@ const Info = () => {
           <Text style={styles.textContainer}>Nombre</Text>
           <TextInput
             style={styles.input}
-            value="Fabrizzio"
+            value={route.params.nombre}
             editable={false}
           />
-          <Text style={styles.textContainer}>Apellido</Text>
+          <Text style={styles.textContainer}>Cédula</Text>
           <TextInput
             style={styles.input}
-            value="Ontaneda"
+            value={route.params.cedula}
             editable={false}
           />
           <Text style={styles.textContainer}>Institución</Text>
           <TextInput
             style={styles.input}
-            value="Kellog's"
+            value={route.params.institucion}
             editable={false}
           />
           <Text style={styles.textContainer}>Sexo</Text>
           <TextInput
             style={styles.input}
-            value="Masculino"
+            value={route.params.sexo}
             editable={false}
           />
           <Text style={styles.textContainer}>Fecha de Nacimiento</Text>
           <TextInput
             style={styles.input}
-            value="2000-08-26"
+            value={route.params.fechaNacimiento}
             editable={false}
           />
           <Text style={styles.textContainer}>Peso(KG)</Text>
           <TextInput
             style={styles.input}
-            value="75"
+            value={route.params.peso}
             editable={false}
           />
           <Text style={styles.textContainer}>Altura(CM)</Text>
           <TextInput
             style={styles.input}
-            value="1.78"
+            value={route.params.altura}
             editable={false}
           />
           <Text style={styles.textContainer}>Hemoglobina</Text>
           <TextInput
             style={styles.input}
-            value="100"
+            value={route.params.hemoglobina}
             editable={false}
           />
           <TouchableOpacity style={styles.regresarButton} onPress={onPressRegresar}>

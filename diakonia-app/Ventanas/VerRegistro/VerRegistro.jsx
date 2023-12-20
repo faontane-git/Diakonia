@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
 const VerRegistro = () => {
   const navigation = useNavigation();
   const [busqueda, setBusqueda] = useState('');
-  const [nutrientes, setNutrientes] = useState([
-    { id: 1, nombre: 'Fabrizzio Ontaneda' },
-    { id: 2, nombre: 'Joffre Ramírez' },
-    { id: 3, nombre: 'Juan Pérez' },
-    { id: 4, nombre: 'Carlos López' },
-    { id: 5, nombre: 'Laura Martínez' },
-  ]);
+  const [nutrientes, setNutrientes] = useState([]);
+
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      const querydb = getFirestore();
+      const beneficiariosCollection = collection(querydb, 'beneficiarios');
+      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', '3qcInlJavqtUX49FsFuw'));
+
+      try {
+        const querySnapshot = await getDocs(beneficiariosQuery);
+        setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
+      } catch (error) {
+        console.error('Error al obtener documentos:', error);
+      }
+    };
+
+    obtenerDatos();
+  }, []);
 
   const buscar = (texto) => {
     setBusqueda(texto);
@@ -23,8 +35,16 @@ const VerRegistro = () => {
     );
   };
 
-  const navegar = () => {
-    navigation.navigate('Info');
+  const navegar = (item) => {
+    navigation.navigate('Info', {
+      nombre: item.nombre,
+      cedula:item.cedula,
+      fecha_nacimiento:item.fecha_nacimiento,
+      genero:item.genero,
+      numero_contacto:item.numero_contacto,
+      numero_de_personas_mayores_en_el_hogar:item.numero_de_personas_mayores_en_el_hogar,
+      numero_de_personas_menores_en_el_hogar:item.numero_de_personas_menores_en_el_hogar
+    });
   };
 
   return (
@@ -35,11 +55,8 @@ const VerRegistro = () => {
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
       </View>
-
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>Registro</Text>
-      </View>
-      <TextInput   
+      <Text style={styles.title}>Registro</Text>
+      <TextInput
         style={styles.buscador}
         placeholder="Buscar Nombre"
         onChangeText={buscar}
@@ -48,7 +65,7 @@ const VerRegistro = () => {
       <FlatList
         data={filtrarNutrientes(busqueda)}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.option} onPress={() => navegar()}>
+          <TouchableOpacity style={styles.option} onPress={() => navegar(item)}>
             <Text style={[styles.text, { color: 'white' }]}>{item.nombre}</Text>
           </TouchableOpacity>
         )}
@@ -84,11 +101,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 20,
     marginBottom: 10,
-    borderWidth: 1,  
-    borderColor: 'black',  
+    borderWidth: 1,
+    borderColor: 'black',
   },
-  textContainer:{
-    paddingBottom:10
+  textContainer: {
+    paddingBottom: 10
   },
   option: {
     backgroundColor: '#890202',

@@ -12,3 +12,4 @@ npm i @faceio/fiojs
 npm install react-native-camera
 npm install react-native-camera axios
 expo install expo-camera
+npm install firebase
