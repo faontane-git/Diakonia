@@ -5,7 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const Info = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  
+
   const onPressRegresar = () => {
     navigation.navigate('VerRegistro');
   }
@@ -30,43 +30,25 @@ const Info = () => {
           <Text style={styles.textContainer}>Cédula</Text>
           <TextInput
             style={styles.input}
-            value={route.params.cedula}
-            editable={false}
-          />
-          <Text style={styles.textContainer}>Institución</Text>
-          <TextInput
-            style={styles.input}
-            value={route.params.institucion}
+            value={route.params.cedula + ""}
             editable={false}
           />
           <Text style={styles.textContainer}>Sexo</Text>
           <TextInput
             style={styles.input}
-            value={route.params.sexo}
+            value={route.params.genero}
+            editable={false}
+          />
+          <Text style={styles.textContainer}>Número</Text>
+          <TextInput
+            style={styles.input}
+            value={route.params.numero_contacto + ""}
             editable={false}
           />
           <Text style={styles.textContainer}>Fecha de Nacimiento</Text>
           <TextInput
             style={styles.input}
-            value={route.params.fechaNacimiento}
-            editable={false}
-          />
-          <Text style={styles.textContainer}>Peso(KG)</Text>
-          <TextInput
-            style={styles.input}
-            value={route.params.peso}
-            editable={false}
-          />
-          <Text style={styles.textContainer}>Altura(CM)</Text>
-          <TextInput
-            style={styles.input}
-            value={route.params.altura}
-            editable={false}
-          />
-          <Text style={styles.textContainer}>Hemoglobina</Text>
-          <TextInput
-            style={styles.input}
-            value={route.params.hemoglobina}
+            value={route.params.fecha_nacimiento}
             editable={false}
           />
           <TouchableOpacity style={styles.regresarButton} onPress={onPressRegresar}>

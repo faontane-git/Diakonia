@@ -35,10 +35,10 @@ useEffect(  () => {
       <table className="table">
         <thead>
           <tr>
-            <th>fechas</th>
+            <th>Fechas</th>
             <th>Peso</th>
-            <th>talla</th>
-            <th>hgb</th>
+            <th>Talla</th>
+            <th>HGB</th>
           </tr>
         </thead>
         <tbody>

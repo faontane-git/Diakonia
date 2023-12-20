@@ -28,10 +28,11 @@ const VerAsistencias = ({ instituciones }) => {
     <div className="centered-container">
       <Cabecera />
       <h1>Seguimiento asistencias</h1>
+      <h2>Seleccione una institución</h2>
       <div className="search-container">
         <input
           type="text"
-          placeholder="Buscar institución..."
+          placeholder="Buscar Institución"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -47,7 +48,7 @@ const VerAsistencias = ({ instituciones }) => {
               </li>
             ))
           ) : (
-            <li>No hay instituciones disponibles</li>
+            <li id="no-instituciones">¡No hay instituciones disponibles!</li>
           )}
         </ul>
       </div>

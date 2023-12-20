@@ -26,6 +26,7 @@ const Beneficiarios = () => {
     <div className="centered-container">
       <Cabecera />
       <h1>Beneficiarios</h1>
+      <h2>Seleccione una institución</h2>
       <div className="search-container">
         <input
           type="text"
@@ -45,7 +46,7 @@ const Beneficiarios = () => {
               </li>
             ))
           ) : (
-            <li id="especial">¡No hay beneficiarios disponibles!</li>
+            <li id="especial">¡No hay instituciones disponibles!</li>
           )}
         </ul>
       </div>

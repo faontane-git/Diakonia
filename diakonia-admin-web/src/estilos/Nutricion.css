@@ -49,6 +49,7 @@
   background-color: #890202;
   padding: 10px;
   width: 50%;
+  color: white;
 }
 
 #txtUopcion {
@@ -65,4 +66,12 @@
   width: 51%;
   margin-bottom: 10px;
   font-size: 18px;
+}
+
+#no-instituciones {
+  text-align: center;
+  margin-bottom: 10px;
+  background-color: white;
+  padding: 10px;
+  width: 50%;
 }

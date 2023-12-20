@@ -93,7 +93,7 @@ const RegistroUsuario = () => {
         <div id="txtUContaseña">
           <label htmlFor="contraseña">Contraseña:</label>
           <input
-            type="text"
+            type="password"
             id="contraseña"
             value={contraseña}
             onChange={(e) => setContraseña(e.target.value)}

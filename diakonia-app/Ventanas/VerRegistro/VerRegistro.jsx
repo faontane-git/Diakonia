@@ -12,8 +12,7 @@ const VerRegistro = () => {
     const obtenerDatos = async () => {
       const querydb = getFirestore();
       const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', '3qcInlJavqtUX49FsFuw'));
-
+      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', '12WLpoHJnPLc767wmPXd'));
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
@@ -38,12 +37,12 @@ const VerRegistro = () => {
   const navegar = (item) => {
     navigation.navigate('Info', {
       nombre: item.nombre,
-      cedula:item.cedula,
-      fecha_nacimiento:item.fecha_nacimiento,
-      genero:item.genero,
-      numero_contacto:item.numero_contacto,
-      numero_de_personas_mayores_en_el_hogar:item.numero_de_personas_mayores_en_el_hogar,
-      numero_de_personas_menores_en_el_hogar:item.numero_de_personas_menores_en_el_hogar
+      cedula: item.cedula,
+      fecha_nacimiento: item.fecha_nacimiento,
+      genero: item.genero,
+      numero_contacto: item.numero_contacto,
+      numero_de_personas_mayores_en_el_hogar: item.numero_de_personas_mayores_en_el_hogar,
+      numero_de_personas_menores_en_el_hogar: item.numero_de_personas_menores_en_el_hogar
     });
   };
 

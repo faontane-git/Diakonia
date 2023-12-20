@@ -1,19 +1,114 @@
-#txtEdad {
+#txtNombre {
     flex-direction: column;
     align-items: center;
     margin-bottom: 10px;
 }
 
-#txtEdad label {
+#txtNombre label {
     margin-right: 10px;
 }
 
-#edad {
+#nombre {
     width: 60%;
     margin-bottom: 10px;
     font-size: 18px;
 }
 
+#txtcedula {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtcedula label {
+    margin-right: 10px;
+}
+
+#cedula {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtf_nacimiento {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtf_nacimiento label {
+    margin-right: 10px;
+}
+
+#f_nacimiento {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtgenero {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtgenero label {
+    margin-right: 10px;
+}
+
+#genero {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtn_contacto {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtn_contacto label {
+    margin-right: 10px;
+}
+
+#n_contacto {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtn_menores {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtn_menores label {
+    margin-right: 10px;
+}
+
+#n_menores {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#txtn_mayores {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#txtn_mayores label {
+    margin-right: 10px;
+}
+
+#n_mayores {
+    width: 60%;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
 
 #buttonBRegistrar {
     background-color: #890202;
