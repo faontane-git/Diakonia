@@ -8,18 +8,18 @@ const ListaUsuarios = ({ usuarios }) => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Correo</th>
             <th>Rol</th>
+            <th>Institución</th>
             <th>Acción</th>
           </tr>
         </thead>
         <tbody>
           {usuarios.map((usuario, index) => (
             <tr key={index}>
-              <td>{usuario.id}</td>
               <td>{usuario.correo}</td>
               <td>{usuario.rol}</td>
+              <td>{usuario.institucionN}</td>
               <td><button>Eliminar</button></td>
             </tr>
           ))}

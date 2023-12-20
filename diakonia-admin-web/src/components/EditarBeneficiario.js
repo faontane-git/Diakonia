@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
 const EditarBeneficiario = () => {
-  const { beneficiarioid } = useParams();
+  const { institucionId, institucionN,beneficiarioid } = useParams();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState('');
@@ -57,7 +57,7 @@ const EditarBeneficiario = () => {
     try {
       await updateDoc(docuRef, beneficiario);
       console.log('Datos enviados:', beneficiario);
-      navigate('/beneficiarios');
+      navigate(`/beneficiarios/${institucionId}/${institucionN}`);
     } catch (error) {
       console.error('Error al modificar beneficiario:', error);
       alert(error.message);

@@ -249,7 +249,7 @@ function Aplicacion() {
           <Route path="registrar" element={<Registrar />} />
           <Route path="verInstitucion" element={<VerInstitucion instituciones={instituciones} />} />
           <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios instituciones={instituciones} beneficiarios={beneficiarios} />} />
-          <Route path="editar-beneficiario/:institucionId/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones} beneficiarios={beneficiarios} />} />
+          <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones} beneficiarios={beneficiarios} />} />
           <Route path="registrarUsuario" element={<RegistroUsuario />} />
           <Route path="verUsuarios" element={<VerUsuarios usuarios={usuarios} />} />
           <Route path="asistencias" element={<VerAsistencias instituciones={instituciones} />} />

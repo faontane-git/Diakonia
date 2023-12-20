@@ -73,11 +73,11 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
               {beneficiario.desayuno.length !== 0 ? <td>Si</td> : <td>No</td>}
               {beneficiario.almuerzo.length !== 0 ? <td>Si</td> : <td>No</td>}
               <td>
-                <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
+                <Link to={`/editar-beneficiario/${institucionId}/${institucionN}/${beneficiario.id}`}>
                   <button>Editar</button>
                 </Link>
                 
-                <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
+                <Link to={`/editar-beneficiario/${institucionId}/${institucionN}/${beneficiario.id}`}>
                   <button>Eliminar</button>
                 </Link>
               </td>

@@ -28,7 +28,8 @@ const RegistroUsuario = () => {
   const [rol, setRol] = useState('admin');
   const [contraseña, setContraseña] = useState('');
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
-  const [institucion, setInstitucion]=useState('');
+  const [institucionId, setInstitucionId]=useState('');
+  const [institucionN, setInstitucionN]=useState('');
   
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const RegistroUsuario = () => {
 
   // Función para manejar el envío del formulario
 
-  async function registrarUsuario(email, contraseña, rol,institucion) {
+  async function registrarUsuario(email, contraseña, rol,institucionId, institucionN) {
     const firestore = getFirestore(firebaseApp);
     const infoUsuario = await createUserWithEmailAndPassword(
       auth,
@@ -54,7 +55,7 @@ const RegistroUsuario = () => {
     ).then(async (usuarioFirebase) => {
       console.log("registro: ",usuarioFirebase.user.uid);
       const docuRef = doc(firestore, `usuarios/${usuarioFirebase.user.uid}`);
-      await setDoc(docuRef, { correo: email, rol: rol, institucion:institucion });
+      await setDoc(docuRef, { correo: email, rol: rol, institucionId:institucionId, institucionN:institucionN });
       goBack();
     signOut(auth);
       alert("se creo el usuario")
@@ -67,9 +68,11 @@ const RegistroUsuario = () => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    if(mostrarBarraAdicional === false){setInstitucion("");}
-    console.log('institucion:',institucion)
-    registrarUsuario(email, contraseña, rol, institucion);    
+    if(mostrarBarraAdicional === false){setInstitucionId("");
+  setInstitucionN("DiakoníaWeb");
+  }
+    console.log('institucion:',institucionN)
+    registrarUsuario(email, contraseña, rol, institucionId, institucionN);    
   };
 
 
@@ -113,7 +116,11 @@ const RegistroUsuario = () => {
         {mostrarBarraAdicional && (
   <div id="txtUrol">
     <label htmlFor="rol">Instinción a la que pertenece:</label>
-    <select id="rol" onChange={(e) => setInstitucion(e.target.value)}>
+    <select id="rol" onChange={(e) => {
+    setInstitucionId(e.target.value);
+    const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+    setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+  }}>
     <option value="" disabled selected>Selecciona una institucion</option>
       {data.map((institucion) => (
         <option value={institucion.id}>{institucion.nombre}</option>
