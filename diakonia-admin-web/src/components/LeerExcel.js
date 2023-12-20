@@ -50,7 +50,8 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
         numero_de_personas_menores_en_el_hogar: n_menores[index],
         numero_de_personas_mayores_en_el_hogar: n_mayores[index],
         dias: [],
-        asistencias: [],
+        desayuno: [],
+        almuerzo:[],
         registrado: false,
         fecha_seguimiento:[],
         pesos:[],
@@ -68,33 +69,33 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
   async function añadir() {
     const firestore = getFirestore()
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
+    const instColect = collection(firestore,"instituciones");
+    const institutionRef = doc(instColect, institucionId);
 
-    for (const beneficiario of Nbeneficiarios) {
-      const instColect = collection(firestore,"instituciones");
-      const institutionRef = doc(instColect, beneficiario.institucionId);
+    //for (const beneficiario of Nbeneficiarios) {
+      
 
       getDoc(institutionRef).then((doc) => {
         if (doc.exists) {
           const days = (Date.parse(doc.data().fecha_final)-Date.parse(doc.data().fecha_inicial))/86400000;
-          
+          for (const beneficiario of Nbeneficiarios) {  
           for (let i = 0; i <= days; i++) {
             beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
           }
-    
           for (const date of beneficiario.dias) {
-            beneficiario.asistencias.push("-");
+            if(doc.data().desayuno===true){beneficiario.desayuno.push("-");}
+            if(doc.data().almuerzo===true){beneficiario.almuerzo.push("-");} 
           }
-    
           addDoc(beneficiarioCollection, beneficiario).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             alert(errorMessage)
-          });
+          })};
         } else {
           // La institución no existe
         }
       });
-    };
+    
 
     alert("Se han agregado los beneficiarios correctamente");
     goBack();

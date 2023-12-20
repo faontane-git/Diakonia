@@ -30,7 +30,13 @@ const RegistroInstitucion = () => {
     if (initialDate === null || finalDate === null || initialDate > finalDate) {
       alert("La fecha inicial debe ser anterior a la fecha final.");
       return;
-    } else {
+    }else if(desayuno===false && almuerzo===false){
+      alert("Por favor elija el tipo de servicio de la institución (al menos 1)")
+      return;
+    } else if(nombre==='' || telefono==='' || direccion===''){
+      alert("Por favor llene todos los campos")
+      return;
+    }else {
 
       const firestore = getFirestore()
       const InstitucionCollection = collection(firestore, 'instituciones');

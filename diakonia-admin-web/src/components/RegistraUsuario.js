@@ -2,7 +2,7 @@ import React from 'react'
 import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState ,useEffect } from 'react';
 import '../estilos/RegistraUsuario.css';
 
 import firebaseApp from "../firebase-config";
@@ -10,10 +10,8 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signOut,
-  signInWithCustomToken,
-  getIdToken,
 } from "firebase/auth";
-import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
+import { getFirestore, doc, collection, setDoc, getDocs } from "firebase/firestore";
 const auth = getAuth(firebaseApp);
 
 const RegistroUsuario = () => {
@@ -24,16 +22,30 @@ const RegistroUsuario = () => {
       navigate('/');
     }
 
+    const [data, setData] = useState([]);
+
   const [email, setemail] = useState('');
   const [rol, setRol] = useState('admin');
   const [contraseña, setContraseña] = useState('');
+  const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
+  const [institucion, setInstitucion]=useState('');
+  
+
+  useEffect(() => {
+    const querydb = getFirestore();
+    const queryCollection = collection(querydb, 'instituciones');
+
+    getDocs(queryCollection).then((res) =>
+      setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
+    );
+  }, []);
 
 
 
 
   // Función para manejar el envío del formulario
 
-  async function registrarUsuario(email, contraseña, rol) {
+  async function registrarUsuario(email, contraseña, rol,institucion) {
     const firestore = getFirestore(firebaseApp);
     const infoUsuario = await createUserWithEmailAndPassword(
       auth,
@@ -42,7 +54,7 @@ const RegistroUsuario = () => {
     ).then(async (usuarioFirebase) => {
       console.log("registro: ",usuarioFirebase.user.uid);
       const docuRef = doc(firestore, `usuarios/${usuarioFirebase.user.uid}`);
-      await setDoc(docuRef, { correo: email, rol: rol });
+      await setDoc(docuRef, { correo: email, rol: rol, institucion:institucion });
       goBack();
     signOut(auth);
       alert("se creo el usuario")
@@ -55,8 +67,9 @@ const RegistroUsuario = () => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log('rol:',rol)
-    registrarUsuario(email, contraseña, rol);    
+    if(mostrarBarraAdicional === false){setInstitucion("");}
+    console.log('institucion:',institucion)
+    registrarUsuario(email, contraseña, rol, institucion);    
   };
 
 
@@ -89,12 +102,26 @@ const RegistroUsuario = () => {
 
         <div id="txtUrol">           
           <label htmlFor="rol">Rol:</label>
-          <select id="rol" onChange={(e) => setRol(e.target.value)}>
+          <select id="rol" onChange={(e) => {setRol(e.target.value);
+          setMostrarBarraAdicional(e.target.value === "registrador");}}>
             <option value="admin">Administrador</option>
             <option value="editor">Editor</option>
             <option value="registrador">Registrador</option>
           </select>
         </div>
+
+        {mostrarBarraAdicional && (
+  <div id="txtUrol">
+    <label htmlFor="rol">Instinción a la que pertenece:</label>
+    <select id="rol" onChange={(e) => setInstitucion(e.target.value)}>
+    <option value="" disabled selected>Selecciona una institucion</option>
+      {data.map((institucion) => (
+        <option value={institucion.id}>{institucion.nombre}</option>
+      ))}
+    </select>
+  </div>
+)}
+
 
         <button id="buttonIRegistrar"type="submit">Registrar</button>
       </form>

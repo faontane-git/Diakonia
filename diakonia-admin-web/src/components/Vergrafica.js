@@ -16,7 +16,7 @@ useEffect(  () => {
   const docuRef = collection(querydb, `beneficiarios`);
   const docuCifrada= doc(docuRef,beneficiarioid);
   const documento= await getDoc(docuCifrada);
-  
+  //console.log("entra")
   setData(documento.data());
   }
   extraer();
@@ -41,7 +41,6 @@ useEffect(  () => {
             <th>hgb</th>
           </tr>
         </thead>
-        {console.log(data.fecha_seguimiento)}
         <tbody>
           {data.fecha_seguimiento?.map((mes, index) => (
             <tr key={index}>
