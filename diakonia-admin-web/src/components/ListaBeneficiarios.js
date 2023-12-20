@@ -56,6 +56,8 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
             <th>Género</th>
             <th>Número de personas menores en el hogar</th>
             <th>Número de personas mayores en el hogar</th>
+            <th>Desayuno</th>
+            <th>Almuerzo</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -68,6 +70,8 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
               <td>{beneficiario.genero}</td>
               <td>{beneficiario.numero_de_personas_menores_en_el_hogar}</td>
               <td>{beneficiario.numero_de_personas_mayores_en_el_hogar}</td>
+              {beneficiario.desayuno.length !== 0 ? <td>Si</td> : <td>No</td>}
+              {beneficiario.almuerzo.length !== 0 ? <td>Si</td> : <td>No</td>}
               <td>
                 <Link to={`/editar-beneficiario/${institucionId}/${beneficiario.id}`}>
                   <button>Editar</button>

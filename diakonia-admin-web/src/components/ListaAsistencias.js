@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import '../estilos/ListaAsistencias.css';
 import Cabecera from './Cabecera';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { useParams } from 'react-router-dom';
 
 const ListaAsistencias = ({ asistencias }) => {
+  const { institucionId }= useParams();
   const [data, setData] = useState([]);
   const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
   const [mesSeleccionado, setMesSeleccionado] = useState('enero');
 
-  const consulta = async () => {
+  async function consulta(){
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', '3qcInlJavqtUX49FsFuw'));
+    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId ));
 
     try {
       const querySnapshot = await getDocs(beneficiariosQuery);

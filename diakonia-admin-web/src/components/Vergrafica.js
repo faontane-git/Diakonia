@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import Cabecera from './Cabecera';
 import LinesChart from './Linechart';
 import { useParams } from 'react-router-dom';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+
 import '../estilos/Vergrafica.css';
 
 import {getFirestore, doc,collection, getDoc, query, where, updateDoc} from 'firebase/firestore'
@@ -17,7 +17,7 @@ useEffect(  () => {
   const docuRef = collection(querydb, `beneficiarios`);
   const docuCifrada= doc(docuRef,beneficiarioid);
   const documento= await getDoc(docuCifrada);
-  
+  //console.log("entra")
   setData(documento.data());
   }
   extraer();
@@ -42,7 +42,6 @@ useEffect(  () => {
             <th>hgb</th>
           </tr>
         </thead>
-        {console.log(data.fecha_seguimiento)}
         <tbody>
           {data.fecha_seguimiento?.map((mes, index) => (
             <tr key={index}>
