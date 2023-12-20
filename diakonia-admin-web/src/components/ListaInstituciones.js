@@ -26,18 +26,18 @@ const ListaInstituciones = ({ instituciones }) => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Teléfono</th>
             <th>Ubicación</th>
             <th>Servicios</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Final</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {filteredInstituciones.map((institucion, index) => (
             <tr key={index}>
-              <td>{institucion.id}</td>
               <td>{institucion.nombre}</td>
               <td>{institucion.telefono}</td>
               <td>{institucion.direccion}</td>
@@ -45,6 +45,8 @@ const ListaInstituciones = ({ instituciones }) => {
                 {institucion.desayuno && 'Desayuno '}
                 {institucion.almuerzo && 'Almuerzo'}
               </td>
+              <td>{institucion.fecha_inicial}</td>
+              <td>{institucion.fecha_final}</td>
               <td>
                 <Link>
                   <button>Editar</button>
