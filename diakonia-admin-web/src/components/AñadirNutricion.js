@@ -10,14 +10,14 @@ import { getFirestore, doc, collection, query, where, getDocs, updateDoc } from 
 
 const AñadirNutricion = () => {
 
-  const { institucionId } = useParams();
+  const { institucionId, institucionN } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const [data, setData] = useState([]);
  // const [update, setUpdate]=useState({});
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate('/nutricion');
+    navigate(`/nutricion/${institucionId}/${institucionN}`);
   }
 
   useEffect(() => {
@@ -86,6 +86,7 @@ const AñadirNutricion = () => {
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     for (const beneficiario of Nbeneficiarios) {
         const update= data.find((doc) => doc.nombre === beneficiario.nombre && doc.fecha_nacimiento === beneficiario.fecha_nacimiento );  
+        if(update != undefined){
         update.fecha_seguimiento.push(beneficiario.fecha_seguimiento);
         update.pesos.push(beneficiario.pesos);
         update.talla.push(beneficiario.talla);
@@ -100,26 +101,26 @@ const AñadirNutricion = () => {
       const errorCode = error.code;
       const errorMessage = error.message;
       alert(error.message);
-    })
+    })}
     }
     
     
     alert("se agregarón los datos nutricionales");
     //console.log(data);
-    //goBack();
+    goBack();
   }
 
   return (
     <div>
       <div className="centered-container">
         <Cabecera />
-        <h1>Lista de Seguimiento</h1>
+        <h1>Añadir Seguimiento en {institucionN}</h1>
         <input type="file" onChange={handleFileUpload} />
         {Nbeneficiarios.length > 0 && (
           <ul>
             {Nbeneficiarios.map((Nbeneficiario, index) => (
               <li key={index}>
-                Nombre: {Nbeneficiario.nombre}, f_nacimiento: {Nbeneficiario.f_nacimiento}, f_registro: {Nbeneficiario.fecha_seguimiento},peso: {Nbeneficiario.pesos}, talla: {Nbeneficiario.talla}, hgb: {Nbeneficiario.hgb}
+                Nombre: {Nbeneficiario.nombre}, f_nacimiento: {Nbeneficiario.fecha_nacimiento}, f_registro: {Nbeneficiario.fecha_seguimiento},peso: {Nbeneficiario.pesos}, talla: {Nbeneficiario.talla}, hgb: {Nbeneficiario.hgb}
               </li>
             ))}
           </ul>
