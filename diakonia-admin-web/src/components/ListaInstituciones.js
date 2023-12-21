@@ -78,7 +78,7 @@ const ListaInstituciones = ({ instituciones }) => {
               <td>{institucion.fecha_inicial}</td>
               <td>{institucion.fecha_final}</td>
               <td>
-                <Link>
+              <Link to={`/editar-institucion/${institucion.id}`}>
                   <button>Editar</button>
                 </Link>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import '../estilos/ListaUsuarios.css';
+import { Link } from 'react-router-dom';
 
 const ListaUsuarios = ({ usuarios }) => {
   return (
@@ -20,7 +21,10 @@ const ListaUsuarios = ({ usuarios }) => {
               <td>{usuario.correo}</td>
               <td>{usuario.rol}</td>
               <td>{usuario.institucionN}</td>
-              <td><button>Eliminar</button></td>
+              <td><Link to={`/editar-usuario/${usuario.id}`}>
+                  <button>Editar</button>
+                </Link>
+              <button>Eliminar</button></td>
             </tr>
           ))}
         </tbody>

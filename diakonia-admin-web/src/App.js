@@ -27,6 +27,8 @@ import ListaNutricion from "./components/ListaNutricion.js"
 import VerGrafica from "./components/Vergrafica.js"
 import LeerExcel from "./components/LeerExcel.js"
 import AñadirNutricion from "./components/AñadirNutricion.js"
+import EditarInstitucion from "./components/EditarInstitucion.js";
+import EditarUsuarios from "./components/EditarUsuarios.js"
 
 
 const auth = getAuth(firebaseApp);
@@ -248,10 +250,12 @@ function Aplicacion() {
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="registrar" element={<Registrar />} />
           <Route path="verInstitucion" element={<VerInstitucion instituciones={instituciones} />} />
+          <Route path="editar-institucion/:institucionId" element={<EditarInstitucion />} />
           <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios instituciones={instituciones} beneficiarios={beneficiarios} />} />
           <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones} beneficiarios={beneficiarios} />} />
           <Route path="registrarUsuario" element={<RegistroUsuario />} />
           <Route path="verUsuarios" element={<VerUsuarios usuarios={usuarios} />} />
+          <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios />} />
           <Route path="asistencias" element={<VerAsistencias instituciones={instituciones} />} />
           <Route path="asistencias/:institucionId" element={<ListaAsistencias instituciones={instituciones} asistencias={asistencias} />} />
           <Route path="nutricion" element={<Nutricion instituciones={instituciones} />} />

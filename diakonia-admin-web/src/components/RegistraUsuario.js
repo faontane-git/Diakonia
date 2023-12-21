@@ -68,7 +68,7 @@ const RegistroUsuario = () => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    if(mostrarBarraAdicional === false){setInstitucionId("");
+    if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
   setInstitucionN("DiakoníaWeb");
   }
     console.log('institucion:',institucionN)
@@ -106,7 +106,7 @@ const RegistroUsuario = () => {
         <div id="txtUrol">           
           <label htmlFor="rol">Rol:</label>
           <select id="rol" onChange={(e) => {setRol(e.target.value);
-          setMostrarBarraAdicional(e.target.value === "registrador");}}>
+          setMostrarBarraAdicional(e.target.value === "Registrador");}}>
             <option value="Admin">Administrador</option>
             <option value="Editor">Editor</option>
             <option value="Registrador">Registrador</option>
