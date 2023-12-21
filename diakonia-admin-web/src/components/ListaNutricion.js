@@ -31,13 +31,25 @@ const ListaBeneficiarios = ({ user }) => {
     );
   }, [institucionId]);
 
-  function LeerUltimoValor(valor){
-    for (let i = valor.length - 1; i >= 0; i--) {
-      if(valor[i]!=="-"){return valor[i]}
-    }
-    return "-";
+  function LeerUltimoValor(valor,fechas){
 
-  };
+if(fechas.length>0){
+  
+    const fechaMayor = fechas.reduce((fechaMayorActual, fecha) => {
+      const fechaActual = new Date(fecha);
+      const fechaMayor = new Date(fechaMayorActual);
+
+      if (fechaActual > fechaMayor) {
+        fechaMayorActual = fecha;
+      }
+
+      return fechaMayorActual;
+    });
+
+    const indexFechaMayor = fechas.indexOf(fechaMayor);
+    return valor[indexFechaMayor];
+}else{return "-"}}
+
 
   return (
     <div className="centered-container">
@@ -61,10 +73,10 @@ const ListaBeneficiarios = ({ user }) => {
           {data.map((beneficiario) => (
             <tr key={beneficiario.id}>
               <td>{beneficiario.nombre}</td>
-              <td>{LeerUltimoValor(beneficiario.pesos)}</td>
-              <td>{LeerUltimoValor(beneficiario.talla)}</td>
-              <td>{LeerUltimoValor(beneficiario.hgb)}</td>
-              <td>{LeerUltimoValor(beneficiario.fecha_seguimiento)}</td>
+              <td>{LeerUltimoValor(beneficiario.pesos,beneficiario.fecha_seguimiento)}</td>
+              <td>{LeerUltimoValor(beneficiario.talla,beneficiario.fecha_seguimiento)}</td>
+              <td>{LeerUltimoValor(beneficiario.hgb,beneficiario.fecha_seguimiento)}</td>
+              <td>{LeerUltimoValor(beneficiario.fecha_seguimiento,beneficiario.fecha_seguimiento)}</td>
               <td>
                 <Link to={`/verGrafica/${institucionId}/${beneficiario.id}`}>
                   <button>Ver gráfica</button>
