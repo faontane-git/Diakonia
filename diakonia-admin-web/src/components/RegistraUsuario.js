@@ -107,7 +107,7 @@ const RegistroUsuario = () => {
           <label htmlFor="rol">Rol:</label>
           <select id="rol" onChange={(e) => {setRol(e.target.value);
           setMostrarBarraAdicional(e.target.value === "Registrador");}}>
-            <option value="Admin">Administrador</option>
+            <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
             <option value="Registrador">Registrador</option>
           </select>

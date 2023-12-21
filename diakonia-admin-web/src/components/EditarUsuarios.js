@@ -8,9 +8,9 @@ const EditarInstitucion = () => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
-  const [rol, setRol] = useState('');
-  const [institucionId, setInstitucionId] = useState('');
-  const [institucionN, setInstitucionN] = useState('');
+  const [rol, setRol] = useState('Administrador');
+  const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
+  const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
   const [roloriginal, setRoloriginal]= useState('');
   //const [institucionIdoriginal, setInstitucionIdoriginal]= useState('');
@@ -39,6 +39,7 @@ const EditarInstitucion = () => {
         // Asignar valores iniciales a los estados
         setRoloriginal(beneficiarioData.rol || '');
         setInstitucionId(beneficiarioData.institucionId || '');
+        //setInstitucionN(beneficiarioData.institucionN || '');
         setInstitucionNoriginal(beneficiarioData.institucionN || '');
       }
     };
@@ -46,15 +47,10 @@ const EditarInstitucion = () => {
     obtenerDatosInstitucion();
   }, [usuarioId]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  async function ActualizarUsuario( rol,institucionId, institucionN) {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'usuarios', usuarioId);
     
-    if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
-    setInstitucionN("DiakoníaWeb");
-    }
-
     const usuario = {
       rol,
       institucionId,
@@ -69,7 +65,16 @@ const EditarInstitucion = () => {
       console.error('Error al modificar beneficiario:', error);
       alert(error.message);
     }
+    
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log('institucion:',institucionN)
+    ActualizarUsuario(rol, institucionId, institucionN);    
   };
+
+
 
   return (
     <div className="centered-container">
@@ -83,8 +88,11 @@ const EditarInstitucion = () => {
           <label htmlFor="rol">Rol:</label>
           <select id="rol" onChange={(e) => {setRol(e.target.value);
           setMostrarBarraAdicional(e.target.value === "Registrador");
+          if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
+  setInstitucionN("DiakoníaWeb");
+  }
           console.log(mostrarBarraAdicional)}}>
-            <option value="Admin">Administrador</option>
+            <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
             <option value="Registrador">Registrador</option>
           </select>
