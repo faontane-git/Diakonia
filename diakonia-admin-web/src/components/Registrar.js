@@ -49,6 +49,7 @@ const RegistroInstitucion = () => {
         almuerzo: almuerzo,
         fecha_inicial: initialDate,
         fecha_final: finalDate,
+        activo:true,
 
       }
       const agregar = addDoc(InstitucionCollection, institucion);

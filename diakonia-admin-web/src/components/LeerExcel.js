@@ -57,6 +57,7 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
         pesos:[],
         talla:[],
         hgb:[],
+        activo:true,
         
       }));
 
