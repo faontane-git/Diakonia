@@ -91,7 +91,7 @@ const EditarInstitucion = () => {
           if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
   setInstitucionN("DiakoníaWeb");
   }
-          console.log(mostrarBarraAdicional)}}>
+          }}>
             <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
             <option value="Registrador">Registrador</option>

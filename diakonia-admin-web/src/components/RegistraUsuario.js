@@ -25,11 +25,11 @@ const RegistroUsuario = () => {
     const [data, setData] = useState([]);
 
   const [email, setemail] = useState('');
-  const [rol, setRol] = useState('admin');
+  const [rol, setRol] = useState('Administrador');
   const [contraseña, setContraseña] = useState('');
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
-  const [institucionId, setInstitucionId]=useState('');
-  const [institucionN, setInstitucionN]=useState('');
+  const [institucionId, setInstitucionId]=useState('DiakoníaWeb');
+  const [institucionN, setInstitucionN]=useState('DiakoníaWeb');
   
 
   useEffect(() => {
@@ -106,7 +106,11 @@ const RegistroUsuario = () => {
         <div id="txtUrol">           
           <label htmlFor="rol">Rol:</label>
           <select id="rol" onChange={(e) => {setRol(e.target.value);
-          setMostrarBarraAdicional(e.target.value === "Registrador");}}>
+          setMostrarBarraAdicional(e.target.value === "Registrador");
+          if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
+  setInstitucionN("DiakoníaWeb");
+  }
+          }}>
             <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
             <option value="Registrador">Registrador</option>
