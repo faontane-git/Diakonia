@@ -7,7 +7,7 @@ import '../estilos/Nutricion.css';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 
-const Nutricion = ({ instituciones }) => {
+const Nutricion = ({ user }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -27,7 +27,7 @@ const Nutricion = ({ instituciones }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Seguimiento</h1>
       <div className="list-container-nutricion">
         <h2>Seleccione una institución</h2>

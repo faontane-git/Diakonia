@@ -14,7 +14,7 @@ import {
 import { getFirestore, doc, collection, setDoc, getDocs } from "firebase/firestore";
 const auth = getAuth(firebaseApp);
 
-const RegistroUsuario = () => {
+const RegistroUsuario = ({user}) => {
   
   const navigate = useNavigate();
  
@@ -89,7 +89,7 @@ const RegistroUsuario = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
 
       <h1>Registrar Usuario</h1>
       <form onSubmit={handleSubmit}>

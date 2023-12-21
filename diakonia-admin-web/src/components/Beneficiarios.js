@@ -5,7 +5,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import '../estilos/Beneficiarios.css';
 import firebaseApp from '../firebase-config';
 
-const Beneficiarios = () => {
+const Beneficiarios = ({user}) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -24,7 +24,7 @@ const Beneficiarios = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Beneficiarios</h1>
       <h2>Seleccione una institución</h2>
       <div className="search-container">

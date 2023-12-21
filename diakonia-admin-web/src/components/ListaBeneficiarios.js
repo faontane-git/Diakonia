@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
-const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
+const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
   const goAñadirBenef = () => {
@@ -32,7 +32,7 @@ const ListaBeneficiarios = ({ instituciones, beneficiarios }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Lista de Beneficiarios de {institucionN}</h1>
       <button id="buttonABeneficiarios" onClick={goAñadirBenef}>
         Añadir Beneficiarios

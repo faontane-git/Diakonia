@@ -4,7 +4,7 @@ import Cabecera from './Cabecera';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 
-const ListaAsistencias = ({ asistencias }) => {
+const ListaAsistencias = ({ user }) => {
   const { institucionId }= useParams();
   const [data, setData] = useState([]);
   const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
@@ -55,7 +55,7 @@ const ListaAsistencias = ({ asistencias }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user} />
       <h1>Asistencias</h1>
 
       <table>

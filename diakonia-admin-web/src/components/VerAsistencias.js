@@ -5,7 +5,7 @@ import '../estilos/VerAsistencias.css'
 
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-const VerAsistencias = ({ instituciones }) => {
+const VerAsistencias = ({ user }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -26,7 +26,7 @@ const VerAsistencias = ({ instituciones }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Seguimiento asistencias</h1>
       <h2>Seleccione una institución</h2>
       <div className="search-container">

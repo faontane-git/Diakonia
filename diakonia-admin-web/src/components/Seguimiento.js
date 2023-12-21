@@ -3,7 +3,7 @@ import Cabecera from "./Cabecera";
 import { useNavigate } from 'react-router-dom';
 import '../estilos/Seguimiento.css';
 
-const Seguimiento = () => {
+const Seguimiento = ({user}) => {
   const navigate = useNavigate();
 
 
@@ -17,7 +17,7 @@ const Seguimiento = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Seguimiento</h1>
       <button id="buttonAsistencias" onClick={goAsistencias}>Asistencias</button>
       <button id="buttonNutricion" onClick={goNutrición}>Ver Impacto</button>

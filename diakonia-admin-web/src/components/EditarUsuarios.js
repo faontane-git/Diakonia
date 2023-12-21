@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
-const EditarInstitucion = () => {
+const EditarInstitucion = ({user}) => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
@@ -78,7 +78,7 @@ const EditarInstitucion = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Editar Usuario</h1>
         <h2>Datos originales:</h2>
         <label>Rol: {roloriginal} </label>

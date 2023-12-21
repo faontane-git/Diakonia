@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import '../estilos/Instituciones.css';
 
-const Instituciones = () => {
+const Instituciones = ({user}) => {
   const navigate = useNavigate();
 
 
@@ -17,7 +17,7 @@ const Instituciones = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user} />
       <h1>Instituciones</h1>
       <button id="buttonRegistrar" onClick={goRegistrar}>Registrar</button>
       <button id="buttonVerInstituciones" onClick={goVerRegistro}>Ver Instituciones</button>

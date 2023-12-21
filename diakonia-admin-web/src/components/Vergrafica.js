@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { getFirestore, doc, collection, getDoc } from 'firebase/firestore';
 import '../estilos/Vergrafica.css';
 
-const VerGrafica = ({ nutricion }) => {
+const VerGrafica = ({ user }) => {
   const { beneficiarioid } = useParams();
   const [data, setData] = useState({});
 
@@ -22,7 +22,7 @@ const VerGrafica = ({ nutricion }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Nutricion gráfica de {data.nombre}</h1>
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>

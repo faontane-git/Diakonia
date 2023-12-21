@@ -9,7 +9,7 @@ import firebaseApp from "../firebase-config";
 import {getFirestore, collection, getDocs} from 'firebase/firestore'
 
 
-const VerInstitucion = ({ instituciones }) => {
+const VerInstitucion = ({ user }) => {
   const [data,setData]= useState([]);
 
   useEffect(()=>{
@@ -22,7 +22,7 @@ const VerInstitucion = ({ instituciones }) => {
 
   return (
     <div>
-      <Cabecera />
+      <Cabecera user={user}/>
       {/* Muestra la lista de instituciones */}
       <ListaInstituciones instituciones={data} />
     </div>

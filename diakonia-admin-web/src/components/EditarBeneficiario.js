@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
-const EditarBeneficiario = () => {
+const EditarBeneficiario = ({user}) => {
   const { institucionId, institucionN, beneficiarioid } = useParams();
   const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ const EditarBeneficiario = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Editar Beneficiario</h1>
 
       <form onSubmit={handleSubmit}>

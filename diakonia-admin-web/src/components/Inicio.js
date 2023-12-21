@@ -4,10 +4,10 @@ import Cabecera from "./Cabecera";
 import Imagen  from '../imagenes/inicio.png'
 import '../estilos/Inicio.css';
 
-function Inicio() {
+function Inicio({user}) {
   return (
     <div className="centered-container">
-      <Cabecera/>
+      <Cabecera user={user}/>
       <h1>Sistema de Gestión y Análisis de Impacto en Beneficiarios de Alimentos</h1>
 
       <div className='centered-image-container'>

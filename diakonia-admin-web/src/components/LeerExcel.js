@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
 import { getFirestore, doc, collection, addDoc, getDoc } from "firebase/firestore";
 
-const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
+const LeerExcel = ({ user }) => {
   const { institucionId } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
   async function añadir() {
     const firestore = getFirestore()
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
-    const instColect = collection(firestore,"instituciones");
+        const instColect = collection(firestore,"instituciones");
     const institutionRef = doc(instColect, institucionId);
 
     //for (const beneficiario of Nbeneficiarios) {
@@ -104,7 +104,7 @@ const LeerExcel = ({ beneficiarios, agregarBeneficiario }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user} />
       <h1>Lista de Beneficiarios</h1>
       <h3>¡Porfavor suba el excel con la información solicitada!</h3>
       <input type="file" onChange={handleFileUpload} />

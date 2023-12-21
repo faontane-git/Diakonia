@@ -3,7 +3,7 @@ import Cabecera from "./Cabecera";
 import { useNavigate } from 'react-router-dom';
 import '../estilos/Usuarios.css';
 
-const Usuarios = () => {
+const Usuarios = ({user}) => {
   const navigate = useNavigate();
 
 
@@ -17,7 +17,7 @@ const Usuarios = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Usuarios</h1>
       <button id="buttonRUsuarios" onClick={goRegistrar}>Registrar</button>
       <button id="buttonUsuarios" onClick={goVerRegistro}>Ver Usuarios</button>

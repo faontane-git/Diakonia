@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
 
-const ListaBeneficiarios = ({ instituciones, nutricion }) => {
+const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN } = useParams();
 
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const ListaBeneficiarios = ({ instituciones, nutricion }) => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Lista de Nutricion de {institucionN}</h1>
       <button id="buttonABeneficiarios" onClick={goAñadirNutri}>
         Añadir Seguimiento

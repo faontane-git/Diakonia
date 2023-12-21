@@ -10,7 +10,7 @@ import firebaseApp from "../firebase-config";
 import {getFirestore, collection, getDocs} from 'firebase/firestore'
 
 
-const VerUsuario = ({ usuarios }) => {
+const VerUsuario = ({ user }) => {
   // Ejemplo de datos de instituciones
   const [data,setData]= useState([]);
 
@@ -26,7 +26,7 @@ const VerUsuario = ({ usuarios }) => {
 
   return (
     <div>
-      <Cabecera />
+      <Cabecera user={user}/>
       <ListaUsuarios usuarios={data} />
       
        {/* Muestra la lista de instituciones */}

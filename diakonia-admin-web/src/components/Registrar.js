@@ -7,7 +7,7 @@ import '../estilos/Registrar.css';
 import firebaseApp from "../firebase-config";
 import { getFirestore, collection, setDoc, addDoc } from "firebase/firestore";
 
-const RegistroInstitucion = () => {
+const RegistroInstitucion = ({user}) => {
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -68,7 +68,7 @@ const RegistroInstitucion = () => {
 
   return (
     <div className="centered-container">
-      <Cabecera />
+      <Cabecera user={user}/>
       <h1>Registrar Institución</h1>
       <form onSubmit={handleSubmit}>
 

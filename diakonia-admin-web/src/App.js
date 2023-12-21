@@ -38,168 +38,7 @@ const firestore = getFirestore(firebaseApp);
 
 
 function Aplicacion() {
-  const [instituciones, setInstituciones] = useState([
-    {
-      id: 1,
-      nombre: 'Institución 1',
-      telefono: '123-456-7890',
-      ubicacion: 'Ciudad A',
-      desayuno: true,
-      almuerzo: false,
-    },
-    {
-      id: 2,
-      nombre: 'Institución 2',
-      telefono: '987-654-3210',
-      ubicacion: 'Ciudad B',
-      desayuno: false,
-      almuerzo: true,
-    },
-    // Agrega más instituciones según sea necesario
-  ]);
-  const [beneficiarios, setBeneficiarios] = useState([
-    {
-      id: 1,
-      institucionId: 1,
-      nombre: 'benf 1',
-      edad: 15,
-    },
-    {
-      id: 3,
-      institucionId: 1,
-      nombre: 'benf 3',
-      edad: 16,
-    },
-    {
-      id: 2,
-      nombre: 'benf 2',
-      institucionId: 2,
-      edad: 8,
-
-    },
-
-  ]);
-
-  const agregarBeneficiario = (nuevoBeneficiario) => {
-    setBeneficiarios((prevBeneficiarios) => [...prevBeneficiarios, ...nuevoBeneficiario]);
-  };
-  const usuarios = [
-    {
-      id: 1,
-      nombre: 'pepe',
-      contraseña: '12345',
-      usuario: 'user 1',
-
-    },
-    {
-      id: 3,
-      nombre: 'ana',
-      contraseña: '54321',
-      usuario: 'user 3',
-
-    },
-    {
-      id: 2,
-      nombre: 'titi',
-      contraseña: '45321',
-      usuario: 'user 2',
-
-    },
-
-  ];
-
-  const asistencias = [
-    {
-      id: 1,
-      nombre: 'benf 1',
-      instituciones: [
-        {
-          id: 1,
-          asistencias: [
-            { mes: 'enero', dias: ['24', '25', '26', '27'], cantidad: 4 },
-            { mes: 'febrero', dias: ['28'], cantidad: 1 },
-            { mes: 'marzo', dias: ['01'], cantidad: 1 },
-            { mes: 'diciembre', dias: ['01', '02', '03'], cantidad: 3 },
-          ],
-        },
-        {
-          id: 2,
-          asistencias: [
-            { mes: 'febrero', dias: ['29'], cantidad: 1 },
-            { mes: 'marzo', dias: [], cantidad: 0 },
-            { mes: 'diciembre', dias: ['30', '31'], cantidad: 2 },
-          ],
-        },
-      ],
-    },
-    {
-      id: 2,
-      nombre: 'benf 2',
-      instituciones: [
-        {
-          id: 1,
-          asistencias: [
-            { mes: 'febrero', dias: ['24', '25', '26'], cantidad: 3 },
-            // Continuar para los meses siguientes...
-            { mes: 'diciembre', dias: ['01', '02'], cantidad: 2 },
-          ],
-        },
-        {
-          id: 2,
-          asistencias: [
-            { mes: 'febrero', dias: ['27'], cantidad: 1 },
-            { mes: 'marzo', dias: ['28', '29'], cantidad: 2 },
-            // Continuar para los meses siguientes...
-            { mes: 'diciembre', dias: ['03', '04'], cantidad: 2 },
-          ],
-        },
-      ],
-    },
-    {
-      id: 3,
-      nombre: 'benf 3',
-      instituciones: [
-        {
-          id: 1,
-          asistencias: [
-            { mes: 'enero', dias: ['24', '25', '26'], cantidad: 3 },
-            { mes: 'febrero', dias: ['27', '28'], cantidad: 2 },
-            { mes: 'marzo', dias: ['01'], cantidad: 1 },
-            // Continuar para los meses siguientes...
-            { mes: 'diciembre', dias: ['02', '03'], cantidad: 2 },
-          ],
-        },
-      ],
-    },
-   ];
-
-
-  const nutricion = [
-    {
-      id: 1,
-      institucionId: 1,
-      nombre: 'benf 1',
-      imc: '40',
-      peso: '45',
-
-    },
-    {
-      id: 3,
-      institucionId: 1,
-      nombre: 'benf 3',
-      imc: '40',
-      peso: '45',
-
-    },
-    {
-      id: 2,
-      institucionId: 2,
-      nombre: 'benf 2',
-      imc: '40',
-      peso: '45',
-    },
-  ];
-
+ 
   const [user, setUser] = useState(null);
 
 
@@ -241,29 +80,39 @@ function Aplicacion() {
 
       {user === null ? <Login user={user} setUser={setUser} /> :
         <Routes>
-
-
-          <Route path="/" element={<Inicio />} />
-          <Route path="instituciones" element={<Instituciones />} />
-          <Route path="beneficiarios" element={<Beneficiarios instituciones={instituciones} />} />
-          <Route path="seguimiento" element={<Seguimiento />} />
-          <Route path="usuarios" element={<Usuarios />} />
-          <Route path="registrar" element={<Registrar />} />
-          <Route path="verInstitucion" element={<VerInstitucion instituciones={instituciones} />} />
-          <Route path="editar-institucion/:institucionId" element={<EditarInstitucion />} />
-          <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios instituciones={instituciones} beneficiarios={beneficiarios} />} />
-          <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario instituciones={instituciones} beneficiarios={beneficiarios} />} />
-          <Route path="registrarUsuario" element={<RegistroUsuario />} />
-          <Route path="verUsuarios" element={<VerUsuarios usuarios={usuarios} />} />
-          <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios />} />
-          <Route path="asistencias" element={<VerAsistencias instituciones={instituciones} />} />
-          <Route path="asistencias/:institucionId" element={<ListaAsistencias instituciones={instituciones} asistencias={asistencias} />} />
-          <Route path="nutricion" element={<Nutricion instituciones={instituciones} />} />
-          <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion instituciones={instituciones} nutricion={nutricion} />} />
-          <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica nutricion={nutricion} />} />
-          <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={<LeerExcel beneficiarios={beneficiarios} agregarBeneficiario={agregarBeneficiario} />} />
-          <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion />} />
+          <Route path="/" element={<Inicio user={user} />} />
+          {user.rol !== "Registrador" ? 
+          <>
+          <Route path="instituciones" element={<Instituciones user={user} />} />
+          <Route path="beneficiarios" element={<Beneficiarios user={user} />} />
+          <Route path="seguimiento" element={<Seguimiento user={user} />} />
+          
+          <Route path="registrar" element={<Registrar user={user}/>} />
+          <Route path="verInstitucion" element={<VerInstitucion user={user} />} />
+          <Route path="editar-institucion/:institucionId" element={<EditarInstitucion user={user}/>} />
+          <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios user={user} />} />
+          <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario user={user} />} />
+         
+          <Route path="asistencias" element={<VerAsistencias user={user} />} />
+          <Route path="asistencias/:institucionId" element={<ListaAsistencias user={user} />} />
+          <Route path="nutricion" element={<Nutricion user={user}/>} />
+          <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion user={user}/>} />
+          <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica user={user} />} />
+          <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={<LeerExcel user={user}/>} />
+          <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion user={user}/>} />
+          
+          {user.rol === "Administrador" ? 
+        <>
+          <Route path="registrarUsuario" element={<RegistroUsuario user={user} />} />
+          <Route path="verUsuarios" element={<VerUsuarios user={user} />} />
+          <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios user={user}/>} />
+          <Route path="usuarios" element={<Usuarios user={user}/>} />
+          </>
+          : <Route path=""/>}</>
+          :<Route path=""/>}
+          
         </Routes>
+        
       }
     </div>
   )
