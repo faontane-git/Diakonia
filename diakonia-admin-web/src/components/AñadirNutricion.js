@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
 import { getFirestore, doc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 
-const AñadirNutricion = () => {
+const AñadirNutricion = ({user}) => {
   const { institucionId, institucionN } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const [data, setData] = useState([]);
@@ -94,7 +94,7 @@ const AñadirNutricion = () => {
   return (
     <div>
       <div className="centered-container">
-        <Cabecera />
+        <Cabecera user={user}/>
         <h1>Añadir Seguimiento en {institucionN}</h1>
         <h3>¡Porfavor suba el excel con la información solicitada!</h3>
         <input type="file" onChange={handleFileUpload} />

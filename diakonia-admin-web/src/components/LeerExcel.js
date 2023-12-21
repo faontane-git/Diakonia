@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
-import { getFirestore, doc, collection, addDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, collection, addDoc, getDoc, getDocs,where,query } from "firebase/firestore";
 
 const LeerExcel = ({ user }) => {
-  const { institucionId } = useParams();
+  const { institucionId , institucionN} = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate('/beneficiarios');
+    navigate(`/beneficiarios/${institucionId}/${institucionN}`);
   }
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const querydb = getFirestore();
+    const beneficiariosCollection = collection(querydb, 'beneficiarios');
+    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+
+    getDocs(beneficiariosQuery).then((res) =>
+      setData({ cedulas: res.docs.map((benf) => benf.data().cedula) })
+    );
+  }, [institucionId]);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -79,19 +91,23 @@ const LeerExcel = ({ user }) => {
       getDoc(institutionRef).then((doc) => {
         if (doc.exists) {
           const days = (Date.parse(doc.data().fecha_final)-Date.parse(doc.data().fecha_inicial))/86400000;
+          
           for (const beneficiario of Nbeneficiarios) {  
-          for (let i = 0; i <= days; i++) {
-            beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
-          }
-          for (const date of beneficiario.dias) {
-            if(doc.data().desayuno===true){beneficiario.desayuno.push("-");}
-            if(doc.data().almuerzo===true){beneficiario.almuerzo.push("-");} 
-          }
-          addDoc(beneficiarioCollection, beneficiario).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            alert(errorMessage)
-          })};
+            //console.log(data.cedulas.includes(beneficiario.cedula))
+            if(data.cedulas.includes(beneficiario.cedula)){console.log("Se repite:",beneficiario.nombre)}else{
+
+            for (let i = 0; i <= days; i++) {
+              beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
+            }
+            for (const date of beneficiario.dias) {
+              if(doc.data().desayuno===true){beneficiario.desayuno.push("-");}
+              if(doc.data().almuerzo===true){beneficiario.almuerzo.push("-");} 
+            }
+            addDoc(beneficiarioCollection, beneficiario).catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert(errorMessage)
+          })}};
         } else {
           // La institución no existe
         }
@@ -137,7 +153,7 @@ const LeerExcel = ({ user }) => {
         </table>
       )}
       {Nbeneficiarios.length > 0 && (
-        <button onClick={añadir}>Añadir</button>
+        <button onClick={añadir}>Añadir</button>    
       )}
     </div>
   );

@@ -81,7 +81,7 @@ function Aplicacion() {
       {user === null ? <Login user={user} setUser={setUser} /> :
         <Routes>
           <Route path="/" element={<Inicio user={user} />} />
-          {user.rol !== "Registrador" ? 
+          {user.rol !== undefined && user.rol !== "Registrador" ? 
           <>
           <Route path="instituciones" element={<Instituciones user={user} />} />
           <Route path="beneficiarios" element={<Beneficiarios user={user} />} />
