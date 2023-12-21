@@ -7,3 +7,4 @@ npm install reactfire
 npm install xlsx
 
 npm install sweetalert2
+npm install emailjs-com

@@ -29,4 +29,4 @@ const ListaUsuarios = ({ usuarios }) => {
   );
 };
 
-export default ListaUsuarios; 
+export default ListaUsuarios;

@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
 const EditarBeneficiario = () => {
-  const { institucionId, institucionN,beneficiarioid } = useParams();
+  const { institucionId, institucionN, beneficiarioid } = useParams();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState('');
@@ -101,15 +101,16 @@ const EditarBeneficiario = () => {
         </div>
 
         <div id="txtgenero">
-          <label htmlFor="genero"><b>Genero:</b></label>
-          <input
-            type="text"
+          <label htmlFor="genero"><b>Género:</b></label>
+          <select
             id="genero"
             value={genero}
             onChange={(e) => setGenero(e.target.value)}
-          />
+          >
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+          </select>
         </div>
-
         <div id="txtn_contacto">
           <label htmlFor="n_contacto"><b>Número de contacto:</b></label>
           <input
