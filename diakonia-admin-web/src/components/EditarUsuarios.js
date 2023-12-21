@@ -38,7 +38,7 @@ const EditarInstitucion = ({user}) => {
 
         // Asignar valores iniciales a los estados
         setRoloriginal(beneficiarioData.rol || '');
-        setInstitucionId(beneficiarioData.institucionId || '');
+        //setInstitucionId(beneficiarioData.institucionId || '');
         //setInstitucionN(beneficiarioData.institucionN || '');
         setInstitucionNoriginal(beneficiarioData.institucionN || '');
       }
