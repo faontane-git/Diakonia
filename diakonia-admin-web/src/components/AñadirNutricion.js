@@ -96,6 +96,7 @@ const AñadirNutricion = () => {
       <div className="centered-container">
         <Cabecera />
         <h1>Añadir Seguimiento en {institucionN}</h1>
+        <h3>¡Porfavor suba el excel con la información solicitada!</h3>
         <input type="file" onChange={handleFileUpload} />
         {Nbeneficiarios.length > 0 && (
           <table>

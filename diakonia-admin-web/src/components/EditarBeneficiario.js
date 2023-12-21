@@ -86,7 +86,11 @@ const EditarBeneficiario = () => {
             type="text"
             id="cedula"
             value={cedula}
-            onChange={(e) => setCedula(e.target.value)}
+            onChange={(e) => {
+              // Permitir solo números y limitar la longitud a 10 dígitos
+              const inputCedula = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setCedula(inputCedula);
+            }}
           />
         </div>
 
@@ -117,7 +121,11 @@ const EditarBeneficiario = () => {
             type="text"
             id="n_contacto"
             value={n_contacto}
-            onChange={(e) => setNContacto(e.target.value)}
+            onChange={(e) => {
+              // Permitir solo números y limitar la longitud a 10 dígitos
+              const inputContacto = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setNContacto(inputContacto);
+            }}
           />
         </div>
 
@@ -127,7 +135,11 @@ const EditarBeneficiario = () => {
             type="text"
             id="n_menores"
             value={n_menores}
-            onChange={(e) => setNMenores(e.target.value)}
+            onChange={(e) => {
+              // Permitir solo números y limitar la longitud a 10 dígitos
+              const inputMenores = e.target.value.replace(/\D/g, '').slice(0, 1);
+              setNMenores(inputMenores);
+            }}
           />
         </div>
 
@@ -137,7 +149,11 @@ const EditarBeneficiario = () => {
             type="text"
             id="n_mayores"
             value={n_mayores}
-            onChange={(e) => setNMayores(e.target.value)}
+            onChange={(e) => {
+              // Permitir solo números y limitar la longitud a 10 dígitos
+              const inputMayores = e.target.value.replace(/\D/g, '').slice(0, 1);
+              setNMayores(inputMayores);
+            }}
           />
         </div>
 

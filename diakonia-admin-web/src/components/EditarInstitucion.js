@@ -11,7 +11,7 @@ const EditarInstitucion = () => {
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [ubicacion, setUbicacion] = useState('');
-  
+
   useEffect(() => {
     const obtenerDatosInstitucion = async () => {
       const querydb = getFirestore();
@@ -55,7 +55,7 @@ const EditarInstitucion = () => {
   return (
     <div className="centered-container">
       <Cabecera />
-      <h1>Editar Beneficiario</h1>
+      <h1>Editar Institución</h1>
 
       <form onSubmit={handleSubmit}>
         <div id="txtNombre">
@@ -74,7 +74,11 @@ const EditarInstitucion = () => {
             type="text"
             id="cedula"
             value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
+            onChange={(e) => {
+              // Permitir solo números y limitar la longitud a 10 dígitos
+              const inputTelefono = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setTelefono(inputTelefono);
+            }}
           />
         </div>
 

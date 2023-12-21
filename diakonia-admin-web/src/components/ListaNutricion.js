@@ -50,9 +50,9 @@ const ListaBeneficiarios = ({ instituciones, nutricion }) => {
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Ultimo Peso</th>
-            <th>Ultima Talla</th>
-            <th>Ultimo HGB</th>
+            <th>Último Peso(KG)</th>
+            <th>Última Talla(M)</th>
+            <th>Último HGB(g/dL)</th>
             <th>Acciones</th>
           </tr>
         </thead>

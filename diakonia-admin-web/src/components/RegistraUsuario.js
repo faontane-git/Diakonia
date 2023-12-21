@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
@@ -19,10 +19,10 @@ const RegistroUsuario = () => {
   const navigate = useNavigate();
  
   const goBack = () => {    
-      navigate('/');
-    }
+    navigate('/');
+  }
 
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const [email, setemail] = useState('');
   const [rol, setRol] = useState('Administrador');
@@ -41,40 +41,51 @@ const RegistroUsuario = () => {
     );
   }, []);
 
-
-
-
   // Función para manejar el envío del formulario
+  async function registrarUsuario(email, contraseña, rol, institucionId, institucionN) {
+    // Validar que la contraseña tenga más de 6 caracteres
+    if (contraseña.length < 6) {
+      alert("La contraseña debe tener al menos 6 caracteres.");
+      return; // Detener la ejecución si la contraseña no cumple con los requisitos
+    }
 
-  async function registrarUsuario(email, contraseña, rol,institucionId, institucionN) {
     const firestore = getFirestore(firebaseApp);
-    const infoUsuario = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      contraseña,
-    ).then(async (usuarioFirebase) => {
-      console.log("registro: ",usuarioFirebase.user.uid);
-      const docuRef = doc(firestore, `usuarios/${usuarioFirebase.user.uid}`);
-      await setDoc(docuRef, { correo: email, rol: rol, institucionId:institucionId, institucionN:institucionN });
-      goBack();
-    signOut(auth);
-      alert("se creo el usuario")
-      return usuarioFirebase;
-    });
-    
-    
-  }
 
+    try {
+      const infoUsuario = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        contraseña
+      );
+
+      console.log("Registro:", infoUsuario.user.uid);
+
+      const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
+      await setDoc(docuRef, {
+        correo: email,
+        rol: rol,
+        institucionId: institucionId,
+        institucionN: institucionN,
+      });
+
+      goBack();
+      signOut(auth);
+      alert("Se creó el usuario exitosamente.");
+    } catch (error) {
+      console.error("Error al registrar usuario:", error.message);
+      alert("Error al registrar usuario. Por favor, verifica los datos.");
+    }
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
-  setInstitucionN("DiakoníaWeb");
-  }
+    if (mostrarBarraAdicional === false) {
+      setInstitucionId("DiakoníaWeb");
+      setInstitucionN("DiakoníaWeb");
+    }
     console.log('institucion:',institucionN)
     registrarUsuario(email, contraseña, rol, institucionId, institucionN);    
   };
-
 
   return (
     <div className="centered-container">
@@ -83,7 +94,7 @@ const RegistroUsuario = () => {
       <h1>Registrar Usuario</h1>
       <form onSubmit={handleSubmit}>
 
-      <div id="txtUemail">
+        <div id="txtUemail">
           <label htmlFor="email">Email:</label>
           <input
             type="text"
@@ -105,11 +116,13 @@ const RegistroUsuario = () => {
 
         <div id="txtUrol">           
           <label htmlFor="rol">Rol:</label>
-          <select id="rol" onChange={(e) => {setRol(e.target.value);
-          setMostrarBarraAdicional(e.target.value === "Registrador");
-          if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
-  setInstitucionN("DiakoníaWeb");
-  }
+          <select id="rol" onChange={(e) => {
+            setRol(e.target.value);
+            setMostrarBarraAdicional(e.target.value === "Registrador");
+            if(mostrarBarraAdicional === false) {
+              setInstitucionId("DiakoníaWeb");
+              setInstitucionN("DiakoníaWeb");
+            }
           }}>
             <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
@@ -118,23 +131,22 @@ const RegistroUsuario = () => {
         </div>
 
         {mostrarBarraAdicional && (
-  <div id="txtUrol">
-    <label htmlFor="rol">Instinción a la que pertenece:</label>
-    <select id="rol" onChange={(e) => {
-    setInstitucionId(e.target.value);
-    const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-    setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
-  }}>
-    <option value="" disabled selected>Selecciona una institucion</option>
-      {data.map((institucion) => (
-        <option value={institucion.id}>{institucion.nombre}</option>
-      ))}
-    </select>
-  </div>
-)}
+          <div id="txtUrol">
+            <label htmlFor="rol">Institución a la que pertenece:</label>
+            <select id="rol" onChange={(e) => {
+              setInstitucionId(e.target.value);
+              const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+              setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+            }}>
+              <option value="" disabled selected>Selecciona una institución</option>
+              {data.map((institucion) => (
+                <option value={institucion.id}>{institucion.nombre}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
-
-        <button id="buttonIRegistrar"type="submit">Registrar</button>
+        <button id="buttonIRegistrar" type="submit">Registrar</button>
       </form>
     </div>
   );

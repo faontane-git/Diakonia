@@ -31,7 +31,6 @@ const Nutricion = ({ instituciones }) => {
       <h1>Seguimiento</h1>
       <div className="list-container-nutricion">
         <h2>Seleccione una institución</h2>
-
         {/*  
         <div id="txtUopcion">
           <select id="opcion">

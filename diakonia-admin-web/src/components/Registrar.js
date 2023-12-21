@@ -1,16 +1,15 @@
-import React from 'react'
+import React from 'react';
 import Cabecera from "./Cabecera";
-import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import '../estilos/Registrar.css';
 
 import firebaseApp from "../firebase-config";
-import { getFirestore, doc, collection, setDoc, addDoc } from "firebase/firestore";
+import { getFirestore, collection, setDoc, addDoc } from "firebase/firestore";
 
 const RegistroInstitucion = () => {
-
   const navigate = useNavigate();
+
   const goBack = () => {
     navigate('/instituciones');
   }
@@ -30,14 +29,13 @@ const RegistroInstitucion = () => {
     if (initialDate === null || finalDate === null || initialDate > finalDate) {
       alert("La fecha inicial debe ser anterior a la fecha final.");
       return;
-    }else if(desayuno===false && almuerzo===false){
+    } else if (desayuno === false && almuerzo === false) {
       alert("Por favor elija el tipo de servicio de la institución (al menos 1)")
       return;
-    } else if(nombre==='' || telefono==='' || direccion===''){
+    } else if (nombre === '' || telefono === '' || direccion === '') {
       alert("Por favor llene todos los campos")
       return;
-    }else {
-
+    } else {
       const firestore = getFirestore()
       const InstitucionCollection = collection(firestore, 'instituciones');
 
@@ -49,10 +47,11 @@ const RegistroInstitucion = () => {
         almuerzo: almuerzo,
         fecha_inicial: initialDate,
         fecha_final: finalDate,
-        activo:true,
-
+        activo: true,
       }
+
       const agregar = addDoc(InstitucionCollection, institucion);
+
       agregar
         .then((funciono) => {
           alert("Nueva institución añadida");
@@ -62,6 +61,7 @@ const RegistroInstitucion = () => {
           const errorMessage = error.message;
           alert("Error al agragar institución");
         })
+
       console.log(initialDate, finalDate);
     }
   };
@@ -82,17 +82,19 @@ const RegistroInstitucion = () => {
           />
         </div>
 
-
         <div id="txtTelefono">
           <label htmlFor="telefono"><b>Teléfono:</b></label>
           <input
             type="text"
             id="telefono"
             value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
+            onChange={(e) => {
+              // Permitir solo números y limitar la longitud a 10 dígitos
+              const inputTelefono = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setTelefono(inputTelefono);
+            }}
           />
         </div>
-
 
         <div id="txtDireccion">
           <label htmlFor="direccion"><b>Dirección:</b></label>
@@ -103,7 +105,6 @@ const RegistroInstitucion = () => {
             onChange={(e) => setDireccion(e.target.value)}
           />
         </div>
-
 
         <div id="txtServicios">
           <label><b>Servicios:</b></label>
@@ -144,9 +145,7 @@ const RegistroInstitucion = () => {
               onChange={(e) => setFinalDate(e.target.value)}
             />
           </div>
-
         </div>
-
 
         <button id="buttonFRegistrar" type="submit">Registrar</button>
       </form>
@@ -155,5 +154,3 @@ const RegistroInstitucion = () => {
 };
 
 export default RegistroInstitucion;
-
-
