@@ -43,7 +43,7 @@ const VerAsistencias = ({ user }) => {
             filteredData.map((institucion) => (
               <li key={institucion.id}>
                 <Link to={`/asistencias/${institucion.id}`}>
-                  {institucion.nombre}
+                  {institucion.nombre}- Rango de Fecha: {institucion.fecha_inicial}/{institucion.fecha_final}
                 </Link>
               </li>
             ))

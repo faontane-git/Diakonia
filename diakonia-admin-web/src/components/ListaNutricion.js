@@ -53,6 +53,7 @@ const ListaBeneficiarios = ({ user }) => {
             <th>Último Peso(KG)</th>
             <th>Última Talla(M)</th>
             <th>Último HGB(g/dL)</th>
+            <th>Última revisión</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -63,6 +64,7 @@ const ListaBeneficiarios = ({ user }) => {
               <td>{LeerUltimoValor(beneficiario.pesos)}</td>
               <td>{LeerUltimoValor(beneficiario.talla)}</td>
               <td>{LeerUltimoValor(beneficiario.hgb)}</td>
+              <td>{LeerUltimoValor(beneficiario.fecha_seguimiento)}</td>
               <td>
                 <Link to={`/verGrafica/${institucionId}/${beneficiario.id}`}>
                   <button>Ver gráfica</button>
