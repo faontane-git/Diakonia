@@ -22,7 +22,8 @@ const LeerExcel = ({ user }) => {
     const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
 
     getDocs(beneficiariosQuery).then((res) =>
-      setData({ cedulas: res.docs.map((benf) => benf.data().cedula) })
+      setData({ cedulas: res.docs.map((benf) => benf.data().cedula),
+      activos: res.docs.map((benf) => benf.data().activo) })
     );
   }, [institucionId]);
 
@@ -94,7 +95,11 @@ const LeerExcel = ({ user }) => {
           
           for (const beneficiario of Nbeneficiarios) {  
             //console.log(data.cedulas.includes(beneficiario.cedula))
-            if(data.cedulas.includes(beneficiario.cedula)){console.log("Se repite:",beneficiario.nombre)}else{
+            if(data.cedulas.includes(beneficiario.cedula)){
+              /*const index = data.cedulas.indexOf(beneficiario.cedula)
+              if(data.activos.){}*/
+              console.log("Se repite:",beneficiario.nombre)}
+              else{
 
             for (let i = 0; i <= days; i++) {
               beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));

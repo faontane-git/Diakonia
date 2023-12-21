@@ -4,7 +4,8 @@ import Cabecera from './Cabecera';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN } = useParams();
@@ -29,6 +30,33 @@ const ListaBeneficiarios = ({ user }) => {
   const filteredData = data.filter((beneficiario) =>
     beneficiario.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  function esActivo(beneficiario) {
+    console.log(beneficiario.activo)
+    return beneficiario.activo === true;
+ }
+
+ async function eliminarBeneficiario(beneficiario) {
+  Swal.fire({
+    title:'Advertencia',
+    text:`Está seguro que desea eliminar ${beneficiario.nombre}`,
+    icon:'error',
+    showDenyButton: true,
+    denyButtonText: "No",
+    confirmButtonText:"Si",
+    confirmButtonColor: "#000000"
+  }).then(async response=>{if(response.isConfirmed){
+    const querydb = getFirestore();
+    const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
+    try {
+      await updateDoc(docuRef, {activo:false});
+      window.location.reload()
+    } catch (error) {
+      console.error('Error al eliminar institución:', error);
+      alert(error.message);
+    }
+  }})
+};
 
   return (
     <div className="centered-container">
@@ -62,7 +90,7 @@ const ListaBeneficiarios = ({ user }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((beneficiario) => (
+          {filteredData.filter(esActivo).map((beneficiario) => (
             <tr key={beneficiario.id}>
               <td>{beneficiario.nombre}</td>
               <td>{beneficiario.cedula}</td>
@@ -77,9 +105,7 @@ const ListaBeneficiarios = ({ user }) => {
                   <button>Editar</button>
                 </Link>
                 
-                <Link to={`/editar-beneficiario/${institucionId}/${institucionN}/${beneficiario.id}`}>
-                  <button>Eliminar</button>
-                </Link>
+                <button onClick={() => eliminarBeneficiario(beneficiario)}>Eliminar</button>
               </td>
             </tr>
           ))}
