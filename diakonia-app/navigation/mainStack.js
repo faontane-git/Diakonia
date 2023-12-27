@@ -8,13 +8,11 @@ import Asistencia from "../Ventanas/Asistencia/Asistencia"
 import VerRegistro from "../Ventanas/VerRegistro/VerRegistro"
 import Seguimiento from "../Ventanas/Seguimiento/Seguimiento"
 import Opciones from "../Ventanas/Opciones/Opciones"
-import EditarPerfil from "../Ventanas/Opciones/EditarPerfil"
 import CambiarContraseña from "../Ventanas/Opciones/CambiarContraseña"
 import OpcionesSeguimiento from "../Ventanas/Seguimiento/OpcionesSeguimiento"
 import Peso from "../Ventanas/Seguimiento/Peso"
 import Hemoglobina from "../Ventanas/Seguimiento/Hemoglobina"
 import Talla from "../Ventanas/Seguimiento/Talla"
-import Imc from "../Ventanas/Seguimiento/Imc"
 import Info from "../Ventanas/VerRegistro/Info"
 import TomarAsistencia from "../Ventanas/Asistencia/TomarAsistencia"
 import VerAsistencia from "../Ventanas/Asistencia/VerAsistencia"
@@ -61,11 +59,6 @@ return (
             options={{ headerShown: false }}
         />
         <Stack.Screen 
-            name="EditarPerfil" 
-            component={EditarPerfil}
-            options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
             name="CambiarContraseña" 
             component={CambiarContraseña}
             options={{ headerShown: false }} 
@@ -94,11 +87,6 @@ return (
             name='Talla'
             component={Talla}
             options={{ headerShown: false }} 
-        />
-        <Stack.Screen
-            name='Imc'
-            component={Imc}
-            options={{ headerShown: false }}
         />
         <Stack.Screen
             name='Info'

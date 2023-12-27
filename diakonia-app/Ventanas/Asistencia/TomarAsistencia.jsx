@@ -1,19 +1,50 @@
-import React from 'react';
-import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image, Button, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Image, Button, TextInput, Alert, TouchableOpacity } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-
+import { useNavigation } from '@react-navigation/native';
 
 const TomarAsistencia = () => {
     const navigation = useNavigation();
-    const screenWidth = Dimensions.get('window').width;
+    const [currentDate, setCurrentDate] = useState('');
+    const [currentHour, setCurrentHour] = useState('');
+    const [servicio, setServicio] = useState('');
+
+    useEffect(() => {
+        getCurrentDate();
+        getCurrentHour();
+    }, []);
 
     const handleOptionPress = (option) => {
         navigation.navigate(option);
     };
+
+    const getCurrentDate = () => {
+        const date = new Date();
+        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        setCurrentDate(formattedDate);
+    };
+
+    const getCurrentHour = () => {
+        const hour = new Date().getHours();
+        setCurrentHour(hour);
+    };
+
+    const determineServicio = () => {
+        if (currentHour >= 6 && currentHour <= 10) {
+            setServicio('Desayuno');
+        } else if (currentHour >= 11 && currentHour <= 23) {
+            setServicio('Almuerzo');
+        } else {
+            setServicio('');
+        }
+    };
+
+    useEffect(() => {
+        determineServicio();
+    }, [currentHour]);
+
     const handleAuthentication = () => {
-        FingerprintScanner
-            .authenticate({ onAttempt: () => console.log('Autenticación en progreso') })
+        FingerprintScanner.authenticate({ onAttempt: () => console.log('Autenticación en progreso') })
             .then(() => {
                 Alert.alert('Autenticación exitosa', 'Has tocado tu huella correctamente.');
             })
@@ -35,68 +66,42 @@ const TomarAsistencia = () => {
             </View>
 
             <View style={styles.contenedor}>
+                <View style={styles.row}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Fecha</Text>
+                        <TextInput style={styles.inputFecha} value={currentDate} editable={false} />
+                    </View>
 
-
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Fecha</Text>
-                    <TextInput
-                        style={styles.inputFecha}
-                        value="10/10/2023"
-                        editable={false}
-                    />
+                    <View style={styles.inputBoton}>
+                        <Button
+                            title="Tomar Imagen"
+                            onPress={() => handleOptionPress('TomarHuella')}
+                            color="#890202"
+                        />
+                    </View>
                 </View>
 
-                <View style={styles.inputBoton}>
-                    <Button
-                        title="Tomar Huella"
-                        onPress={() => handleOptionPress('TomarHuella')}
-                        style={styles.inputHuella}
-                        color={'#890202'}
-
-                    />
-                </View>
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Nombre</Text>
-                    <TextInput
-                        style={styles.inputNombre}
-                        value=""
-                        editable={false}
-                    />
+                    <TextInput style={styles.inputNombre} value="" editable={false} />
                 </View>
-
-
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Apellido</Text>
-                    <TextInput
-                        style={styles.inputApellido}
-                        value=""
-                        editable={false}
-                    />
-                </View>
-
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Institución</Text>
-                    <TextInput
-                        style={styles.inputInstitucion}
-                        value=""
-                        editable={false}
-                    />
+                    <TextInput style={styles.inputInstitucion} value="" editable={false} />
                 </View>
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Servicio</Text>
-                    <TextInput
-                        style={styles.inputServicio}
-                        value=""
-                        editable={false}
-                    />
+                    <TextInput style={styles.inputServicio} value={servicio} editable={false} />
                 </View>
 
-
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.buttonAsistencia} onPress={() => console.log('Registrar Asistencia')}>
+                    <TouchableOpacity
+                        style={styles.buttonAsistencia}
+                        onPress={() => console.log('Registrar Asistencia')}
+                    >
                         <Text style={styles.buttonText}>Registrar Asistencia</Text>
                     </TouchableOpacity>
                 </View>
@@ -110,11 +115,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5FCFF',
         paddingVertical: 30,
-    }, imagesContainer: {
+    },
+    imagesContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 50,
-    }, textContainer: {
+    },
+    textContainer: {
         alignItems: 'center',
         paddingVertical: 5,
     },
@@ -124,66 +131,64 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'center',
         textAlign: 'center',
-    }, contenedor: {
-        alignItems: 'flex-start', // Cambié de 'center' a 'flex-start'
-        paddingHorizontal: 20, // Agregué un padding para mejorar el diseño
     },
-    titulo: {
+    contenedor: {
+        alignItems: 'flex-start',
+        paddingHorizontal: 20,
+    },
+    inputContainer: {
+        marginBottom: 20,
+        width: '100%',
+    },
+    label: {
         fontSize: 16,
         marginBottom: 5,
-    }, inputFecha: {
+    },
+    inputFecha: {
         borderWidth: 1,
         borderColor: 'black',
         width: '30%',
         padding: 10,
-        marginBottom: 20,
-    }, inputFecha: {
-        borderWidth: 1,
-        borderColor: 'black',
-        width: '30%',
+    },
+    inputBoton: {
         padding: 10,
-        marginBottom: 20,
-    }, inputNombre: {
+     },
+    inputNombre: {
         borderWidth: 1,
         borderColor: 'black',
         width: '70%',
         padding: 10,
-        marginBottom: 20,
-    }, inputApellido: {
+    },
+    inputApellido: {
         borderWidth: 1,
         borderColor: 'black',
         width: '70%',
         padding: 10,
-        marginBottom: 20,
-    }, inputInstitucion: {
+    },
+    inputInstitucion: {
         borderWidth: 1,
         borderColor: 'black',
         width: '70%',
         padding: 10,
-        marginBottom: 20,
-    }, inputServicio: {
+    },
+    inputServicio: {
         borderWidth: 1,
         borderColor: 'black',
         width: '70%',
         padding: 10,
-        marginBottom: 20,
-    }, inputBoton: {
-        padding: 10, // Ajusta el espacio interno del botón
-        width: '100%',
-    }, inputHuella: {
-        backgroundColor: '#890202', // Cambia el color del fondo del botón
-    }, buttonText: {
+    },
+    buttonContainer: {
+        marginLeft: 40,
+    },
+    buttonText: {
         color: 'white',
         textAlign: 'center',
-    }, buttonAsistencia: {
+    },
+    buttonAsistencia: {
         backgroundColor: '#890202',
         padding: 10,
         width: '80%',
-    }, contenedor: {
-         paddingHorizontal: 20, // Agregué un padding para mejorar el diseño
-    },buttonContainer:{
-        marginLeft: 40, // Agregué un padding para mejorar el diseño
-    }
+    },
 });
 
 export default TomarAsistencia;

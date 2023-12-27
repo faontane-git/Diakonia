@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 
 const Talla = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { nombreBeneficiario,fechas, tallas } = route.params;
 
   // Datos para el gráfico de Talla en metros
   const heightData = {
-    labels: ['2023-01-01', '2023-01-05', '2023-01-10', '2023-01-15', '2023-01-20'],
+    labels: fechas,
     datasets: [
       {
-        data: [1.75, 1.76, 1.78, 1.77, 1.79],
+        data: tallas,
       },
     ],
   };
+ 
 
   const handleOptionPress = (option) => {
     navigation.navigate(option);
@@ -34,7 +37,7 @@ const Talla = () => {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
-        <Text style={styles.title}>Joffre Ramírez</Text>
+        <Text style={styles.title}>{nombreBeneficiario}</Text>
         <Text style={styles.title}>Talla</Text>
       </View>
       <View style={styles.chartContainer}>

@@ -2,28 +2,59 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import Home from './Home';
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { useAuth } from './AuthContext';
 
 const Login = () => {
    const navigation = useNavigation();
+   const { institucionId, setInstitucionId } = useAuth();
+   const { institucionN, setInstitucionN } = useAuth();
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [errorModalVisible, setErrorModalVisible] = useState(false);
    const [errorMessage, setErrorMessage] = useState('');
 
-   const handleLogin = () => {
+   const handleLogin = async () => {
       const auth = getAuth();
+      const db = getFirestore();
+
       console.log('Iniciando sesión con correo electrónico:', email);
       console.log('Iniciando sesión con contraseña:', password);
 
-      signInWithEmailAndPassword(auth, email, password)
-         .then((userCredential) => {
-            navigation.navigate('Home');
-         })
-         .catch((error) => {
-            setErrorMessage('¡El Correo o Contraseña\ningresado es incorrecto!\nVuelva a ingresar');
+      try {
+         const userCredential = await signInWithEmailAndPassword(auth, email, password);
+         const user = userCredential.user;
+
+         const usersCollection = collection(db, 'usuarios');
+         const q = query(usersCollection, where('correo', '==', email));
+         const querySnapshot = await getDocs(q);
+
+         if (querySnapshot.size > 0) {
+            querySnapshot.forEach((doc) => {
+               const userData = doc.data();
+               const userRole = userData.rol;
+               const institucionId = userData.institucionId;
+               const institucionN=userData.institucionN;
+               console.log(institucionN);
+               setInstitucionId(institucionId);
+               setInstitucionN(institucionN);
+
+               if (userRole !== 'Registrador') {
+                  setErrorMessage('¡No tienes permisos para iniciar sesión en esta aplicación!');
+                  setErrorModalVisible(true);
+               } else {
+                  navigation.navigate('Home');
+               }
+            });
+         } else {
+            setErrorMessage('¡El Correo o Contraseña ingresado es incorrecto!\nVuelva a ingresar');
             setErrorModalVisible(true);
-         });
+         }
+
+      } catch (error) {
+         setErrorMessage('¡El Correo o Contraseña ingresado es incorrecto!\nVuelva a ingresar');
+         setErrorModalVisible(true);
+      }
    };
 
    const closeModal = () => {

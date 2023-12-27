@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../AuthContext';  
 
 const Opciones = () => {
     const navigation = useNavigation();
+    const { institucionN } = useAuth();
 
     const onPressCerrarSesion = () => {
         navigation.navigate('Login');
     }
-    const onPressEditarPerfil = () => {
-        navigation.navigate('EditarPerfil');
-    }
+
     const onPressCambiarContraseña = () => {
         navigation.navigate('CambiarContraseña');
     }
@@ -24,11 +24,8 @@ const Opciones = () => {
                 />
             </View>
             <Text style={styles.title}>Opciones</Text>
-            <Text style={styles.name}>Juan Pérez</Text>
-            <Text style={styles.company}>Kellog's</Text>
+            <Text style={styles.company}><Text>{institucionN}</Text></Text>
             <View style={styles.buttonsContainer}>
-                <Button title="Editar Datos" onPress={onPressEditarPerfil} color="#890202" />
-                <Text style={{ padding: 10 }} />
                 <Button title="Cambiar Contraseña" onPress={onPressCambiarContraseña} color="#890202" />
                 <Text style={{ padding: 10 }} />
             </View>
@@ -36,7 +33,6 @@ const Opciones = () => {
             <View style={styles.buttonSesion}>
                 <Button title="Cerrar Sesión" onPress={onPressCerrarSesion} color="#890202" />
             </View>
-
         </View>
     );
 }

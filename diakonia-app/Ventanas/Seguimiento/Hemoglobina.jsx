@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 
 const Hemoglobina = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { nombreBeneficiario,fechas, hgbs } = route.params;
 
-  // Datos para el gráfico de Hemoglobina
-  const hemoglobinData = {
-    labels: ['2023-01-01', '2023-01-05', '2023-01-10', '2023-01-15', '2023-01-20'],
+  // Datos para el gráfico de Talla en metros
+  const heightData = {
+    labels: fechas,
     datasets: [
       {
-        data: [12, 11, 13, 14, 12.5],
+        data: hgbs,
       },
     ],
   };
+ 
 
   const handleOptionPress = (option) => {
     navigation.navigate(option);
@@ -34,14 +37,14 @@ const Hemoglobina = () => {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
-        <Text style={styles.title}>Joffre Ramírez</Text>
+        <Text style={styles.title}>{nombreBeneficiario}</Text>
         <Text style={styles.title}>Hemoglobina</Text>
       </View>
       <View style={styles.chartContainer}>
         <Text>Gráfico de Líneas de Hemoglobina</Text>
-        <TouchableOpacity activeOpacity={1} onPress={() => console.log('Gráfico de Hemoglobina clickeado')}>
+        <TouchableOpacity activeOpacity={1} onPress={() => console.log('Gráfico de Talla en Metros clickeado')}>
           <LineChart
-            data={hemoglobinData}
+            data={heightData}
             width={375}
             height={300}
             yAxisLabel=""
@@ -77,12 +80,12 @@ const Hemoglobina = () => {
       <View style={styles.tableContainer}>
         <View style={[styles.tableRow, styles.tableCellBorder]}>
           <Text style={[styles.txtFecha, styles.tableCellHeader, styles.tableCellBorder]}>Fecha</Text>
-          <Text style={[styles.txtHemoglobina, styles.tableCellHeader, styles.tableCellBorder]}>Hemoglobina</Text>
+          <Text style={[styles.txtTalla, styles.tableCellHeader, styles.tableCellBorder]}>Talla (m)</Text>
         </View>
-        {hemoglobinData.labels.map((label, index) => (
+        {heightData.labels.map((label, index) => (
           <View key={index} style={[styles.tableRow, styles.tableRowBorder]}>
             <Text style={[styles.tableCell, styles.tableCellBorder]}>{label}</Text>
-            <Text style={[styles.tableCell, styles.tableCellBorder]}>{hemoglobinData.datasets[0].data[index]}</Text>
+            <Text style={[styles.tableCell, styles.tableCellBorder]}>{heightData.datasets[0].data[index]}</Text>
           </View>
         ))}
       </View>
@@ -111,8 +114,8 @@ const styles = StyleSheet.create({
   txtFecha: {
     marginLeft: 20,
   },
-  txtHemoglobina: {
-    marginRight: 90,
+  txtTalla: {
+    marginRight: 100,
   },
   textContainer: {
     paddingBottom: 10,

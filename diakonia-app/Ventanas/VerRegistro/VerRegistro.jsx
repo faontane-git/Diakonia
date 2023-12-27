@@ -1,18 +1,29 @@
+// Importa useState y useEffect si aún no lo has hecho
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { useAuth } from '../AuthContext';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const VerRegistro = () => {
   const navigation = useNavigation();
   const [busqueda, setBusqueda] = useState('');
   const [nutrientes, setNutrientes] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: 'Todos', value: 'Todos' },
+    { label: 'Desayuno', value: 'Desayuno' },
+    { label: 'Almuerzo', value: 'Almuerzo' },
+  ]);
+  const { institucionId } = useAuth();
 
   useEffect(() => {
     const obtenerDatos = async () => {
       const querydb = getFirestore();
       const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', '12WLpoHJnPLc767wmPXd'));
+      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
@@ -55,12 +66,27 @@ const VerRegistro = () => {
         />
       </View>
       <Text style={styles.title}>Registro</Text>
+
+      {/* ComboBox */}
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        containerStyle={styles.dropdownContainer}
+        style={styles.dropdown}
+      />
+
+      {/* TextInput para búsqueda */}
       <TextInput
         style={styles.buscador}
         placeholder="Buscar Nombre"
         onChangeText={buscar}
         value={busqueda}
       />
+
       <FlatList
         data={filtrarNutrientes(busqueda)}
         renderItem={({ item }) => (
@@ -113,7 +139,20 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginBottom: 10,
     marginHorizontal: 20,
+  }, dropdown: {
+    backgroundColor: 'white',
+    color: 'black',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginTop:10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    width:345,
   },
+
 });
 
 export default VerRegistro;

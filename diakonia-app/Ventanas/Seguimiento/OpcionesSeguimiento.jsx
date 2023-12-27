@@ -1,14 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+
 
 const OpcionesSeguimiento = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const [pesos, setPeso] = useState([]);
+  const [fechas, setFecha] = useState([]);
+  const [hgbs, setHGB] = useState([]);
+  const [tallas, setTalla] = useState([]);
+
+  const { nombreBeneficiario } = route.params;
+  const { idBeneficiario } = route.params;
+
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      const querydb = getFirestore();
+      const beneficiariosCollection = collection(querydb, 'beneficiarios');
+      const beneficiariosQuery = query(beneficiariosCollection, where('id', '==', idBeneficiario));
+      try {
+        const querySnapshot = await getDocs(beneficiariosQuery);
+        const beneficiarioData = querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() }))[0];
+
+        // Obtener fechas de seguimiento y pesos del beneficiario
+        const fechasSeguimiento = beneficiarioData.fecha_seguimiento;
+        const peso = beneficiarioData.pesos;
+        const hgb = beneficiarioData.hgb;
+        const talla = beneficiarioData.talla;
+        setFecha(fechasSeguimiento);
+        setPeso(peso);
+        setHGB(hgb);
+        setTalla(talla);
+      } catch (error) {
+        console.error('Error al obtener documentos:', error);
+      }
+    };
+
+    obtenerDatos();
+  }, []);
+
+
   const screenWidth = Dimensions.get('window').width;
   const handleOptionPress = (option) => {
-    navigation.navigate(option);
+    if (option === 'Peso') {
+      navigation.navigate(option, { nombreBeneficiario,fechas, pesos });
+    } else if (option === 'Talla') {
+      navigation.navigate(option, { nombreBeneficiario,fechas, tallas });
+    } else if (option === 'Hemoglobina') {
+      navigation.navigate(option, { nombreBeneficiario,fechas, hgbs });
+    }
   };
-
 
   return (
     <View style={styles.container}>
@@ -20,7 +63,7 @@ const OpcionesSeguimiento = () => {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
-        <Text style={styles.title}>Joffre Ramírez</Text>
+        <Text style={styles.title}>{nombreBeneficiario}</Text>
       </View>
       <ScrollView>
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Peso')}>
@@ -28,9 +71,6 @@ const OpcionesSeguimiento = () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Talla')}>
           <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Talla</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Imc')}>
-          <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Imc</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Hemoglobina')} >
           <Text style={[styles.text, { color: 'white', textAlign: 'center' }]}>Hemoglobina</Text>

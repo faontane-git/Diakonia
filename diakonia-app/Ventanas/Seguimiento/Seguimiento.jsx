@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { useAuth } from '../AuthContext';
 
 const Seguimiento = () => {
   const navigation = useNavigation();
   const [busqueda, setBusqueda] = useState('');
-  const [nutrientes, setNutrientes] = useState([
-    { id: 0, nombre: 'General' },
-    { id: 1, nombre: 'Fabrizzio Ontaneda' },
-    { id: 2, nombre: 'Joffre Ramírez' },
-    { id: 3, nombre: 'Juan Pérez' },
-    { id: 4, nombre: 'Carlos López' },
-    { id: 5, nombre: 'Laura Martínez' },
-  ]);
+  const [nutrientes, setNutrientes] = useState([]);
+  const { institucionId } = useAuth();
+
 
   const buscar = (texto) => {
     setBusqueda(texto);
   };
+
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      const querydb = getFirestore();
+      const beneficiariosCollection = collection(querydb, 'beneficiarios');
+      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+      try {
+        const querySnapshot = await getDocs(beneficiariosQuery);
+        setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
+      } catch (error) {
+        console.error('Error al obtener documentos:', error);
+      }
+    };
+
+    obtenerDatos();
+  }, []);
 
   const filtrarNutrientes = (texto) => {
     return nutrientes.filter((nutriente) =>
@@ -24,9 +37,10 @@ const Seguimiento = () => {
     );
   };
 
-  const navegar = () => {
-    navigation.navigate('OpcionesSeguimiento');
+  const navegar = (nombreBeneficiario, idBeneficiario) => {
+    navigation.navigate('OpcionesSeguimiento', { nombreBeneficiario, idBeneficiario });
   };
+
 
   return (
     <View style={styles.container}>
@@ -40,7 +54,7 @@ const Seguimiento = () => {
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
       </View>
-      <TextInput   
+      <TextInput
         style={styles.buscador}
         placeholder="Buscar Nombre"
         onChangeText={buscar}
@@ -49,7 +63,7 @@ const Seguimiento = () => {
       <FlatList
         data={filtrarNutrientes(busqueda)}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.option} onPress={() => navegar()}>
+          <TouchableOpacity style={styles.option} onPress={() => navegar(item.nombre, item.id)}>
             <Text style={[styles.text, { color: 'white' }]}>{item.nombre}</Text>
           </TouchableOpacity>
         )}
@@ -85,11 +99,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 20,
     marginBottom: 10,
-    borderWidth: 1,  
-    borderColor: 'black',  
+    borderWidth: 1,
+    borderColor: 'black',
   },
-  textContainer:{
-    paddingBottom:10
+  textContainer: {
+    paddingBottom: 10
   },
   option: {
     backgroundColor: '#890202',

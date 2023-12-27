@@ -11,5 +11,12 @@ npm install react-native-webview --save
 npm i @faceio/fiojs
 npm install react-native-camera
 npm install react-native-camera axios
-expo install expo-camera
 npm install firebase
+npm install react-native-picker-select
+expo install react-native-dropdown-picker
+npm install moment
+npm install react-native-face-detector
+npm install react-native-signature-canvas
+expo install expo-camera@~7.0.0
+expo install expo-barcode-scanner
+npm install react-native-qrcode-svg

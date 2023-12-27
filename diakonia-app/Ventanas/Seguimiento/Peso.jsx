@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 
 const Peso = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { nombreBeneficiario,fechas, pesos } = route.params;
 
-  // Datos para el gráfico de Peso
-  const weightData = {
-    labels: ['2023-01-01', '2023-01-05', '2023-01-10', '2023-01-15', '2023-01-20'],
+  // Datos para el gráfico de Talla en metros
+  const heightData = {
+    labels: fechas,
     datasets: [
       {
-        data: [60, 62, 58, 65, 68],
+        data: pesos,
       },
     ],
   };
+ 
 
   const handleOptionPress = (option) => {
     navigation.navigate(option);
@@ -34,14 +37,14 @@ const Peso = () => {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
-        <Text style={styles.title}>Joffre Ramírez</Text>
+        <Text style={styles.title}>{nombreBeneficiario}</Text>
         <Text style={styles.title}>Peso</Text>
       </View>
       <View style={styles.chartContainer}>
         <Text>Gráfico de Líneas de Peso</Text>
-        <TouchableOpacity activeOpacity={1} onPress={() => console.log('Gráfico de Peso clickeado')}>
+        <TouchableOpacity activeOpacity={1} onPress={() => console.log('Gráfico de Talla en Metros clickeado')}>
           <LineChart
-            data={weightData}
+            data={heightData}
             width={375}
             height={300}
             yAxisLabel=""
@@ -77,12 +80,12 @@ const Peso = () => {
       <View style={styles.tableContainer}>
         <View style={[styles.tableRow, styles.tableCellBorder]}>
           <Text style={[styles.txtFecha, styles.tableCellHeader, styles.tableCellBorder]}>Fecha</Text>
-          <Text style={[styles.txtPeso, styles.tableCellHeader, styles.tableCellBorder]}>Peso</Text>
+          <Text style={[styles.txtTalla, styles.tableCellHeader, styles.tableCellBorder]}>Talla (m)</Text>
         </View>
-        {weightData.labels.map((label, index) => (
+        {heightData.labels.map((label, index) => (
           <View key={index} style={[styles.tableRow, styles.tableRowBorder]}>
             <Text style={[styles.tableCell, styles.tableCellBorder]}>{label}</Text>
-            <Text style={[styles.tableCell, styles.tableCellBorder]}>{weightData.datasets[0].data[index]}</Text>
+            <Text style={[styles.tableCell, styles.tableCellBorder]}>{heightData.datasets[0].data[index]}</Text>
           </View>
         ))}
       </View>
@@ -111,8 +114,8 @@ const styles = StyleSheet.create({
   txtFecha: {
     marginLeft: 20,
   },
-  txtPeso: {
-    marginRight: 145,
+  txtTalla: {
+    marginRight: 100,
   },
   textContainer: {
     paddingBottom: 10,
