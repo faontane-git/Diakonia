@@ -2,9 +2,15 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../imagenes/logo-banco-alimentos.png';
 import '../estilos/Cabecera.css';
+import { useState } from 'react';
 
 import firebaseApp from "../firebase-config";
 import { getAuth, signOut } from "firebase/auth";
+
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 
 function Cabecera({user}) {
@@ -13,6 +19,26 @@ const navigate = useNavigate();
 const goBack = () => {    
   navigate('/');
 }
+const goContraseña = () => {    
+  navigate('/cambiarContra');
+}
+
+const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    goBack();
+    signOut(auth);
+    handleClose();
+  };
+
   return (
     <nav>
       <div id="contenedorCabecera">
@@ -51,7 +77,25 @@ const goBack = () => {
         </div>
 
         <div >
-          <button id="buttonCCerrarSesion" onClick={() => {goBack(); signOut(auth);}}> Cerrar sesión</button>
+        <IconButton
+            id="buttonCCerrarSesion"
+            onClick={handleClick}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem>{user.email}</MenuItem>
+            <MenuItem onClick={goContraseña}>Cambiar contraseña</MenuItem>
+            <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+          </Menu>
+
+          {/*<button id="buttonCCerrarSesion" onClick={() => {goBack(); signOut(auth);}}> Cerrar sesión</button>*/}
         </div>
 
       </div>

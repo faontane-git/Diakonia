@@ -20,7 +20,9 @@ const ListaAsistencias = ({ user }) => {
       setData(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
       const arregloNombresFechas = data.map((item) => ({
         nombre: item.nombre,
-        fechas: item.dias.map((fecha) => convertirTimestampAFecha(fecha))
+        fechas: item.dias.map((fecha) => convertirTimestampAFecha(fecha)),
+        desayuno: item.desayuno.map((desayuno) => desayuno),
+        almuerzo: item.almuerzo.map((almuerzo) => almuerzo)
       }));
       setArregloNombresFechas(arregloNombresFechas);
       console.log(arregloNombresFechas);
@@ -57,7 +59,11 @@ const ListaAsistencias = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Asistencias</h1>
+      <button onClick={consulta}>Consulta</button>
 
+      {arregloNombresFechas[0].desayuno.length  > 0 ? 
+      <>
+      <h2>Desayuno</h2>
       <table>
         <thead>
           <tr>
@@ -69,17 +75,53 @@ const ListaAsistencias = ({ user }) => {
           </tr>
         </thead>
         <tbody>
-          {arregloNombresFechas.map((item) => (
+          {arregloNombresFechas.map((item,index) => (
             <tr key={item.nombre}>
               <td>{item.nombre}</td>
-              {arregloNombresFechas[0].fechas.map((mes, index) => (
+              {item.desayuno.map((desayuno) => (<td>{desayuno}</td>))}
+              
+              {/*{arregloNombresFechas[0].fechas.map((mes, index) => (
                 <td key={index}>{item.fechas.includes(mes) ? 'A' : 'F'}</td>
-              ))}
+              ))}*/}
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={consulta}>Consulta</button>
+      </>
+
+      : <h1>No hay servicio de desayunos</h1>}
+      
+      {arregloNombresFechas[0].almuerzo.length  > 0 ? 
+       <>
+      <h2>Almuerzos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            {arregloNombresFechas.length > 0 &&
+              arregloNombresFechas[0].fechas.map((mes, index) => (
+                <th key={index}>{mes}</th>
+              ))}
+          </tr>
+        </thead>
+        <tbody>
+          {arregloNombresFechas.map((item,index) => (
+            <tr key={item.nombre}>
+              <td>{item.nombre}</td>
+              {item.almuerzo.map((almuerzo) => (<td>{almuerzo}</td>))}
+              
+              {/*{arregloNombresFechas[0].fechas.map((mes, index) => (
+                <td key={index}>{item.fechas.includes(mes) ? 'A' : 'F'}</td>
+              ))}*/}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </>
+
+      : <h1>No hay servicio de Almuerzos</h1>}
+
+      
     </div>
   );
 };

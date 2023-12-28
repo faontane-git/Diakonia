@@ -29,6 +29,7 @@ import LeerExcel from "./components/LeerExcel.js"
 import AñadirNutricion from "./components/AñadirNutricion.js"
 import EditarInstitucion from "./components/EditarInstitucion.js";
 import EditarUsuarios from "./components/EditarUsuarios.js"
+import CambiarContra from "./components/CambiarContra.js"
 
 
 const auth = getAuth(firebaseApp);
@@ -81,6 +82,7 @@ function Aplicacion() {
       {user === null ? <Login user={user} setUser={setUser} /> :
         <Routes>
           <Route path="/" element={<Inicio user={user} />} />
+          <Route path="cambiarContra" element={<CambiarContra user={user} />} />
           {user.rol !== undefined && user.rol !== "Registrador" ? 
           <>
           <Route path="instituciones" element={<Instituciones user={user} />} />
