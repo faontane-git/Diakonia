@@ -21,6 +21,7 @@ const ListaAsistencias = ({ user }) => {
       const arregloNombresFechas = data.map((item) => ({
         nombre: item.nombre,
         fechas: item.dias.map((fecha) => convertirTimestampAFecha(fecha)),
+        
         desayuno: item.desayuno.map((desayuno) => desayuno),
         almuerzo: item.almuerzo.map((almuerzo) => almuerzo)
       }));
@@ -51,17 +52,14 @@ const ListaAsistencias = ({ user }) => {
 
   const [diasDelMes, setDiasDelMes] = useState([]);
 
-  useEffect(() => {
-    consulta();
-  }, []);
-
+ 
   return (
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Asistencias</h1>
-      <button onClick={consulta}>Consulta</button>
+      <button onClick={() => consulta()}>Consulta</button>
 
-      {arregloNombresFechas[0].desayuno.length  > 0 ? 
+      {arregloNombresFechas.length > 0 && arregloNombresFechas[0].desayuno.length > 0 ? 
       <>
       <h2>Desayuno</h2>
       <table>
@@ -78,6 +76,7 @@ const ListaAsistencias = ({ user }) => {
           {arregloNombresFechas.map((item,index) => (
             <tr key={item.nombre}>
               <td>{item.nombre}</td>
+              
               {item.desayuno.map((desayuno) => (<td>{desayuno}</td>))}
               
               {/*{arregloNombresFechas[0].fechas.map((mes, index) => (
@@ -91,7 +90,7 @@ const ListaAsistencias = ({ user }) => {
 
       : <h1>No hay servicio de desayunos</h1>}
       
-      {arregloNombresFechas[0].almuerzo.length  > 0 ? 
+      {arregloNombresFechas.length > 0 && arregloNombresFechas[0].almuerzo.length > 0 ? 
        <>
       <h2>Almuerzos</h2>
       <table>
