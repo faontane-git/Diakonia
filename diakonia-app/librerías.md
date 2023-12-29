@@ -20,3 +20,4 @@ npm install react-native-signature-canvas
 expo install expo-camera@~7.0.0
 expo install expo-barcode-scanner
 npm install react-native-qrcode-svg
+npm install @react-native-community/datetimepicker --save

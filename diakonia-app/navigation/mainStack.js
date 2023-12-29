@@ -17,6 +17,7 @@ import Info from "../Ventanas/VerRegistro/Info"
 import TomarAsistencia from "../Ventanas/Asistencia/TomarAsistencia"
 import VerAsistencia from "../Ventanas/Asistencia/VerAsistencia"
 import TomarHuella from "../Ventanas/Asistencia/TomarHuella"
+import QR from "../Ventanas/Asistencia/QR"
 
  
 const Stack = createNativeStackNavigator()
@@ -106,6 +107,11 @@ return (
         <Stack.Screen
             name='TomarHuella'
             component={TomarHuella}
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+            name='QR'
+            component={QR}
             options={{ headerShown: false }} 
         />
     </Stack.Navigator>

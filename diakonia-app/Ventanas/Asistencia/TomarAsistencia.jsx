@@ -74,7 +74,7 @@ const TomarAsistencia = () => {
 
                     <View style={styles.inputBoton}>
                         <Button
-                            title="Tomar Imagen"
+                            title="Tomar QR"
                             onPress={() => handleOptionPress('TomarHuella')}
                             color="#890202"
                         />

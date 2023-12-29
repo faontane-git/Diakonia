@@ -27,9 +27,20 @@ const Asistencia = () => {
             <ScrollView style={styles.optionContainer}>
                 <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('TomarAsistencia')}>
                     <Text style={[styles.text, { color: 'white' }]}>Tomar Asistencias</Text>
+                    <Image
+                        style={{ width: 50, height: 50, marginLeft: 250, marginTop: -35 }}
+                        source={require('../../assets/imagenes/tomarAsistencia.png')}
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('VerAsistencia')}>
                     <Text style={[styles.text, { color: 'white' }]}>Ver Asistencia</Text>
+                    <Image
+                        style={{ width: 50, height: 50, marginLeft: 250, marginTop: -35 }}
+                        source={require('../../assets/imagenes/verAsistencia.png')}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('QR')}>
+                    <Text style={[styles.text, { color: 'white' }]}>QR</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
