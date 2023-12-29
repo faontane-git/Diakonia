@@ -4,42 +4,75 @@ import Cabecera from './Cabecera';
 
 import firebaseApp from "../firebase-config";
 
-import {getAuth,reauthenticateWithCredential,updatePassword,EmailAuthProvider } from "firebase/auth";
+import { useAuthContext } from './AuthContext';
+
+import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
 
 import { useNavigate } from 'react-router-dom';
 
+var bcrypt = require('bcryptjs');
 
-const CambiarContra = ({user}) => {
+
+const CambiarContra = () => {
   const [currentPassword, setCurrentPassword] = useState('');
+  
   const [newPassword, setNewPassword] = useState('');
+  
   const navigate = useNavigate();
+  
+  const { user } = useAuthContext();
+
   const goBack = () => {    
-    navigate('/');
+    if(user.rol==="Registrador"){
+      navigate('/Registrador')
+    }else{
+    navigate('/');}
   }
+
+
+  const hashPassword = async (password) => {
+    const saltRounds = 10; // Número de rondas de sal para el hash
+  
+    try {
+      const hashi = await bcrypt.hash(password, saltRounds);
+      return hashi;
+    } catch (error) {
+      throw new Error('Error al encriptar la contraseña');
+    }
+  };
+  
+  async function ActualizarUsuario( usuarioId, contraseña) {
+    const querydb = getFirestore();
+    const docuRef = doc(querydb, 'usuarios', usuarioId);
+    const usuario = {
+      contraseña: contraseña
+    };
+    console.log(usuarioId)
+    try {
+      await updateDoc(docuRef, usuario);
+      console.log('Datos enviados:', usuario);
+      //navigate(`/usuarios/verUsuarios`);
+    } catch (error) {
+      console.error('Error al modificar beneficiario:', error);
+      alert(error.message);
+    }  
+  }
+
+
+
   async function handleChangePassword(event) {
     event.preventDefault();
-        if(currentPassword!==newPassword){
+        if(currentPassword===newPassword){
             try {
-                const auth = getAuth(firebaseApp);
-                const usuario = auth.currentUser;
-      
-
-      // Autenticar al usuario nuevamente con su contraseña actual
-                const credential = EmailAuthProvider.credential(usuario.email, currentPassword);
-
-                await reauthenticateWithCredential(usuario, credential);
-        
-
-      // Cambiar la contraseña
-                await updatePassword(usuario,newPassword);
-
+                const hashi = await hashPassword(currentPassword);
+                ActualizarUsuario(user.id,hashi)
                 alert('Contraseña cambiada exitosamente');
                 goBack();
                 } catch (error) {
                 alert('Error al cambiar la contraseña', error.message);
                 }
          }else{
-                alert("las contraseñas son iguales")
+                alert("Las constraseñas no coinciden")
          }
   };
 
@@ -50,7 +83,7 @@ const CambiarContra = ({user}) => {
       <form onSubmit={handleChangePassword}>
 
         <div id="CurrentContraseña">
-          <label htmlFor="contraseña">Contraseña actual:</label>
+          <label htmlFor="contraseña">Nueva Contraseña:</label>
           <input
             type="password"
             id="email"
@@ -60,7 +93,7 @@ const CambiarContra = ({user}) => {
         </div>
 
         <div id="Newcontraseña">
-          <label htmlFor="contraseña">Nueva Contraseña:</label>
+          <label htmlFor="contraseña">Confirme nueva contraseña:</label>
           <input
             type="password"
             id="contraseña"

@@ -4,6 +4,8 @@ import Logo from '../imagenes/logo-banco-alimentos.png';
 import '../estilos/Cabecera.css';
 import { useState } from 'react';
 
+import { useAuthContext } from './AuthContext';
+
 import firebaseApp from "../firebase-config";
 import { getAuth, signOut } from "firebase/auth";
 
@@ -13,7 +15,10 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
 
-function Cabecera({user}) {
+function Cabecera() {
+
+  const { logout, user } = useAuthContext();
+
   const auth = getAuth(firebaseApp);
 const navigate = useNavigate();
 const goBack = () => {    
@@ -35,7 +40,8 @@ const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogout = () => {
     goBack();
-    signOut(auth);
+    logout();
+    //signOut(auth);
     handleClose();
   };
 

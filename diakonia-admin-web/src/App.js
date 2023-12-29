@@ -12,14 +12,13 @@ import Inicio from "./components/Inicio.js"
 import Instituciones from "./components/Instituciones.js"
 import Beneficiarios from "./components/Beneficiarios.js"
 import Seguimiento from "./components/Seguimiento.js"
-import Usuarios from "./components/Usuarios.js"
+
 import Registrar from "./components/Registrar.js"
 import VerInstitucion from "./components/VerInstitucion.js"
 import ListaBeneficiarios from "./components/ListaBeneficiarios.js"
 import EditarBeneficiario from "./components/EditarBeneficiario.js"
 import Login from "./components/login.js"
-import RegistroUsuario from "./components/RegistraUsuario.js"
-import VerUsuarios from "./components/VerUsuarios.js"
+
 import VerAsistencias from "./components/VerAsistencias.js"
 import ListaAsistencias from "./components/ListaAsistencias.js"
 import Nutricion from "./components/Nutricion.js"
@@ -28,8 +27,24 @@ import VerGrafica from "./components/Vergrafica.js"
 import LeerExcel from "./components/LeerExcel.js"
 import AñadirNutricion from "./components/AñadirNutricion.js"
 import EditarInstitucion from "./components/EditarInstitucion.js";
+
+import Usuarios from "./components/Usuarios.js"
+import RegistroUsuario from "./components/RegistraUsuario.js"
+import VerUsuarios from "./components/VerUsuarios.js"
 import EditarUsuarios from "./components/EditarUsuarios.js"
+
+
 import CambiarContra from "./components/CambiarContra.js"
+import { useAuthContext } from './components/AuthContext.js';
+import AuthContextProvider from "./components/AuthContext.js";
+
+
+
+import Publicas from "./components/Publicas.js"
+import Privada from "./components/Privadas.js"
+import UserRoute from "./components/UserRoute.js"
+import RegistradorRoute from "./components/RegistradorRoute.js"
+import { SupervisedUserCircleOutlined } from "@mui/icons-material";
 
 
 const auth = getAuth(firebaseApp);
@@ -40,10 +55,12 @@ const firestore = getFirestore(firebaseApp);
 
 function Aplicacion() {
  
-  const [user, setUser] = useState(null);
+  //const {  user } = useAuthContext();
+
+  //const [user, setUser] = useState(null);
 
 
-  async function getRol(uid) {
+  /*async function getRol(uid) {
     const docuRef = doc(firestore, `usuarios/${uid}`);
     const docuCifrada = await getDoc(docuRef);
     const infoFinal = docuCifrada.data().rol;
@@ -73,11 +90,114 @@ function Aplicacion() {
     } else {
       setUser(null);
     }
-  });
+  });*/
 
 
   return (
     <div className="Aplicacion">
+<AuthContextProvider>
+
+ <Routes>
+
+<Route path="/login" element={<Publicas />} >
+  <Route index element={<Login />} />
+</Route>
+
+<Route path="Registrador" element={<RegistradorRoute/>}>
+  <Route index element={<Inicio />} />
+  <Route path="cambiarContra" element={<CambiarContra />} />
+</Route>
+
+  <Route path="/" element={<Privada/>}>
+
+  <Route index element={<Inicio />} />
+  <Route path="cambiarContra" element={<CambiarContra />} />
+  
+    <Route path="instituciones" element={<Instituciones  />} />
+    <Route path="beneficiarios" element={<Beneficiarios  />} />
+    <Route path="seguimiento" element={<Seguimiento  />} />
+          
+    <Route path="registrar" element={<Registrar />} />
+    <Route path="verInstitucion" element={<VerInstitucion />} />
+    <Route path="editar-institucion/:institucionId" element={<EditarInstitucion />} />
+    <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios  />} />
+    <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario  />} />
+         
+    <Route path="asistencias" element={<VerAsistencias/>} />
+    <Route path="asistencias/:institucionId" element={<ListaAsistencias  />} />
+    <Route path="nutricion" element={<Nutricion />} />
+    <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion />} />
+    <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica />} />
+    <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={<LeerExcel/>} />
+    <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion />} />
+
+    <Route path="usuarios" element={<UserRoute/>}>
+      <Route index element={<Usuarios />} />
+      <Route path="verUsuarios" element={<VerUsuarios  />} />
+      <Route path="registrarUsuario" element={<RegistroUsuario />} />
+      <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios />} />
+
+    </Route>
+  </Route>
+ 
+
+</Routes>
+
+
+
+{/*}            // El usuario no está autenticado, mostrar componente de inicio de sesión
+            <Login user={user} /> 
+          ) : (
+            // El usuario está autenticado, mostrar rutas protegidas
+           
+
+
+          <Route path="/" element={<Inicio user={user} />} />
+          <Route path="cambiarContra" element={<CambiarContra user={user} />} />
+          {user.rol !== undefined && user.rol !== "Registrador" ? 
+          <>
+          <Route path="instituciones" element={<Instituciones user={user} />} />
+          <Route path="beneficiarios" element={<Beneficiarios user={user} />} />
+          <Route path="seguimiento" element={<Seguimiento user={user} />} />
+          
+          <Route path="registrar" element={<Registrar user={user}/>} />
+          <Route path="verInstitucion" element={<VerInstitucion user={user} />} />
+          <Route path="editar-institucion/:institucionId" element={<EditarInstitucion user={user}/>} />
+          <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios user={user} />} />
+          <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario user={user} />} />
+         
+          <Route path="asistencias" element={<VerAsistencias user={user} />} />
+          <Route path="asistencias/:institucionId" element={<ListaAsistencias user={user} />} />
+          <Route path="nutricion" element={<Nutricion user={user}/>} />
+          <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion user={user}/>} />
+          <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica user={user} />} />
+          <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={<LeerExcel user={user}/>} />
+          <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion user={user}/>} />
+          
+          {user.rol === "Administrador" ? 
+        <>
+          <Route path="registrarUsuario" element={<RegistroUsuario user={user} />} />
+          <Route path="verUsuarios" element={<VerUsuarios user={user} />} />
+          <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios user={user}/>} />
+          <Route path="usuarios" element={<Usuarios user={user}/>} />
+          </>
+          : <Route path=""/>}</>
+          :<Route path=""/>}
+          
+        </Routes>
+          )*/}
+
+
+</AuthContextProvider>
+      
+    </div>
+  )
+}
+
+export default Aplicacion
+
+
+/*<div className="Aplicacion">
 
       {user === null ? <Login user={user} setUser={setUser} /> :
         <Routes>
@@ -116,8 +236,4 @@ function Aplicacion() {
         </Routes>
         
       }
-    </div>
-  )
-}
-
-export default Aplicacion
+    </div>*/

@@ -60,7 +60,7 @@ const EditarInstitucion = ({user}) => {
     try {
       await updateDoc(docuRef, usuario);
       console.log('Datos enviados:', usuario);
-      navigate(`/verUsuarios`);
+      navigate(`/usuarios/verUsuarios`);
     } catch (error) {
       console.error('Error al modificar beneficiario:', error);
       alert(error.message);
