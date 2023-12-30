@@ -51,7 +51,7 @@ const ListaUsuarios = ({ usuarios }) => {
               <td>{usuario.correo}</td>
               <td>{usuario.rol}</td>
               <td>{usuario.institucionN}</td>
-              <td><Link to={`/editar-usuario/${usuario.id}`}>
+              <td><Link to={`/usuarios/editar-usuario/${usuario.id}`}>
                   <button>Editar</button>
                 </Link>
                 {/*<button onClick={() => eliminarUsuario(usuario.id)}>Eliminar</button>*/}</td>

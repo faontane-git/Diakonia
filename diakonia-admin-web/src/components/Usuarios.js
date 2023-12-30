@@ -9,10 +9,10 @@ const Usuarios = ({user}) => {
 
   const goRegistrar = () => {
 
-    navigate('/registrarUsuario');
+    navigate('registrarUsuario');
   }
   const goVerRegistro = () => {
-    navigate('/verUsuarios')
+    navigate('verUsuarios')
   };
 
   return (

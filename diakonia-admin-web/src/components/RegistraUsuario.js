@@ -5,21 +5,29 @@ import { useNavigate } from 'react-router-dom';
 import { useState ,useEffect } from 'react';
 import '../estilos/RegistraUsuario.css';
 
+
+
 import firebaseApp from "../firebase-config";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { getFirestore, doc, collection, setDoc, getDocs } from "firebase/firestore";
+import { getFirestore, doc, collection, setDoc, getDocs, addDoc } from "firebase/firestore";
+
+var bcrypt = require('bcryptjs');
+
 const auth = getAuth(firebaseApp);
 
+
 const RegistroUsuario = ({user}) => {
+
+  
   
   const navigate = useNavigate();
  
   const goBack = () => {    
-    navigate('/');
+    navigate('/usuarios');
   }
 
   const [data, setData] = useState([]);
@@ -41,6 +49,19 @@ const RegistroUsuario = ({user}) => {
     );
   }, []);
 
+  const hashPassword = async (password) => {
+    const saltRounds = 10; // Número de rondas de sal para el hash
+  
+    try {
+      const hashi = await bcrypt.hash(password, saltRounds);
+      return hashi;
+    } catch (error) {
+      throw new Error('Error al encriptar la contraseña');
+    }
+  };
+
+
+
   // Función para manejar el envío del formulario
   async function registrarUsuario(email, contraseña, rol, institucionId, institucionN) {
     // Validar que la contraseña tenga más de 6 caracteres
@@ -52,28 +73,49 @@ const RegistroUsuario = ({user}) => {
     const firestore = getFirestore(firebaseApp);
 
     try {
-      const infoUsuario = await createUserWithEmailAndPassword(
+      /*const infoUsuario = await createUserWithEmailAndPassword(
         auth,
         email,
         contraseña
-      );
+      );*/
 
-      console.log("Registro:", infoUsuario.user.uid);
+      //console.log("Registro:", infoUsuario.user.uid);
+      const hashedPassword= await hashPassword(contraseña);
 
-      const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
-      await setDoc(docuRef, {
+      //const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
+
+      const usuariosCollection = collection(firestore, 'usuarios')
+
+      const usuario = {
         correo: email,
+        contraseña: hashedPassword,
+        rol: rol,
+        institucionId: institucionId,
+        institucionN: institucionN,
+      }
+
+      const agregar = addDoc(usuariosCollection, usuario);
+
+      agregar
+        .then((funciono) => {
+          alert("Nuevo usuario añadido");
+          goBack();
+        })
+
+      /*await setDoc(docuRef, {
+        correo: email,
+        contraseña: contraseña,
         rol: rol,
         institucionId: institucionId,
         institucionN: institucionN,
       });
 
       goBack();
-      signOut(auth);
-      alert("Se creó el usuario exitosamente.");
+      //signOut(auth);
+      alert("Se creó el usuario exitosamente.");*/
     } catch (error) {
       console.error("Error al registrar usuario:", error.message);
-      alert("Error al registrar usuario. Por favor, verifica los datos.");
+      alert("Error al registrar usuario. Por favor, verificar los datos.");
     }
   }
 
