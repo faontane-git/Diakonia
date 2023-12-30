@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Button, TextInput, Alert, TouchableOpacity } from 'react-native';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
 import { useNavigation } from '@react-navigation/native';
 
 const TomarAsistencia = () => {
@@ -27,6 +26,14 @@ const TomarAsistencia = () => {
     const getCurrentHour = () => {
         const hour = new Date().getHours();
         setCurrentHour(hour);
+
+        // Verificar si la hora es mayor a las 3 PM (15 en formato de 24 horas)
+        if (hour >= 15) {
+            Alert.alert(
+                '¡Notificación!',
+                'No puedes tomar asistencia después de las 3 PM.',
+            );
+        }
     };
 
     const determineServicio = () => {
@@ -42,16 +49,6 @@ const TomarAsistencia = () => {
     useEffect(() => {
         determineServicio();
     }, [currentHour]);
-
-    const handleAuthentication = () => {
-        FingerprintScanner.authenticate({ onAttempt: () => console.log('Autenticación en progreso') })
-            .then(() => {
-                Alert.alert('Autenticación exitosa', 'Has tocado tu huella correctamente.');
-            })
-            .catch((error) => {
-                Alert.alert('Error de autenticación', error.message);
-            });
-    };
 
     return (
         <View style={styles.container}>
@@ -136,6 +133,10 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         paddingHorizontal: 20,
     },
+    row: {
+        justifyContent: 'space-between',
+        width: '100%',
+    },
     inputContainer: {
         marginBottom: 20,
         width: '100%',
@@ -151,8 +152,8 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     inputBoton: {
-        padding: 10,
-     },
+        padding: 0,
+    },
     inputNombre: {
         borderWidth: 1,
         borderColor: 'black',
@@ -177,17 +178,19 @@ const styles = StyleSheet.create({
         width: '70%',
         padding: 10,
     },
-    buttonContainer: {
-        marginLeft: 40,
-    },
     buttonText: {
         color: 'white',
         textAlign: 'center',
     },
+    buttonContainer: {
+        marginTop: 25,
+        alignItems: 'center',
+        width: '100%',
+    },
     buttonAsistencia: {
         backgroundColor: '#890202',
         padding: 10,
-        width: '80%',
+        width: '100%',
     },
 });
 

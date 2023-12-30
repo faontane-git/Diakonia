@@ -9,7 +9,7 @@ npm install xlsx
 npm install sweetalert2
 npm install emailjs-com
 
-install @mui/material @emotion/react @emotion/styled
+npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material@5.0.0-alpha.10
 
 npm i bcryptjs
