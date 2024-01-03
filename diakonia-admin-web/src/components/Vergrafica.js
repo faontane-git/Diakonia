@@ -3,6 +3,7 @@ import Cabecera from './Cabecera';
 import LinesChart from './Linechart';
 import { useParams } from 'react-router-dom';
 import { getFirestore, doc, collection, getDoc } from 'firebase/firestore';
+import * as XLSX from 'xlsx';
 import '../estilos/Vergrafica.css';
 
 const VerGrafica = ({ user }) => {
@@ -20,10 +21,33 @@ const VerGrafica = ({ user }) => {
     extraer();
   }, []);
 
+  const exportToXLSX = () => {
+    const wsData = data.fecha_seguimiento.map((mes, index) => ({
+      Fechas: mes,
+      'Peso(KG)': data.pesos[index],
+      'Talla(M)': data.talla[index],
+      'HGB(g/dL)': data.hgb[index],
+    }));
+
+    // Agrega el nombre del beneficiario en la primera celda
+    wsData.unshift({ Beneficiario: data.nombre });
+
+    const ws = XLSX.utils.json_to_sheet(wsData);
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'DatosNutricionales');
+
+    // Incluye el nombre del beneficiario en el nombre del archivo
+    const fileName = `datos_nutricionales_${data.nombre}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
+  };
+
   return (
     <div className="centered-container">
-      <Cabecera user={user}/>
+      <Cabecera user={user} />
       <h1>Nutricion gráfica de {data.nombre}</h1>
+
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
@@ -50,8 +74,6 @@ const VerGrafica = ({ user }) => {
         </div>
       </div>
 
-
-
       <table className="table">
         <thead>
           <tr>
@@ -72,6 +94,11 @@ const VerGrafica = ({ user }) => {
           ))}
         </tbody>
       </table>
+
+      <div id="export-button-container">
+        <button onClick={exportToXLSX}>Exportar a Excel</button>
+      </div>
+
     </div>
   );
 };

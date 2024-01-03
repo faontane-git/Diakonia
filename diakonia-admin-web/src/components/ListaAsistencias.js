@@ -87,8 +87,8 @@ const ListaAsistencias = ({ user }) => {
         <div className="filter-anio">
           <label htmlFor="filtroAnio">Filtrar por Año: </label>
           <select id="filtroAnio" className="custom-select">
+            <option value="2023">2023</option>
             <option value="2024">2024</option>
-            <option value="2025">2025</option>
           </select>
         </div>
       </div>
