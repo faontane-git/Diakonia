@@ -2,12 +2,13 @@ import React from 'react';
 import Cabecera from "./Cabecera";
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 import '../estilos/Registrar.css';
 
 import firebaseApp from "../firebase-config";
 import { getFirestore, collection, setDoc, addDoc } from "firebase/firestore";
 
-const RegistroInstitucion = ({user}) => {
+const RegistroInstitucion = ({ user }) => {
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -26,14 +27,28 @@ const RegistroInstitucion = ({user}) => {
   // Función para manejar el envío del formulario
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (initialDate === null || finalDate === null || initialDate > finalDate) {
-      alert("La fecha inicial debe ser anterior a la fecha final.");
+    if (nombre === '' || telefono === '' || direccion === '') {
+      Swal.fire({
+        title: 'Error',
+        text: '¡Por favor llene todos los campos!',
+        icon: 'error',
+      });
       return;
-    } else if (desayuno === false && almuerzo === false) {
-      alert("Por favor elija el tipo de servicio de la institución (al menos 1)")
+    }
+    else if (desayuno === false && almuerzo === false) {
+      Swal.fire({
+        title: 'Error',
+        text: '¡Por favor elija el tipo de servicio de la institución (al menos 1)!',
+        icon: 'error',
+      });
       return;
-    } else if (nombre === '' || telefono === '' || direccion === '') {
-      alert("Por favor llene todos los campos")
+    }
+    else if (initialDate === null || finalDate === null || initialDate > finalDate) {
+      Swal.fire({
+        title: 'Error',
+        text: '¡La fecha inicial debe ser anterior a la fecha final!',
+        icon: 'error',
+      });
       return;
     } else {
       const firestore = getFirestore()
@@ -54,12 +69,20 @@ const RegistroInstitucion = ({user}) => {
 
       agregar
         .then((funciono) => {
-          alert("Nueva institución añadida");
+          Swal.fire({
+            title: 'Éxito',
+            text: '¡Nueva institución añadida!',
+            icon: 'success',
+          });
           goBack();
         }).catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          alert("Error al agragar institución");
+          Swal.fire({
+            title: 'Error',
+            text: '¡Error al agregar institución!',
+            icon: 'error',
+          });
         })
 
       console.log(initialDate, finalDate);
@@ -68,7 +91,7 @@ const RegistroInstitucion = ({user}) => {
 
   return (
     <div className="centered-container">
-      <Cabecera user={user}/>
+      <Cabecera user={user} />
       <h1>Registrar Institución</h1>
       <form onSubmit={handleSubmit}>
 

@@ -34,3 +34,22 @@
   background-color: #fff;
   color: #333;
 }
+
+.custom-select {
+  padding: 8px;
+  margin-left: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-asistencia {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.filter-servicio,
+.filter-mes {
+  margin-right: 10px; /* Ajusta el espacio entre los filtros según tus preferencias */
+}

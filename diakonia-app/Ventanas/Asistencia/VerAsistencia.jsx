@@ -52,7 +52,15 @@ const VerAsistencia = () => {
 
     const convertirTimestampAFecha = (timestamp) => {
         const fecha = new Date(timestamp.seconds * 1000);
-        return fecha.toLocaleDateString('es-ES');
+        const day = addLeadingZero(fecha.getDate());
+        const month = addLeadingZero(fecha.getMonth() + 1);
+        const year = fecha.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
+        return formattedDate;
+    };
+
+    const addLeadingZero = (number) => {
+        return number < 10 ? `0${number}` : number;
     };
 
     useEffect(() => {
@@ -230,7 +238,7 @@ const styles = StyleSheet.create({
     tableRowBorder: {
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
-    }, 
+    },
     buscador: {
         backgroundColor: 'white',
         color: 'black',

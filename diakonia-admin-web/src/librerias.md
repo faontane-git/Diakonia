@@ -13,3 +13,7 @@ npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material@5.0.0-alpha.10
 
 npm i bcryptjs
+
+npm install react-datepicker
+npm install qrcode.react
+npm install @react-pdf/renderer --save

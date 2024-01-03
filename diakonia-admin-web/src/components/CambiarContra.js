@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 //import { View, Text, TextInput, Button } from 'react-native';
 import Cabecera from './Cabecera';
-
 import firebaseApp from "../firebase-config";
-
 import { useAuthContext } from './AuthContext';
-
 import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
-
 import { useNavigate } from 'react-router-dom';
+import '../estilos/CambiarContra.css';
 
 var bcrypt = require('bcryptjs');
 
@@ -77,7 +74,7 @@ const CambiarContra = () => {
   };
 
   return (
-    <div>
+    <div className="centered-container">
     <Cabecera user={user}/>
     <h1>Cambiar Contraseña</h1>
       <form onSubmit={handleChangePassword}>

@@ -1,15 +1,24 @@
 import React from 'react';
 import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { useAuth } from '../AuthContext';
 
 const Asistencia = () => {
     const navigation = useNavigation();
     const screenWidth = Dimensions.get('window').width;
+    const { updateScannedData } = useAuth();
     const handleOptionPress = (option) => {
+        if (option === 'TomarAsistencia') {
+            updateScannedData({
+                nombre: '',
+                institucion: '',
+                iDinstitucion: '',
+            });
+        }
+
         navigation.navigate(option);
     };
+
 
 
     return (
@@ -39,9 +48,11 @@ const Asistencia = () => {
                         source={require('../../assets/imagenes/verAsistencia.png')}
                     />
                 </TouchableOpacity>
+                {/*
                 <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('QR')}>
                     <Text style={[styles.text, { color: 'white' }]}>QR</Text>
                 </TouchableOpacity>
+                */}
             </ScrollView>
         </View>
     );

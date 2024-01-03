@@ -6,18 +6,26 @@ import { LineChart } from 'react-native-chart-kit';
 const Talla = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { nombreBeneficiario,fechas, tallas } = route.params;
+  const { nombreBeneficiario, fechas, tallas } = route.params;
+
+  // Eliminar datos con valor "-"
+  const datosLimpios = tallas.reduce((acc, talla, index) => {
+    if (talla !== "-") {
+      acc.fechas.push(fechas[index]);
+      acc.tallas.push(talla);
+    }
+    return acc;
+  }, { fechas: [], tallas: [] });
 
   // Datos para el gráfico de Talla en metros
   const heightData = {
-    labels: fechas,
+    labels: datosLimpios.fechas,
     datasets: [
       {
-        data: tallas,
+        data: datosLimpios.tallas ,
       },
     ],
   };
- 
 
   const handleOptionPress = (option) => {
     navigation.navigate(option);

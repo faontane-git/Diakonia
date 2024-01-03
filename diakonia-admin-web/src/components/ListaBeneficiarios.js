@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
 import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import QRCode from 'qrcode.react'; // Importa la biblioteca qrcode.react
 
 const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN } = useParams();
@@ -32,35 +33,36 @@ const ListaBeneficiarios = ({ user }) => {
   );
 
   function esActivo(beneficiario) {
-    console.log(beneficiario.activo)
     return beneficiario.activo === true;
- }
+  }
 
- async function eliminarBeneficiario(beneficiario) {
-  Swal.fire({
-    title:'Advertencia',
-    text:`Está seguro que desea eliminar ${beneficiario.nombre}`,
-    icon:'error',
-    showDenyButton: true,
-    denyButtonText: "No",
-    confirmButtonText:"Si",
-    confirmButtonColor: "#000000"
-  }).then(async response=>{if(response.isConfirmed){
-    const querydb = getFirestore();
-    const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
-    try {
-      await updateDoc(docuRef, {activo:false});
-      window.location.reload()
-    } catch (error) {
-      console.error('Error al eliminar institución:', error);
-      alert(error.message);
-    }
-  }})
-};
+  async function eliminarBeneficiario(beneficiario) {
+    Swal.fire({
+      title: 'Advertencia',
+      text: `Está seguro que desea eliminar ${beneficiario.nombre}`,
+      icon: 'error',
+      showDenyButton: true,
+      denyButtonText: "No",
+      confirmButtonText: "Si",
+      confirmButtonColor: "#000000"
+    }).then(async response => {
+      if (response.isConfirmed) {
+        const querydb = getFirestore();
+        const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
+        try {
+          await updateDoc(docuRef, { activo: false });
+          window.location.reload()
+        } catch (error) {
+          console.error('Error al eliminar institución:', error);
+          alert(error.message);
+        }
+      }
+    })
+  };
 
   return (
     <div className="centered-container">
-      <Cabecera user={user}/>
+      <Cabecera user={user} />
       <h1>Lista de Beneficiarios de {institucionN}</h1>
       <button id="buttonABeneficiarios" onClick={goAñadirBenef}>
         Añadir Beneficiarios
@@ -82,10 +84,11 @@ const ListaBeneficiarios = ({ user }) => {
             <th>Cédula</th>
             <th>Fecha de nacimiento</th>
             <th>Género</th>
-            <th>Número de personas menores en el hogar</th>
-            <th>Número de personas mayores en el hogar</th>
+            <th>Menores en casa</th>
+            <th>Mayores en casa</th>
             <th>Desayuno</th>
             <th>Almuerzo</th>
+            <th>Código QR</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -100,11 +103,14 @@ const ListaBeneficiarios = ({ user }) => {
               <td>{beneficiario.numero_de_personas_mayores_en_el_hogar}</td>
               {beneficiario.desayuno.length !== 0 ? <td>Si</td> : <td>No</td>}
               {beneficiario.almuerzo.length !== 0 ? <td>Si</td> : <td>No</td>}
+              {/* Muestra el código QR utilizando la biblioteca qrcode.react */}
+              <td>
+                <QRCode value={beneficiario.cedula} size={64} />
+              </td>
               <td>
                 <Link to={`/editar-beneficiario/${institucionId}/${institucionN}/${beneficiario.id}`}>
                   <button>Editar</button>
                 </Link>
-                
                 <button onClick={() => eliminarBeneficiario(beneficiario)}>Eliminar</button>
               </td>
             </tr>

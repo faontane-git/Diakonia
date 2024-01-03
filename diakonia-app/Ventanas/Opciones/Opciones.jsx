@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../AuthContext';  
+import { useAuth } from '../AuthContext';
 
 const Opciones = () => {
     const navigation = useNavigation();
@@ -25,10 +25,12 @@ const Opciones = () => {
             </View>
             <Text style={styles.title}>Opciones</Text>
             <Text style={styles.company}><Text>{institucionN}</Text></Text>
+            {/*
             <View style={styles.buttonsContainer}>
                 <Button title="Cambiar Contraseña" onPress={onPressCambiarContraseña} color="#890202" />
                 <Text style={{ padding: 10 }} />
             </View>
+            */}
             <Text style={{ padding: 25 }} />
             <View style={styles.buttonSesion}>
                 <Button title="Cerrar Sesión" onPress={onPressCerrarSesion} color="#890202" />

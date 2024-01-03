@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../AuthContext';  
 
 const TomarHuella = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [scannedData, setScannedData] = useState(null);
+  const { updateScannedData } = useAuth();
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -14,11 +17,24 @@ const TomarHuella = () => {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
-    setScannedData({ type, data });
-    // Puedes realizar acciones adicionales con el código QR escaneado
-    // Por ejemplo, realizar una navegación a otra pantalla o realizar una acción específica.
+    const parsedData = JSON.parse(data);
+    updateScannedData({
+      nombre: parsedData.nombre || '',
+      institucion: parsedData.institucion || '',
+      iDinstitucion: parsedData.iDinstitucion || '',
+    });
+    Alert.alert(
+      '¡Notificación!',
+      '¡Datos escaneados con éxito!',
+      [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('TomarAsistencia'),
+        },
+      ]
+    );
   };
 
   if (hasPermission === null) {
@@ -30,16 +46,19 @@ const TomarHuella = () => {
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
-      {scanned && (
-        <View style={styles.overlay}>
-          <Text style={styles.scanText}>Código QR Escaneado!</Text>
-          <Text style={styles.scanData}>{scannedData.data}</Text>
-        </View>
-      )}
+      <View style={styles.imagesContainer}>
+        <Image
+          style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
+          source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
+        />
+      </View>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>¡Escanea el código QR!</Text>
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={styles.barCodeScanner}
+        />
+      </View>
     </View>
   );
 };
@@ -47,27 +66,29 @@ const TomarHuella = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
+    backgroundColor: '#F5FCFF',
+    paddingVertical: 30,
   },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  imagesContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 50,
   },
-  scanText: {
-    fontSize: 18,
-    color: 'white',
-    marginBottom: 10,
+  textContainer: {
+    alignItems: 'center',
+    paddingVertical: 5,
   },
-  scanData: {
-    fontSize: 16,
-    color: 'white',
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  barCodeScanner: {
+    width: 600,
+    height: 600,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 50,
   },
 });
 

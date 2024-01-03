@@ -23,6 +23,7 @@ const Seguimiento = () => {
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
+        console.log(nutrientes);
       } catch (error) {
         console.error('Error al obtener documentos:', error);
       }

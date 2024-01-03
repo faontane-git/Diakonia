@@ -1,33 +1,91 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, Button, TextInput, Alert, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, Image, Alert, TextInput, TouchableOpacity } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useAuth } from '../AuthContext';
+import { Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, doc, query, where, getDoc, updateDoc, } from 'firebase/firestore';
+
 
 const TomarAsistencia = () => {
+    const { scannedData } = useAuth();
     const navigation = useNavigation();
+    const route = useRoute();
     const [currentDate, setCurrentDate] = useState('');
     const [currentHour, setCurrentHour] = useState('');
     const [servicio, setServicio] = useState('');
+    const nombre = scannedData?.nombre || '';
+    const institucion = scannedData?.institucion || '';
+    const iDinstitucion = scannedData?.iDinstitucion || '';
+    const idBeneficiario = scannedData?.iDinstitucion || '';
+
+    const registrarAsistencia = async () => {
+        const querydb = getFirestore();
+        const beneficiariosCollection = collection(querydb, 'beneficiarios');
+        const beneficiarioDoc = doc(beneficiariosCollection, '5vsGEsza5kLXwWAdyOQu');
+
+        try {
+            // Obtén el documento actual del beneficiario
+            const beneficiarioSnapshot = await getDoc(beneficiarioDoc);
+
+            if (beneficiarioSnapshot.exists()) {
+                const beneficiarioData = beneficiarioSnapshot.data();
+                // Verifica si 'desayuno' existe antes de acceder a él
+                const desayunoArray = beneficiarioData.desayuno || [];
+                // Convierte la fecha actual a un objeto Timestamp
+                const timestamp = Timestamp.fromDate(new Date());
+
+                // Verifica si la fecha actual ya está registrada
+                if (isDateAlreadyRegistered(beneficiarioData.dias, timestamp)) {
+                    Alert.alert('¡Asistencia Duplicada!', 'La asistencia ya está registrada para hoy.');
+                }
+                else {
+                    // Actualiza el documento con los nuevos datos
+                    await updateDoc(beneficiarioDoc, {
+                        desayuno: [...desayunoArray, 1],
+                        dias: [...(beneficiarioData.dias || []), timestamp],
+                    });
+                    Alert.alert('Asistencia Registrada', 'La asistencia ha sido registrada con éxito.');
+                }
+            
+            } else {
+                console.error('El documento del beneficiario no existe.');
+            }
+        } catch (error) {
+            console.error('Error al registrar la asistencia:', error);
+        }
+    };
+
+    const isDateAlreadyRegistered = (datesArray, newDate) => {
+        return (
+            datesArray &&
+            datesArray
+                .map(timestamp => timestamp.toDate().toLocaleDateString('es-ES'))
+                .some(date => date === newDate.toDate().toLocaleDateString('es-ES'))
+        );
+    };
 
     useEffect(() => {
         getCurrentDate();
         getCurrentHour();
     }, []);
 
-    const handleOptionPress = (option) => {
-        navigation.navigate(option);
-    };
-
     const getCurrentDate = () => {
         const date = new Date();
-        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        const day = addLeadingZero(date.getDate());
+        const month = addLeadingZero(date.getMonth() + 1);
+        const year = date.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
         setCurrentDate(formattedDate);
+    };
+
+    const addLeadingZero = (number) => {
+        return number < 10 ? `0${number}` : number;
     };
 
     const getCurrentHour = () => {
         const hour = new Date().getHours();
         setCurrentHour(hour);
 
-        // Verificar si la hora es mayor a las 3 PM (15 en formato de 24 horas)
         if (hour >= 15) {
             Alert.alert(
                 '¡Notificación!',
@@ -40,7 +98,7 @@ const TomarAsistencia = () => {
         if (currentHour >= 6 && currentHour <= 10) {
             setServicio('Desayuno');
         } else if (currentHour >= 11 && currentHour <= 23) {
-            setServicio('Almuerzo');
+            setServicio('Desayuno');
         } else {
             setServicio('');
         }
@@ -48,7 +106,7 @@ const TomarAsistencia = () => {
 
     useEffect(() => {
         determineServicio();
-    }, [currentHour]);
+    }, [currentHour, scannedData]);
 
     return (
         <View style={styles.container}>
@@ -69,24 +127,22 @@ const TomarAsistencia = () => {
                         <TextInput style={styles.inputFecha} value={currentDate} editable={false} />
                     </View>
 
-                    <View style={styles.inputBoton}>
-                        <Button
-                            title="Tomar QR"
-                            onPress={() => handleOptionPress('TomarHuella')}
-                            color="#890202"
-                        />
-                    </View>
+                    <TouchableOpacity
+                        style={styles.buttonAsistencia}
+                        onPress={() => navigation.navigate('TomarHuella')}
+                    >
+                        <Text style={styles.buttonText}>Tomar QR</Text>
+                    </TouchableOpacity>
                 </View>
-
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Nombre</Text>
-                    <TextInput style={styles.inputNombre} value="" editable={false} />
+                    <TextInput style={styles.inputNombre} value={nombre || ''} editable={false} />
                 </View>
 
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Institución</Text>
-                    <TextInput style={styles.inputInstitucion} value="" editable={false} />
+                    <TextInput style={styles.inputInstitucion} value={institucion || ''} editable={false} />
                 </View>
 
                 <View style={styles.inputContainer}>
@@ -97,16 +153,15 @@ const TomarAsistencia = () => {
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={styles.buttonAsistencia}
-                        onPress={() => console.log('Registrar Asistencia')}
+                        onPress={registrarAsistencia}
                     >
                         <Text style={styles.buttonText}>Registrar Asistencia</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </View >
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

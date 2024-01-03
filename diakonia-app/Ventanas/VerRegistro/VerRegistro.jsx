@@ -66,8 +66,8 @@ const VerRegistro = () => {
         />
       </View>
       <Text style={styles.title}>Registro</Text>
-
-      {/* ComboBox */}
+      {/*
+       ComboBox 
       <DropDownPicker
         open={open}
         value={value}
@@ -78,7 +78,7 @@ const VerRegistro = () => {
         containerStyle={styles.dropdownContainer}
         style={styles.dropdown}
       />
-
+      */}
       {/* TextInput para búsqueda */}
       <TextInput
         style={styles.buscador}
@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     marginHorizontal: 20,
-    marginTop:10,
+    marginTop: 10,
     marginBottom: 10,
     borderWidth: 1,
     borderColor: 'black',
-    width:345,
+    width: 345,
   },
 
 });

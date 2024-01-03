@@ -6,18 +6,26 @@ import { LineChart } from 'react-native-chart-kit';
 const Hemoglobina = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { nombreBeneficiario,fechas, hgbs } = route.params;
+  const { nombreBeneficiario, fechas, hgbs } = route.params;
+
+  // Eliminar datos con valor "-"
+  const datosLimpios = hgbs.reduce((acc, hgb, index) => {
+    if (hgb !== "-") {
+      acc.fechas.push(fechas[index]);
+      acc.hgbs.push(hgb);
+    }
+    return acc;
+  }, { fechas: [], hgbs: [] });
 
   // Datos para el gráfico de Talla en metros
   const heightData = {
-    labels: fechas,
+    labels: datosLimpios.fechas,
     datasets: [
       {
-        data: hgbs,
+        data: datosLimpios.hgbs,
       },
     ],
   };
- 
 
   const handleOptionPress = (option) => {
     navigation.navigate(option);
