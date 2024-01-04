@@ -61,7 +61,7 @@ const [anchorEl, setAnchorEl] = useState(null);
 
             {user.rol !== "Registrador"? 
             <li id="opcion">
-              <Link to="/instituciones">Instituciones</Link>
+              <Link to="/instituciones">Instituciones y Convenios</Link>
               </li> : <li></li>}
 
             {user.rol !== "Registrador"? 

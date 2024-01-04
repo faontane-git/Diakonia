@@ -19,8 +19,8 @@ const Instituciones = ({user}) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Instituciones</h1>
-      <button id="buttonRegistrar" onClick={goRegistrar}>Registrar</button>
-      <button id="buttonVerInstituciones" onClick={goVerRegistro}>Ver Instituciones</button>
+      <button id="buttonRegistrar" onClick={goRegistrar}>Registrar Institución</button>
+      <button id="buttonVerInstituciones" onClick={goVerRegistro}>Ver Instituciones y Convenios</button>
     </div>
   );
 };
