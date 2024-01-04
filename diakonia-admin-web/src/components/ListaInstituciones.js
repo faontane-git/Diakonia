@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import '../estilos/ListaInstituciones.css';
-import { Link } from 'react-router-dom';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 
 const ListaInstituciones = ({ instituciones }) => {
+
+  const navigate = useNavigate();
+
+  const goConvenios = (institucion) => {
+    navigate(`/instituciones/${institucion.id}/${institucion.nombre}`);
+  }
+
   const [searchTerm, setSearchTerm] = useState('');
+
 
   const filteredInstituciones = instituciones.filter((institucion) =>
     institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -59,6 +68,8 @@ const ListaInstituciones = ({ instituciones }) => {
     XLSX.writeFile(wb, 'instituciones.xlsx');
   };
 
+
+
   return (
     <div className="centered-container">
       <h1>Lista de Instituciones</h1>
@@ -77,10 +88,8 @@ const ListaInstituciones = ({ instituciones }) => {
           <tr>
             <th>Nombre</th>
             <th>Teléfono</th>
-            <th>Ubicación</th>
-            <th>Servicios</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Final</th>
+            <th>RUC</th>
+            
             <th>Acciones</th>
           </tr>
         </thead>
@@ -89,18 +98,12 @@ const ListaInstituciones = ({ instituciones }) => {
             <tr key={index}>
               <td>{institucion.nombre}</td>
               <td>{institucion.telefono}</td>
-              <td>{institucion.direccion}</td>
-              <td>
-                {institucion.desayuno && 'Desayuno '}
-                {institucion.almuerzo && 'Almuerzo'}
-              </td>
-              <td>{institucion.fecha_inicial}</td>
-              <td>{institucion.fecha_final}</td>
+              <td>{institucion.ruc}</td>
               <td>
                 <Link to={`/editar-institucion/${institucion.id}`}>
                   <button>Editar</button>
                 </Link>
-                <button onClick={() => eliminarInstitucion(institucion)}>Eliminar</button>
+               <button onClick={() => goConvenios(institucion)}>Convenios</button>   
               </td>
             </tr>
           ))}

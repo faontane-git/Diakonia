@@ -19,6 +19,7 @@ import ListaBeneficiarios from "./components/ListaBeneficiarios.js"
 import EditarBeneficiario from "./components/EditarBeneficiario.js"
 import Login from "./components/login.js"
 
+
 import VerAsistencias from "./components/VerAsistencias.js"
 import ListaAsistencias from "./components/ListaAsistencias.js"
 import Nutricion from "./components/Nutricion.js"
@@ -27,6 +28,10 @@ import VerGrafica from "./components/Vergrafica.js"
 import LeerExcel from "./components/LeerExcel.js"
 import AñadirNutricion from "./components/AñadirNutricion.js"
 import EditarInstitucion from "./components/EditarInstitucion.js";
+
+import Convenios from "./components/Convenios.js";
+import EditarConvenio from "./components/EditarConvenio.js";
+import AñadirConvenio from "./components/AñadirConvenio.js";
 
 import Usuarios from "./components/Usuarios.js"
 import RegistroUsuario from "./components/RegistraUsuario.js"
@@ -45,6 +50,9 @@ import Privada from "./components/Privadas.js"
 import UserRoute from "./components/UserRoute.js"
 import RegistradorRoute from "./components/RegistradorRoute.js"
 import { SupervisedUserCircleOutlined } from "@mui/icons-material";
+
+
+
 
 
 const auth = getAuth(firebaseApp);
@@ -114,6 +122,11 @@ function Aplicacion() {
   <Route path="cambiarContra" element={<CambiarContra />} />
   
     <Route path="instituciones" element={<Instituciones  />} />
+
+    <Route path="instituciones/:institucionId/:institucionN" element={<Convenios  />} />
+    <Route path="editar-convenio/:institucionId/:institucionN/:convenioId" element={<EditarConvenio  />} />
+    <Route path="instituciones/:institucionId/:institucionN/añadirConvenio" element={<AñadirConvenio/>} />
+
     <Route path="beneficiarios" element={<Beneficiarios  />} />
     <Route path="seguimiento" element={<Seguimiento  />} />
           
