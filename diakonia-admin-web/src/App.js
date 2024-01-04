@@ -17,6 +17,7 @@ import Registrar from "./components/Registrar.js"
 import VerInstitucion from "./components/VerInstitucion.js"
 import ListaBeneficiarios from "./components/ListaBeneficiarios.js"
 import EditarBeneficiario from "./components/EditarBeneficiario.js"
+import BeneficiariosConvenios from "./components/BeneficiariosConvenios.js";
 import Login from "./components/login.js"
 
 
@@ -50,6 +51,7 @@ import Privada from "./components/Privadas.js"
 import UserRoute from "./components/UserRoute.js"
 import RegistradorRoute from "./components/RegistradorRoute.js"
 import { SupervisedUserCircleOutlined } from "@mui/icons-material";
+
 
 
 
@@ -133,15 +135,16 @@ function Aplicacion() {
     <Route path="registrar" element={<Registrar />} />
     <Route path="verInstitucion" element={<VerInstitucion />} />
     <Route path="editar-institucion/:institucionId" element={<EditarInstitucion />} />
-    <Route path="beneficiarios/:institucionId/:institucionN" element={<ListaBeneficiarios  />} />
-    <Route path="editar-beneficiario/:institucionId/:institucionN/:beneficiarioid" element={<EditarBeneficiario  />} />
+    <Route path="beneficiarios/:institucionId/:institucionN" element={<BeneficiariosConvenios  />} />
+    <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaBeneficiarios  />} />
+    <Route path="editar-beneficiario/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<EditarBeneficiario  />} />
          
     <Route path="asistencias" element={<VerAsistencias/>} />
     <Route path="asistencias/:institucionId" element={<ListaAsistencias  />} />
     <Route path="nutricion" element={<Nutricion />} />
     <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion />} />
     <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica />} />
-    <Route path="beneficiarios/:institucionId/:institucionN/añadirbenef" element={<LeerExcel/>} />
+    <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN/añadirbenef" element={<LeerExcel/>} />
     <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion />} />
 
     <Route path="usuarios" element={<UserRoute/>}>

@@ -41,7 +41,7 @@ const Beneficiarios = ({user}) => {
             filteredData.map((institucion) => (
               <li key={institucion.id}>
                 <Link to={`/beneficiarios/${institucion.id}/${institucion.nombre}`} className="centered-link">
-                  {institucion.nombre}- Rango de Fecha: {institucion.fecha_inicial}/{institucion.fecha_final}
+                  Nombre: {institucion.nombre} - RUC: {institucion.ruc}
                 </Link>
               </li>
             ))

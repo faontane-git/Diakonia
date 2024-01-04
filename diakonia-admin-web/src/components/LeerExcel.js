@@ -8,20 +8,29 @@ import Swal from 'sweetalert2';
 import { getFirestore, doc, collection, addDoc, getDoc, getDocs, where, query } from "firebase/firestore";
 
 const LeerExcel = ({ user }) => {
-  const { institucionId, institucionN } = useParams();
+  const { institucionId, institucionN, convenioId, convenioN } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate(`/beneficiarios/${institucionId}/${institucionN}`);
+    navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
   }
+  const convertirTimestampAFecha = (timestamp) => {
+    return timestamp.toLocaleDateString('es-ES');
+  };
+
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+    //const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+    const beneficiariosQuery = query(
+      beneficiariosCollection,
+      where('institucionId', '==', institucionId),
+      where('convenioId', '==', convenioId)
+    );
 
     getDocs(beneficiariosQuery).then((res) =>
       setData({
@@ -61,13 +70,22 @@ const LeerExcel = ({ user }) => {
       const n_menores = jsonData.slice(1).map((fila) => fila[5]);
       const n_mayores = jsonData.slice(1).map((fila) => fila[6]);
 
+      
+
       const nuevosBeneficiarios = nombres.map((nombre, index) => {
+        
+        //const [dia, mes, anio] = f_nacimiento[index].split('/');
+        //const fechaNacimiento = new Date(`${anio}-${mes}-${dia}`);
+        const fechaNacimiento = new Date((f_nacimiento[index] - 2) * 24 * 60 * 60 * 1000 + new Date(1900, 0, 1).getTime());
+        console.log(fechaNacimiento);
+
         const codigoQR = generateQRCode(cedula[index]);
         return {
           institucionId: institucionId,
+          convenioId: convenioId,
           nombre,
           cedula: cedula[index],
-          fecha_nacimiento: f_nacimiento[index],
+          fecha_nacimiento: fechaNacimiento,
           genero: genero[index],
           numero_contacto: n_contacto[index],
           numero_de_personas_menores_en_el_hogar: n_menores[index],
@@ -139,7 +157,8 @@ const LeerExcel = ({ user }) => {
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-      <h1>Lista de Beneficiarios</h1>
+      <h1>Institución: {institucionN}</h1>
+      <h3>Añadir Beneficiarios</h3>
       <h3>¡Por favor, suba el Excel con la información solicitada!</h3>
       <input type="file" onChange={handleFileUpload} />
       {Nbeneficiarios.length > 0 && (
@@ -161,7 +180,7 @@ const LeerExcel = ({ user }) => {
               <tr key={index}>
                 <td>{Nbeneficiario.nombre}</td>
                 <td>{Nbeneficiario.cedula}</td>
-                <td>{Nbeneficiario.fecha_nacimiento}</td>
+                <td>{convertirTimestampAFecha(Nbeneficiario.fecha_nacimiento)}</td>
                 <td>{Nbeneficiario.genero}</td>
                 <td>{Nbeneficiario.numero_contacto}</td>
                 <td>{Nbeneficiario.numero_de_personas_menores_en_el_hogar}</td>

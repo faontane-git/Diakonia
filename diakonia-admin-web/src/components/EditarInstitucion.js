@@ -11,7 +11,7 @@ const EditarInstitucion = ({ user }) => {
 
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
-  const [ubicacion, setUbicacion] = useState('');
+  const [ruc, setruc] = useState('');
 
   useEffect(() => {
     const obtenerDatosInstitucion = async () => {
@@ -25,7 +25,7 @@ const EditarInstitucion = ({ user }) => {
         // Asignar valores iniciales a los estados
         setNombre(beneficiarioData.nombre || '');
         setTelefono(beneficiarioData.telefono || '');
-        setUbicacion(beneficiarioData.direccion || '');
+        setruc(beneficiarioData.ruc || '');
       }
     };
 
@@ -40,7 +40,7 @@ const EditarInstitucion = ({ user }) => {
     const institucion = {
       nombre,
       telefono,
-      direccion: ubicacion,
+      ruc: ruc,
     };
 
     try {
@@ -94,12 +94,12 @@ const EditarInstitucion = ({ user }) => {
         </div>
 
         <div id="txtf_nacimiento">
-          <label htmlFor="f_nacimiento"><b>Ubicación</b></label>
+          <label htmlFor="f_nacimiento"><b>Ruc</b></label>
           <input
             type="text"
             id="l_einstitucion"
-            value={ubicacion}
-            onChange={(e) => setUbicacion(e.target.value)}
+            value={ruc}
+            onChange={(e) => setruc(e.target.value)}
           />
         </div>
         <div id='btneinstitucion'>

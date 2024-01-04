@@ -6,7 +6,7 @@ import { useAuthContext } from './AuthContext';
 import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import '../estilos/CambiarContra.css';
-
+import Swal from 'sweetalert2';
 var bcrypt = require('bcryptjs');
 
 
@@ -61,16 +61,36 @@ const CambiarContra = () => {
   async function handleChangePassword(event) {
     event.preventDefault();
     if (currentPassword === newPassword) {
+      if(currentPassword.length < 6){
+        Swal.fire({
+          title: 'Error',
+          text: '¡La contraseña debe tener 6 caracteres mínimo!',
+          icon: 'error',
+        });
+        return;
+      }else{
       try {
         const hashi = await hashPassword(currentPassword);
         ActualizarUsuario(user.id, hashi)
-        alert('Contraseña cambiada exitosamente');
+        Swal.fire({
+          title: 'Error',
+          text: '¡La contraseña debe tener 6 caracteres mínimo!',
+          icon: 'error',
+        });
         goBack();
       } catch (error) {
-        alert('Error al cambiar la contraseña', error.message);
-      }
+        Swal.fire({
+          title: 'Error',
+          text: '¡Error al cambiar contraseña!',
+          icon: 'error',
+        });
+      }}
     } else {
-      alert("Las constraseñas no coinciden")
+      Swal.fire({
+        title: 'Error',
+        text: '¡La contraseñas no coinciden!',
+        icon: 'error',
+      });
     }
   };
 

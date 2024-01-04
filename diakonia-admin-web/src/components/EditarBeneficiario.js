@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
 const EditarBeneficiario = ({ user }) => {
-  const { institucionId, institucionN, beneficiarioid } = useParams();
+  const { institucionId, institucionN, convenioId, convenioN ,beneficiarioid } = useParams();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState('');
@@ -15,6 +15,11 @@ const EditarBeneficiario = ({ user }) => {
   const [n_contacto, setNContacto] = useState('');
   const [n_menores, setNMenores] = useState('');
   const [n_mayores, setNMayores] = useState('');
+
+  const convertirTimestampAFecha = (timestamp) => {
+    const fecha = new Date(timestamp.seconds * 1000);
+    return fecha.toLocaleDateString('es-ES');
+  };
 
   useEffect(() => {
     const obtenerDatosBeneficiario = async () => {
@@ -28,7 +33,7 @@ const EditarBeneficiario = ({ user }) => {
         // Asignar valores iniciales a los estados
         setNombre(beneficiarioData.nombre || '');
         setCedula(beneficiarioData.cedula || '');
-        setFNacimiento(beneficiarioData.fecha_nacimiento || '');
+        setFNacimiento(convertirTimestampAFecha(beneficiarioData.fecha_nacimiento) || '');
         setGenero(beneficiarioData.genero || '');
         setNContacto(beneficiarioData.numero_contacto || '');
         setNMenores(beneficiarioData.numero_de_personas_menores_en_el_hogar || '');
@@ -39,36 +44,60 @@ const EditarBeneficiario = ({ user }) => {
     obtenerDatosBeneficiario();
   }, [beneficiarioid]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const querydb = getFirestore();
-    const docuRef = doc(querydb, 'beneficiarios', beneficiarioid);
 
-    const beneficiario = {
-      nombre,
-      cedula,
-      fecha_nacimiento: f_nacimiento,
-      genero,
-      numero_contacto: n_contacto,
-      numero_de_personas_menores_en_el_hogar: n_menores,
-      numero_de_personas_mayores_en_el_hogar: n_mayores,
-    };
+  const validarFormatoFecha = (input) => {
+    const regexFecha = /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
-    try {
-      await updateDoc(docuRef, beneficiario);
-      console.log('Datos enviados:', beneficiario);
-      navigate(`/beneficiarios/${institucionId}/${institucionN}`);
-    } catch (error) {
-      console.error('Error al modificar beneficiario:', error);
-      alert(error.message);
+    if (regexFecha.test(input)) {
+     
+    } else {
+      // La fecha no tiene el formato correcto, puedes mostrar un mensaje de error o tomar otra acción.
+      alert('Por favor, ingresa una fecha en formato dd/mm/yyyy');
+      return false
     }
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const regexFecha = /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+
+    if (regexFecha.test(f_nacimiento)) {
+      const querydb = getFirestore();
+      const docuRef = doc(querydb, 'beneficiarios', beneficiarioid);
+
+      const fechaString =f_nacimiento;
+      const [dia, mes, anio] = fechaString.split('/');
+      const fechaNaci = new Date(`${anio}-${mes}-${dia}T00:00:00`);
+      console.log(fechaNaci);
+      const beneficiario = {
+        nombre,
+        cedula,
+        fecha_nacimiento: fechaNaci,
+        genero,
+        numero_contacto: n_contacto,
+        numero_de_personas_menores_en_el_hogar: n_menores,
+        numero_de_personas_mayores_en_el_hogar: n_mayores,
+      };
+      try {
+        await updateDoc(docuRef, beneficiario);
+        console.log('Datos enviados:', beneficiario);
+        navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
+      } catch (error) {
+        console.error('Error al modificar beneficiario:', error);
+        alert(error.message);
+      }
+  }else{
+    alert('Por favor, ingresa una fecha en formato dd/mm/yyyy');
+  }};
 
   return (
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <h1>Editar Beneficiario</h1>
+        <h3>Institución: {institucionN}</h3>
+        <h3>Convenio: {convenioN}</h3>
+        <h3>Editar Beneficiario</h3>
+
       </div>
 
       <form id="form_ebeneficiario" onSubmit={handleSubmit}>

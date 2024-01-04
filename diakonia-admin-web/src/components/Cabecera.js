@@ -49,7 +49,7 @@ const [anchorEl, setAnchorEl] = useState(null);
     <nav>
       <div id="contenedorCabecera">
         <div id="logoCabecera">
-          <img id="logoBarra" src={Logo} alt="logo" />
+          <img id="logoBarra" src={Logo} alt="logo" onClick={goBack} />
         </div>
 
         <div id='elementos'>
