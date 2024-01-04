@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { useState ,useEffect } from 'react';
+import Swal from 'sweetalert2'; // Importa SweetAlert
 import '../estilos/RegistraUsuario.css';
-
-
 
 import firebaseApp from "../firebase-config";
 import {
@@ -19,14 +17,11 @@ var bcrypt = require('bcryptjs');
 
 const auth = getAuth(firebaseApp);
 
+const RegistroUsuario = ({ user }) => {
 
-const RegistroUsuario = ({user}) => {
-
-  
-  
   const navigate = useNavigate();
- 
-  const goBack = () => {    
+
+  const goBack = () => {
     navigate('/usuarios');
   }
 
@@ -36,9 +31,8 @@ const RegistroUsuario = ({user}) => {
   const [rol, setRol] = useState('Administrador');
   const [contraseña, setContraseña] = useState('');
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
-  const [institucionId, setInstitucionId]=useState('DiakoníaWeb');
-  const [institucionN, setInstitucionN]=useState('DiakoníaWeb');
-  
+  const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
+  const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
 
   useEffect(() => {
     const querydb = getFirestore();
@@ -50,8 +44,8 @@ const RegistroUsuario = ({user}) => {
   }, []);
 
   const hashPassword = async (password) => {
-    const saltRounds = 10; // Número de rondas de sal para el hash
-  
+    const saltRounds = 10;
+
     try {
       const hashi = await bcrypt.hash(password, saltRounds);
       return hashi;
@@ -60,29 +54,16 @@ const RegistroUsuario = ({user}) => {
     }
   };
 
-
-
-  // Función para manejar el envío del formulario
   async function registrarUsuario(email, contraseña, rol, institucionId, institucionN) {
-    // Validar que la contraseña tenga más de 6 caracteres
     if (contraseña.length < 6) {
-      alert("La contraseña debe tener al menos 6 caracteres.");
-      return; // Detener la ejecución si la contraseña no cumple con los requisitos
+      Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');
+      return;
     }
 
     const firestore = getFirestore(firebaseApp);
 
     try {
-      /*const infoUsuario = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        contraseña
-      );*/
-
-      //console.log("Registro:", infoUsuario.user.uid);
-      const hashedPassword= await hashPassword(contraseña);
-
-      //const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
+      const hashedPassword = await hashPassword(contraseña);
 
       const usuariosCollection = collection(firestore, 'usuarios')
 
@@ -98,24 +79,13 @@ const RegistroUsuario = ({user}) => {
 
       agregar
         .then((funciono) => {
-          alert("Nuevo usuario añadido");
+          Swal.fire('Éxito', 'Nuevo usuario añadido', 'success');
           goBack();
         })
 
-      /*await setDoc(docuRef, {
-        correo: email,
-        contraseña: contraseña,
-        rol: rol,
-        institucionId: institucionId,
-        institucionN: institucionN,
-      });
-
-      goBack();
-      //signOut(auth);
-      alert("Se creó el usuario exitosamente.");*/
     } catch (error) {
       console.error("Error al registrar usuario:", error.message);
-      alert("Error al registrar usuario. Por favor, verificar los datos.");
+      Swal.fire('Error', 'Error al registrar usuario. Por favor, verificar los datos.', 'error');
     }
   }
 
@@ -125,43 +95,45 @@ const RegistroUsuario = ({user}) => {
       setInstitucionId("DiakoníaWeb");
       setInstitucionN("DiakoníaWeb");
     }
-    console.log('institucion:',institucionN)
-    registrarUsuario(email, contraseña, rol, institucionId, institucionN);    
+    console.log('institucion:', institucionN)
+    registrarUsuario(email, contraseña, rol, institucionId, institucionN);
   };
 
   return (
-    <div className="centered-container">
-      <Cabecera user={user}/>
+    <div>
+      <div className="centered-container">
+        <Cabecera user={user} />
+        <h1>Registrar Usuario</h1>
+      </div>
 
-      <h1>Registrar Usuario</h1>
-      <form onSubmit={handleSubmit}>
+      <form id="form_rusuario" onSubmit={handleSubmit}>
 
         <div id="txtUemail">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <input
-            type="text"
-            id="email"
+            type="email"
+            id="email_usuario"
             value={email}
             onChange={(e) => setemail(e.target.value)}
           />
         </div>
 
         <div id="txtUContaseña">
-          <label htmlFor="contraseña">Contraseña:</label>
+          <label htmlFor="contraseña">Contraseña</label>
           <input
             type="password"
-            id="contraseña"
+            id="contraseña_usuario"
             value={contraseña}
             onChange={(e) => setContraseña(e.target.value)}
           />
         </div>
 
-        <div id="txtUrol">           
-          <label htmlFor="rol">Rol:</label>
+        <div id="txtUrol">
+          <label htmlFor="rol">Rol</label>
           <select id="rol" onChange={(e) => {
             setRol(e.target.value);
             setMostrarBarraAdicional(e.target.value === "Registrador");
-            if(mostrarBarraAdicional === false) {
+            if (mostrarBarraAdicional === false) {
               setInstitucionId("DiakoníaWeb");
               setInstitucionN("DiakoníaWeb");
             }
@@ -174,11 +146,11 @@ const RegistroUsuario = ({user}) => {
 
         {mostrarBarraAdicional && (
           <div id="txtUrol">
-            <label htmlFor="rol">Institución a la que pertenece:</label>
+            <label htmlFor="rol">Institución a la que pertenece</label>
             <select id="rol" onChange={(e) => {
               setInstitucionId(e.target.value);
               const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-              setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+              setInstitucionN(selectedInstitucion?.nombre);
             }}>
               <option value="" disabled selected>Selecciona una institución</option>
               {data.map((institucion) => (

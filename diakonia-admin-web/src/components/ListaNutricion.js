@@ -54,7 +54,7 @@ if(fechas.length>0){
   return (
     <div className="centered-container">
       <Cabecera user={user}/>
-      <h1>Lista de Nutricion de {institucionN}</h1>
+      <h1>Lista de Nutrición de {institucionN}</h1>
       <button id="buttonABeneficiarios" onClick={goAñadirNutri}>
         Añadir Seguimiento
       </button>

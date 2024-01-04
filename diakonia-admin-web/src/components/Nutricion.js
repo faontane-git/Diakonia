@@ -28,7 +28,7 @@ const Nutricion = ({ user }) => {
   return (
     <div className="centered-container">
       <Cabecera user={user}/>
-      <h1>Seguimiento</h1>
+      <h1>SeguimientoDD</h1>
       <div className="list-container-nutricion">
         <h2>Seleccione una institución</h2>
         {/*  

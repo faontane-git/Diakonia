@@ -1,0 +1,57 @@
+  .centered-container {
+      text-align: center;
+  }
+
+  #n_contraseña {
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 18px;
+  }
+
+  #form_ccontraseña {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+  }
+
+  label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+  }
+
+  #n_contraseña {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+
+  h1 {
+      color: #333;
+  }
+
+  #btnRegistrar {
+      margin-right: 6px;
+  }
+
+  #buttonIRegistrar {
+      background-color: #890202;
+      color: white;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+  }
+
+
+  #buttonIRegistrar:hover {
+      background-color: #890202;
+  }

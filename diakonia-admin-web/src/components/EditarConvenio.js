@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import '../estilos/EditarBeneficiario.css';
+import '../estilos/EditarConvenio.css';
 
-const EditarConvenio = ({user}) => {
+const EditarConvenio = ({ user }) => {
   const { institucionId, institucionN, convenioId } = useParams();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState('');
-  
   const [direccion, setDireccion] = useState('');
- 
 
   useEffect(() => {
     const obtenerDatosBeneficiario = async () => {
@@ -22,7 +21,6 @@ const EditarConvenio = ({user}) => {
       if (docSnapshot.exists()) {
         const convenioData = docSnapshot.data();
 
-        // Asignar valores iniciales a los estados
         setNombre(convenioData.nombre || '');
         setDireccion(convenioData.direccion || '');
       }
@@ -43,44 +41,41 @@ const EditarConvenio = ({user}) => {
 
     try {
       await updateDoc(docuRef, convenio);
-      console.log('Datos enviados:', convenio);
+      Swal.fire('¡Éxito!', 'Convenio editado con éxito', 'success');
       navigate(`/instituciones/${institucionId}/${institucionN}`);
     } catch (error) {
       console.error('Error al modificar convenio:', error);
-      alert(error.message);
+      Swal.fire('¡Error!', `Error al modificar convenio: ${error.message}`, 'error');
     }
   };
 
   return (
-    <div className="centered-container">
-      <Cabecera user={user}/>
-      <h1>Editar Convenio</h1>
+    <div>
+      <Cabecera user={user} />
+      <div className="centered-container">
+        <h1>Editar Convenio</h1>
+      </div>
 
-      <form onSubmit={handleSubmit}>
+      <form id="form_econvenio" onSubmit={handleSubmit}>
         <div id="txtNombre">
-          <label htmlFor="nombre"><b>Nombre:</b></label>
+          <label htmlFor="nombre"><b>Nombre</b></label>
           <input
             type="text"
-            id="nombre"
+            id="l_eConvenio"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
           />
         </div>
 
         <div id="txtcedula">
-          <label htmlFor="cedula"><b>Dirección:</b></label>
+          <label htmlFor="cedula"><b>Dirección</b></label>
           <input
             type="text"
-            id="cedula"
+            id="l_eConvenio"
             value={direccion}
-            onChange={(e) => {
-              // Permitir solo números y limitar la longitud a 10 dígitos
-         
-              setDireccion(e.target.value);
-            }}
+            onChange={(e) => setDireccion(e.target.value)}
           />
         </div>
-
 
         <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
       </form>

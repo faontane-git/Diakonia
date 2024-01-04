@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import '../estilos/EditarBeneficiario.css';
+import Swal from 'sweetalert2';
+import '../estilos/EditarInstitucion.css';
 
-const EditarInstitucion = ({user}) => {
+const EditarInstitucion = ({ user }) => {
   const { institucionId } = useParams();
   const navigate = useNavigate();
 
@@ -44,35 +45,45 @@ const EditarInstitucion = ({user}) => {
 
     try {
       await updateDoc(docuRef, institucion);
-      console.log('Datos enviados:', institucion);
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: '¡Institución editada con éxito!',
+      });
       navigate(`/verInstitucion`);
     } catch (error) {
       console.error('Error al modificar beneficiario:', error);
-      alert(error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `¡Error al modificar beneficiario: ${error.message}!`,
+      });
     }
   };
 
   return (
-    <div className="centered-container">
-      <Cabecera user={user}/>
-      <h1>Editar Institución</h1>
+    <div>
+      <Cabecera user={user} />
+      <div className="centered-container">
+        <h1>Editar Institución</h1>
+      </div>
 
-      <form onSubmit={handleSubmit}>
+      <form id="form_einstitucion" onSubmit={handleSubmit}>
         <div id="txtNombre">
-          <label htmlFor="nombre"><b>Nombre:</b></label>
+          <label htmlFor="nombre"><b>Nombre</b></label>
           <input
             type="text"
-            id="nombre"
+            id="l_einstitucion"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
           />
         </div>
 
         <div id="txtcedula">
-          <label htmlFor="cedula"><b>telefono:</b></label>
+          <label htmlFor="cedula"><b>Teléfono</b></label>
           <input
             type="text"
-            id="cedula"
+            id="l_einstitucion"
             value={telefono}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -83,15 +94,17 @@ const EditarInstitucion = ({user}) => {
         </div>
 
         <div id="txtf_nacimiento">
-          <label htmlFor="f_nacimiento"><b>Ubicación:</b></label>
+          <label htmlFor="f_nacimiento"><b>Ubicación</b></label>
           <input
             type="text"
-            id="f_nacimiento"
+            id="l_einstitucion"
             value={ubicacion}
             onChange={(e) => setUbicacion(e.target.value)}
           />
         </div>
-        <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
+        <div id='btneinstitucion'>
+          <button id="buttonEInstitucion" type="submit">Cambiar Datos</button>
+        </div>
       </form>
     </div>
   );

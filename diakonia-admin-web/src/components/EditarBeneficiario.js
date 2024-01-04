@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
-const EditarBeneficiario = ({user}) => {
+const EditarBeneficiario = ({ user }) => {
   const { institucionId, institucionN, beneficiarioid } = useParams();
   const navigate = useNavigate();
 
@@ -65,26 +65,28 @@ const EditarBeneficiario = ({user}) => {
   };
 
   return (
-    <div className="centered-container">
-      <Cabecera user={user}/>
-      <h1>Editar Beneficiario</h1>
+    <div>
+      <div className="centered-container">
+        <Cabecera user={user} />
+        <h1>Editar Beneficiario</h1>
+      </div>
 
-      <form onSubmit={handleSubmit}>
+      <form id="form_ebeneficiario" onSubmit={handleSubmit}>
         <div id="txtNombre">
-          <label htmlFor="nombre"><b>Nombre:</b></label>
+          <label htmlFor="nombre"><b>Nombre</b></label>
           <input
             type="text"
-            id="nombre"
+            id="l_beneficiario"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
           />
         </div>
 
         <div id="txtcedula">
-          <label htmlFor="cedula"><b>Cédula:</b></label>
+          <label htmlFor="cedula"><b>Cédula</b></label>
           <input
             type="text"
-            id="cedula"
+            id="l_beneficiario"
             value={cedula}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -95,19 +97,19 @@ const EditarBeneficiario = ({user}) => {
         </div>
 
         <div id="txtf_nacimiento">
-          <label htmlFor="f_nacimiento"><b>Fecha de nacimiento:</b></label>
+          <label htmlFor="f_nacimiento"><b>Fecha de nacimiento</b></label>
           <input
             type="text"
-            id="f_nacimiento"
+            id="l_beneficiario"
             value={f_nacimiento}
             onChange={(e) => setFNacimiento(e.target.value)}
           />
         </div>
 
         <div id="txtgenero">
-          <label htmlFor="genero"><b>Género:</b></label>
+          <label htmlFor="genero"><b>Género</b></label>
           <select
-            id="genero"
+            id="rol"
             value={genero}
             onChange={(e) => setGenero(e.target.value)}
           >
@@ -116,10 +118,10 @@ const EditarBeneficiario = ({user}) => {
           </select>
         </div>
         <div id="txtn_contacto">
-          <label htmlFor="n_contacto"><b>Número de contacto:</b></label>
+          <label htmlFor="n_contacto"><b>Número de contacto</b></label>
           <input
             type="text"
-            id="n_contacto"
+            id="l_beneficiario"
             value={n_contacto}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -130,10 +132,10 @@ const EditarBeneficiario = ({user}) => {
         </div>
 
         <div id="txtn_menores">
-          <label htmlFor="n_menores"><b>N. Hermanos menores:</b></label>
+          <label htmlFor="n_menores"><b>N. Hermanos menores</b></label>
           <input
             type="text"
-            id="n_menores"
+            id="l_beneficiario"
             value={n_menores}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -147,7 +149,7 @@ const EditarBeneficiario = ({user}) => {
           <label htmlFor="n_mayores"><b>N. Hermanos mayores:</b></label>
           <input
             type="text"
-            id="n_mayores"
+            id="l_beneficiario"
             value={n_mayores}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -156,8 +158,9 @@ const EditarBeneficiario = ({user}) => {
             }}
           />
         </div>
-
-        <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
+        <div id='btnRegistrar'>
+          <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
+        </div>
       </form>
     </div>
   );

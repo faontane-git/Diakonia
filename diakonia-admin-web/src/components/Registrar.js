@@ -35,7 +35,7 @@ const RegistroInstitucion = ({ user }) => {
         icon: 'error',
       });
       return;
-    } 
+    }
     else if (ruc.length < 13) {
       Swal.fire({
         title: 'Error',
@@ -43,7 +43,7 @@ const RegistroInstitucion = ({ user }) => {
         icon: 'error',
       });
     }
-     else {
+    else {
       const firestore = getFirestore()
       const InstitucionCollection = collection(firestore, 'instituciones');
 
@@ -51,7 +51,7 @@ const RegistroInstitucion = ({ user }) => {
         nombre: nombre,
         telefono: telefono,
         ruc: ruc,
-       
+
         activo: true,
       }
 
@@ -75,31 +75,34 @@ const RegistroInstitucion = ({ user }) => {
           });
         })
 
-     
+
     }
   };
 
   return (
-    <div className="centered-container">
-      <Cabecera user={user} />
-      <h1>Registrar Institución</h1>
-      <form onSubmit={handleSubmit}>
+    <div>
+      <div className="centered-container" >
+        <Cabecera user={user} />
+        <h1>Registrar Institución</h1>
+      </div>
+
+      <form id="form_eregistrar" onSubmit={handleSubmit}>
 
         <div id="txtNombre">
-          <label htmlFor="nombre"><b>Nombre:</b></label>
+          <label htmlFor="nombre"><b>Nombre</b></label>
           <input
             type="text"
-            id="nombre"
+            id="l_registrar"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
           />
         </div>
 
         <div id="txtTelefono">
-          <label htmlFor="telefono"><b>Teléfono:</b></label>
+          <label htmlFor="telefono"><b>Teléfono</b></label>
           <input
             type="text"
-            id="telefono"
+            id="l_registrar"
             value={telefono}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -110,10 +113,10 @@ const RegistroInstitucion = ({ user }) => {
         </div>
 
         <div id="txtDireccion">
-          <label htmlFor="direccion"><b>Ruc:</b></label>
+          <label htmlFor="direccion"><b>Ruc</b></label>
           <input
             type="text"
-            id="ruc"
+            id="l_registrar"
             value={ruc}
             onChange={(e) => {
               // Permitir solo números y limitar la longitud a 10 dígitos
@@ -123,8 +126,10 @@ const RegistroInstitucion = ({ user }) => {
           />
         </div>
 
-       
-        <button id="buttonFRegistrar" type="submit">Registrar</button>
+        <div id='btnRegistrar'>
+          <button id="buttonRRegistrar" type="submit">Registrar</button>
+        </div>
+
       </form>
     </div>
   );

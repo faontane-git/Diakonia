@@ -90,7 +90,7 @@ const VerGrafica = ({ user }) => {
               <td>{data.pesos[index]}</td>
               <td>{data.talla[index]}</td>
               <td>{data.hgb[index]}</td>
-            </tr>
+             b</tr>
           ))}
         </tbody>
       </table>

@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
-import '../estilos/EditarBeneficiario.css';
+import '../estilos/EditarUsuarios.css';
 
-const EditarInstitucion = ({user}) => {
+const EditarInstitucion = ({ user }) => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
   const [rol, setRol] = useState('Administrador');
   const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
   const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
+  const [correo, setCorreo] = useState('');
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
-  const [roloriginal, setRoloriginal]= useState('');
+  const [roloriginal, setRoloriginal] = useState('');
   //const [institucionIdoriginal, setInstitucionIdoriginal]= useState('');
-  const [institucionNoriginal, setInstitucionNoriginal]= useState('');
+  const [institucionNoriginal, setInstitucionNoriginal] = useState('');
 
   const [data, setData] = useState([]);
 
@@ -26,7 +27,7 @@ const EditarInstitucion = ({user}) => {
       setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
     );
   }, []);
-  
+
   useEffect(() => {
     const obtenerDatosInstitucion = async () => {
       const querydb = getFirestore();
@@ -35,8 +36,9 @@ const EditarInstitucion = ({user}) => {
 
       if (docSnapshot.exists()) {
         const beneficiarioData = docSnapshot.data();
-
+        console.log(beneficiarioData);
         // Asignar valores iniciales a los estados
+        setCorreo(beneficiarioData.correo || '');
         setRoloriginal(beneficiarioData.rol || '');
         //setInstitucionId(beneficiarioData.institucionId || '');
         //setInstitucionN(beneficiarioData.institucionN || '');
@@ -47,10 +49,10 @@ const EditarInstitucion = ({user}) => {
     obtenerDatosInstitucion();
   }, [usuarioId]);
 
-  async function ActualizarUsuario( rol,institucionId, institucionN) {
+  async function ActualizarUsuario(rol, institucionId, institucionN) {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'usuarios', usuarioId);
-    
+
     const usuario = {
       rol,
       institucionId,
@@ -65,32 +67,38 @@ const EditarInstitucion = ({user}) => {
       console.error('Error al modificar beneficiario:', error);
       alert(error.message);
     }
-    
+
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('institucion:',institucionN)
-    ActualizarUsuario(rol, institucionId, institucionN);    
+    console.log('institucion:', institucionN)
+    ActualizarUsuario(rol, institucionId, institucionN);
   };
 
 
 
   return (
-    <div className="centered-container">
-      <Cabecera user={user}/>
-      <h1>Editar Usuario</h1>
-        <h2>Datos originales:</h2>
+    <div>
+      <div className="centered-container">
+        <Cabecera user={user} />
+        <h1>Editar Usuario</h1>
+      </div>
+
+      <form id="form_eusuario" onSubmit={handleSubmit}>
+        <label>Correo: {correo} </label>
         <label>Rol: {roloriginal} </label>
         <label>Instinción: {institucionNoriginal} </label>
-      <form onSubmit={handleSubmit}>
-      <div id="txtUrol">           
-          <label htmlFor="rol">Rol:</label>
-          <select id="rol" onChange={(e) => {setRol(e.target.value);
-          setMostrarBarraAdicional(e.target.value === "Registrador");
-          if(mostrarBarraAdicional === false){setInstitucionId("DiakoníaWeb");
-  setInstitucionN("DiakoníaWeb");
-  }
+        <br></br>
+        <div id="txtUrol">
+          <label htmlFor="rol">Nuevo Rol</label>
+          <select id="rol" onChange={(e) => {
+            setRol(e.target.value);
+            setMostrarBarraAdicional(e.target.value === "Registrador");
+            if (mostrarBarraAdicional === false) {
+              setInstitucionId("DiakoníaWeb");
+              setInstitucionN("DiakoníaWeb");
+            }
           }}>
             <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
@@ -99,22 +107,22 @@ const EditarInstitucion = ({user}) => {
         </div>
 
         {mostrarBarraAdicional && (
-  <div id="txtUrol">
-    <label htmlFor="rol">Instinción a la que pertenece:</label>
-    <select id="rol" onChange={(e) => {
-    setInstitucionId(e.target.value);
-    const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-    setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
-  }}>
-    <option value="" disabled selected>Selecciona una institucion</option>
-      {data.map((institucion) => (
-        <option value={institucion.id}>{institucion.nombre}</option>
-      ))}
-    </select>
-  </div>
-)}
+          <div id="txtUrol">
+            <label htmlFor="rol">Institución a la que pertenece:</label>
+            <select id="rol" onChange={(e) => {
+              setInstitucionId(e.target.value);
+              const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+              setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+            }}>
+              <option value="" disabled selected>Selecciona una institucion</option>
+              {data.map((institucion) => (
+                <option value={institucion.id}>{institucion.nombre}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
+        <button id="buttonIRegistrar" type="submit">Cambiar Datos</button>
       </form>
     </div>
   );

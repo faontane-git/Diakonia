@@ -72,3 +72,7 @@ button:hover {
 td button {
   margin-right: 5px; 
 }
+
+#buttonExport{
+  margin-top: 10px;
+}

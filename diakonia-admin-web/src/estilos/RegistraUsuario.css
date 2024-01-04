@@ -1,64 +1,37 @@
-#txtUemail {
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
+#form_rusuario {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
-#txtUemail label {
-    margin-right: 10px;
-}
-
-#email {
-    width: 60%;
+#email_usuario {
+    width: 100%;
+    padding: 8px;
     margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
     font-size: 18px;
 }
 
-#txtUrol {
-    flex-direction: column;
-    align-items: center;
+#contraseña_usuario {
+    width: 100%;
+    padding: 8px;
     margin-bottom: 10px;
-}
-
-#txtUrol label {
-    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 18px;
 }
 
 #rol {
-    width: 60%;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-#txtUContaseña {
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-#txtUContaseña label {
-    margin-right: 10px;
-}
-
-#contraseña {
-    width: 60%;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-#buttonIRegistrar {
-    background-color: #890202;
-    color: white;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    margin: 5px;
-    width: 10%;
-    height: 40px;  
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #6b0101;
-    /* Cambia el color al pasar el ratón sobre el botón */
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
