@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc, getDocs, collection, query, where } from 'firebase/firestore';
 import '../estilos/EditarUsuarios.css';
 
 const EditarInstitucion = ({ user }) => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
+  const [nombre, setNombre]= useState('')
   const [rol, setRol] = useState('Administrador');
   const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
   const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
@@ -16,6 +17,10 @@ const EditarInstitucion = ({ user }) => {
   const [roloriginal, setRoloriginal] = useState('');
   //const [institucionIdoriginal, setInstitucionIdoriginal]= useState('');
   const [institucionNoriginal, setInstitucionNoriginal] = useState('');
+
+  const [convenios, setConvenios] = useState('')
+  const [convenioN, setConvenioN] = useState('DiakoníaWeb')
+  const [convenioId, setConvenioId] = useState('DiakoníaWeb')
 
   const [data, setData] = useState([]);
 
@@ -38,6 +43,7 @@ const EditarInstitucion = ({ user }) => {
         const beneficiarioData = docSnapshot.data();
         console.log(beneficiarioData);
         // Asignar valores iniciales a los estados
+        setNombre(beneficiarioData.nombre || '')
         setCorreo(beneficiarioData.correo || '');
         setRoloriginal(beneficiarioData.rol || '');
         //setInstitucionId(beneficiarioData.institucionId || '');
@@ -49,14 +55,17 @@ const EditarInstitucion = ({ user }) => {
     obtenerDatosInstitucion();
   }, [usuarioId]);
 
-  async function ActualizarUsuario(rol, institucionId, institucionN) {
+  async function ActualizarUsuario(rol, institucionId, institucionN, convenioId, convenioN, nombre) {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'usuarios', usuarioId);
 
     const usuario = {
+      nombre,
       rol,
       institucionId,
       institucionN,
+      convenioId,
+      convenioN
     };
 
     try {
@@ -73,9 +82,27 @@ const EditarInstitucion = ({ user }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('institucion:', institucionN)
-    ActualizarUsuario(rol, institucionId, institucionN);
+    ActualizarUsuario(rol, institucionId, institucionN,convenioId,convenioN,nombre);
   };
 
+  useEffect(() => {
+    console.log(institucionId)
+    if (institucionId) {
+      console.log("entra")
+      const querydb = getFirestore();
+      const conveniosCollection = collection(querydb, 'convenios');
+      const conveniosQuery = query(conveniosCollection,where('institucionId', '==', institucionId));
+
+      getDocs(conveniosQuery).then((res) =>{
+          if(res!== undefined){
+            console.log("cambio")
+            setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
+          }
+      }  
+      );
+      
+    }
+  }, [institucionId]);
 
 
   return (
@@ -90,6 +117,15 @@ const EditarInstitucion = ({ user }) => {
         <label>Rol: {roloriginal} </label>
         <label>Instinción: {institucionNoriginal} </label>
         <br></br>
+        <div id="txtUemail">
+          <label htmlFor="email">Nombre Completo</label>
+          <input
+            type="nombre"
+            id="email_usuario"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
         <div id="txtUrol">
           <label htmlFor="rol">Nuevo Rol</label>
           <select id="rol" onChange={(e) => {
@@ -98,6 +134,8 @@ const EditarInstitucion = ({ user }) => {
             if (mostrarBarraAdicional === false) {
               setInstitucionId("DiakoníaWeb");
               setInstitucionN("DiakoníaWeb");
+              setConvenioId("DiakoníaWeb");
+              setConvenioN("DiakoníaWeb");
             }
           }}>
             <option value="Administrador">Administrador</option>
@@ -107,6 +145,7 @@ const EditarInstitucion = ({ user }) => {
         </div>
 
         {mostrarBarraAdicional && (
+          <>
           <div id="txtUrol">
             <label htmlFor="rol">Institución a la que pertenece:</label>
             <select id="rol" onChange={(e) => {
@@ -120,6 +159,23 @@ const EditarInstitucion = ({ user }) => {
               ))}
             </select>
           </div>
+
+          <div id="txtConvenios">
+          <label htmlFor="convenios">Convenio</label>
+          <select id="convenios" onChange={(e) => {
+            const valores = e.target.value.split("/");
+            console.log(valores);
+            setConvenioId(valores[0]);         
+            setConvenioN(valores[1]);
+            console.log("convenio", convenioId, convenioN)
+            }}>
+            <option value="" disabled selected>Selecciona un convenio</option>
+            {convenios.map((convenio) => (
+              <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
+            ))}
+          </select>
+        </div>
+          </>
         )}
 
         <button id="buttonIRegistrar" type="submit">Cambiar Datos</button>

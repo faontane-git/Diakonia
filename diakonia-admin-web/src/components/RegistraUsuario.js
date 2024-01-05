@@ -11,7 +11,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { getFirestore, doc, collection, setDoc, getDocs, addDoc } from "firebase/firestore";
+import { getFirestore, doc, collection, setDoc, getDocs, addDoc, where, query } from "firebase/firestore";
 
 var bcrypt = require('bcryptjs');
 
@@ -28,11 +28,16 @@ const RegistroUsuario = ({ user }) => {
   const [data, setData] = useState([]);
 
   const [email, setemail] = useState('');
+  const [nombre, setNombre] = useState('')
   const [rol, setRol] = useState('Administrador');
   const [contraseña, setContraseña] = useState('');
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
   const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
   const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
+
+  const [convenios, setConvenios] = useState('')
+  const [convenioN, setConvenioN] = useState('DiakoníaWeb')
+  const [convenioId, setConvenioId] = useState('DiakoníaWeb')
 
   useEffect(() => {
     const querydb = getFirestore();
@@ -54,9 +59,13 @@ const RegistroUsuario = ({ user }) => {
     }
   };
 
-  async function registrarUsuario(email, contraseña, rol, institucionId, institucionN) {
+  async function registrarUsuario(email, contraseña, rol, institucionId, institucionN, nombre, convenioN, convenioId) {
     if (contraseña.length < 6) {
       Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');
+      return;
+    }
+    else if(convenioN=== undefined || convenioId=== undefined){
+      Swal.fire('Error', 'Convenio no seleccionado', 'error');
       return;
     }
 
@@ -67,12 +76,17 @@ const RegistroUsuario = ({ user }) => {
 
       const usuariosCollection = collection(firestore, 'usuarios')
 
+      console.log(convenioN)
+
       const usuario = {
+        nombre: nombre,
         correo: email,
         contraseña: hashedPassword,
         rol: rol,
         institucionId: institucionId,
         institucionN: institucionN,
+        convenioN: convenioN,
+        convenioId: convenioId,
       }
 
       const agregar = addDoc(usuariosCollection, usuario);
@@ -96,8 +110,28 @@ const RegistroUsuario = ({ user }) => {
       setInstitucionN("DiakoníaWeb");
     }
     console.log('institucion:', institucionN)
-    registrarUsuario(email, contraseña, rol, institucionId, institucionN);
+    registrarUsuario(email, contraseña, rol, institucionId, institucionN,nombre,convenioN,convenioId);
   };
+
+
+  useEffect(() => {
+    console.log(institucionId)
+    if (institucionId) {
+      console.log("entra")
+      const querydb = getFirestore();
+      const conveniosCollection = collection(querydb, 'convenios');
+      const conveniosQuery = query(conveniosCollection,where('institucionId', '==', institucionId));
+
+      getDocs(conveniosQuery).then((res) =>{
+          if(res!== undefined){
+            console.log("cambio")
+            setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
+          }
+      }  
+      );
+      
+    }
+  }, [institucionId]);
 
   return (
     <div>
@@ -107,6 +141,18 @@ const RegistroUsuario = ({ user }) => {
       </div>
 
       <form id="form_rusuario" onSubmit={handleSubmit}>
+
+
+
+      <div id="txtUemail">
+          <label htmlFor="email">Nombre Completo</label>
+          <input
+            type="nombre"
+            id="email_usuario"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
 
         <div id="txtUemail">
           <label htmlFor="email">Email</label>
@@ -136,6 +182,8 @@ const RegistroUsuario = ({ user }) => {
             if (mostrarBarraAdicional === false) {
               setInstitucionId("DiakoníaWeb");
               setInstitucionN("DiakoníaWeb");
+              setConvenioId("DiakoníaWeb");
+              setConvenioN("DiakoníaWeb");
             }
           }}>
             <option value="Administrador">Administrador</option>
@@ -144,7 +192,8 @@ const RegistroUsuario = ({ user }) => {
           </select>
         </div>
 
-        {mostrarBarraAdicional && (
+        {mostrarBarraAdicional && ( 
+          <>
           <div id="txtUrol">
             <label htmlFor="rol">Institución a la que pertenece</label>
             <select id="rol" onChange={(e) => {
@@ -158,6 +207,24 @@ const RegistroUsuario = ({ user }) => {
               ))}
             </select>
           </div>
+
+
+          <div id="txtConvenios">
+          <label htmlFor="convenios">Convenio</label>
+          <select id="convenios" onChange={(e) => {
+            const valores = e.target.value.split("/");
+            console.log(valores);
+            setConvenioId(valores[0]);         
+            setConvenioN(valores[1]);
+            console.log("convenio", convenioId, convenioN)
+            }}>
+            <option value="" disabled selected>Selecciona un convenio</option>
+            {convenios.map((convenio) => (
+              <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
+            ))}
+          </select>
+        </div>
+        </> 
         )}
 
         <button id="buttonIRegistrar" type="submit">Registrar</button>

@@ -79,9 +79,11 @@ const ListaUsuarios = ({ usuarios }) => {
       <table>
         <thead>
           <tr>
+            <th>Nombre</th>
             <th>Correo</th>
             <th>Rol</th>
             <th>Institución</th>
+            <th>Convenio</th>
             <th>Acción</th>
           </tr>
         </thead>
@@ -92,9 +94,11 @@ const ListaUsuarios = ({ usuarios }) => {
             )
             .map((usuario, index) => (
               <tr key={index}>
+                 <td>{usuario.nombre}</td>
                 <td>{usuario.correo}</td>
                 <td>{usuario.rol}</td>
                 <td>{usuario.institucionN}</td>
+                <td>{usuario.convenioN}</td>
                 <td>
                   <Link to={`/usuarios/editar-usuario/${usuario.id}`}>
                     <button>Editar</button>
