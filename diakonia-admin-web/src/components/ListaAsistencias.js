@@ -3,21 +3,39 @@ import '../estilos/ListaAsistencias.css';
 import Cabecera from './Cabecera';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import * as XLSX from 'xlsx';
 
 const ListaAsistencias = ({ user }) => {
   const { institucionId } = useParams();
   const [data, setData] = useState([]);
   const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
   const [filtroServicio, setFiltroServicio] = useState('todos');
+  const [filtroFechaInicial, setFiltroFechaInicial] = useState(null);
+  const [filtroFechaFinal, setFiltroFechaFinal] = useState(null);
   const [datosFiltrados, setDatosFiltrados] = useState([]);
 
   const handleFiltroServicioChange = (e) => {
     setFiltroServicio(e.target.value);
   };
 
+  const handleFiltroFechaInicialChange = (date) => {
+    setFiltroFechaInicial(date);
+  };
+
+  const handleFiltroFechaFinalChange = (date) => {
+    setFiltroFechaFinal(date);
+  };
+
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
     return fecha.toLocaleDateString('es-ES');
+  };
+
+  const convertirFecha = (fecha) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(fecha).toLocaleDateString('es-ES', options);
   };
 
   const consulta = async () => {
@@ -27,74 +45,160 @@ const ListaAsistencias = ({ user }) => {
 
     try {
       const querySnapshot = await getDocs(beneficiariosQuery);
-      setData(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
-      console.log(data);
+      const datos = querySnapshot.docs.map((benf) => ({
+        nombre: benf.data().nombre || '',
+        desayuno: benf.data().desayuno || [],
+        almuerzo: benf.data().almuerzo || [],
+        dias: benf.data().dias || [],
+      }));
+
+      // Filtrar por rango de fechas
+      const datosFiltradosPorFechas = datos.filter(filtrarPorServicioYFechas);
+      console.log(datosFiltradosPorFechas);
+
+      setData(datosFiltradosPorFechas);
+      setArregloNombresFechas(datosFiltradosPorFechas);
     } catch (error) {
       console.error('Error al obtener documentos:', error);
     }
   };
 
-  useEffect(() => {
-    // Filtrar los datos según el servicio seleccionado
-    setDatosFiltrados(arregloNombresFechas.filter(filtrarPorServicio));
-  }, [arregloNombresFechas, filtroServicio]);
 
-  const filtrarPorServicio = (item) => {
-    if (filtroServicio === 'todos') {
-      return true;
-    } else if (filtroServicio === 'desayuno') {
-      return item.desayuno.length > 0;
-    } else if (filtroServicio === 'almuerzo') {
-      return item.almuerzo.length > 0;
+
+  const filtrarPorServicioYFechas = (item) => {
+    // Filtra por fechas
+    if (filtroFechaInicial && filtroFechaFinal) {
+      const fechaInicialFormateada = convertirFecha(filtroFechaInicial);
+      const fechaFinalFormateada = convertirFecha(filtroFechaFinal);
+      return item.dias.some(dia => {
+        const fechaDia = convertirTimestampAFecha(dia);
+        return fechaDia >= fechaInicialFormateada && fechaDia <= fechaFinalFormateada;
+      });
     }
-    return true;
+
+    return true; // Si no hay fechas seleccionadas, retorna true para todos los elementos
+  };
+
+  const exportarExcel = () => {
+    const ws = XLSX.utils.json_to_sheet([
+      // Primera fila con los nombres de las columnas
+      { Nombre: 'Nombre', ...arregloNombresFechas[0].dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: '' }), {}) },
+      // Filas de datos
+      ...arregloNombresFechas.map((item) => ({
+        Nombre: item.nombre,
+        ...item.dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: dia ? 'A' : '0' }), {}),
+      })),
+    ]);
+
+    // Elimina la segunda fila con números
+    delete ws['A2'];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Asistencias');
+    XLSX.writeFile(wb, 'asistencias.xlsx');
+  };
+
+  const exportarAsistenciasCompleto = () => {
+    // Verifica si hay datos para exportar
+    if (arregloNombresFechas.length === 0) {
+      alert('No hay datos para exportar.');
+      return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet([
+      // Primera fila con los nombres de las columnas
+      { Nombre: 'Nombre', ...arregloNombresFechas[0].dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: '' }), {}) },
+      // Filas de datos
+      ...arregloNombresFechas.map((item) => ({
+        Nombre: item.nombre,
+        ...item.dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: dia ? 'A' : '0' }), {}),
+      })),
+    ]);
+
+    // Elimina la segunda fila con números
+    delete ws['A2'];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Asistencias');
+    XLSX.writeFile(wb, 'asistencias_completo.xlsx');
   };
 
   return (
-    <div className="centered-container">
+    <div>
       <Cabecera user={user} />
-      <h1>Asistencias</h1>
+      <div className="centered-container">
+        <h1>Asistencias</h1>
+      </div>
       <div className="filter-asistencia">
         {/* Filtro por Servicio */}
         <div className="filter-servicio">
-          <label htmlFor="filtroServicio">Filtrar por Servicio: </label>
+          <label htmlFor="filtroServicio">Servicio: </label>
           <select id="filtroServicio" value={filtroServicio} onChange={handleFiltroServicioChange} className="custom-select">
+            <option value="">Todos</option>
             <option value="desayuno">Desayuno</option>
             <option value="almuerzo">Almuerzo</option>
           </select>
         </div>
 
-        {/* Filtro por Mes */}
-        <div className="filter-mes">
-          <label htmlFor="filtroMes">Filtrar por Mes: </label>
-          <select id="filtroMes" className="custom-select">
-            <option value="01">Enero</option>
-            <option value="02">Febrero</option>
-            <option value="03">Marzo</option>
-            <option value="04">Abril</option>
-            <option value="05">Mayo</option>
-            <option value="06">Junio</option>
-            <option value="07">Julio</option>
-            <option value="08">Agosto</option>
-            <option value="09">Septiembre</option>
-            <option value="10">Octubre</option>
-            <option value="11">Noviembre</option>
-            <option value="12">Diciembre</option>
-          </select>
+        {/* Filtro por Fecha Inicial */}
+        <div className="filter-fecha-inicial">
+          <label htmlFor="filtroFechaInicial">Fecha Inicial: </label>
+          <DatePicker
+            id="filtroFecha"
+            selected={filtroFechaInicial}
+            onChange={handleFiltroFechaInicialChange}
+            dateFormat="dd/MM/yyyy"
+          />
         </div>
 
-        {/* Filtro por Año */}
-        <div className="filter-anio">
-          <label htmlFor="filtroAnio">Filtrar por Año: </label>
-          <select id="filtroAnio" className="custom-select">
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-          </select>
+        {/* Filtro por Fecha Final */}
+        <div className="filter-fecha-final">
+          <label htmlFor="filtroFechaFinal">Fecha Final: </label>
+          <DatePicker
+            id="filtroFecha"
+            selected={filtroFechaFinal}
+            onChange={handleFiltroFechaFinalChange}
+            dateFormat="dd/MM/yyyy"
+          />
         </div>
+
+        <div id="btn_consultar">
+          <button onClick={consulta}>Consultar</button>
+        </div>
+
       </div>
 
-      <div>
-        <button onClick={consulta}>Consultar</button>
+      {/* Mostrar la tabla si hay datos */}
+      {arregloNombresFechas.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              {arregloNombresFechas[0].dias.map((dia, index) => (
+                <th key={index}>{convertirTimestampAFecha(dia)}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {arregloNombresFechas.map((item, index) => (
+              <tr key={index}>
+                <td>{item.nombre}</td>
+                {item.desayuno.map((dia, index) => (
+                  <td key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      <div className="centered-container" >
+        <div id='btnEAsistencia'>
+          <button onClick={exportarExcel}>Exportar Tabla</button>
+        </div>
+        <div id="btn_consultar">
+          <button onClick={exportarAsistenciasCompleto}>Exportar Asistencias</button>
+        </div>
       </div>
 
     </div>

@@ -35,6 +35,10 @@
   color: #333;
 }
 
+#btnEAsistencia{
+  margin-top: 10px;
+}
+
 .custom-select {
   padding: 8px;
   margin-left: 5px;
@@ -47,6 +51,22 @@
   display: flex;
   justify-content: center;
   margin-bottom: 25px;
+}
+
+#filtroFecha {
+  padding: 8px;
+  margin-left: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#btn_consultar{
+  padding: 8px;
+  margin-left: 5px;
+  margin-top: 22px;
+  font-size: 16px;
+  border-radius: 4px;
 }
 
 .filter-servicio,
