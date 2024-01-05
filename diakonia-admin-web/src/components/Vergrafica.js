@@ -9,6 +9,15 @@ import '../estilos/Vergrafica.css';
 const VerGrafica = ({ user }) => {
   const { beneficiarioid } = useParams();
   const [data, setData] = useState({});
+  const [stringFechas, setStringFechas] = useState([]);
+
+  const convertirTimestampAFecha = (timestamp) => {
+    const fecha = new Date(timestamp.seconds * 1000);
+    if(isNaN(fecha)){
+      return "-";
+    }
+    return fecha.toLocaleDateString('es-ES');
+  };
 
   useEffect(() => {
     async function extraer() {
@@ -17,6 +26,7 @@ const VerGrafica = ({ user }) => {
       const docuCifrada = doc(docuRef, beneficiarioid);
       const documento = await getDoc(docuCifrada);
       setData(documento.data());
+
     }
     extraer();
   }, []);
@@ -47,11 +57,12 @@ const VerGrafica = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Nutricion gráfica de {data.nombre}</h1>
+      
 
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
-            fechas={data.fecha_seguimiento}
+            fechas={data.fecha_seguimiento?.map((timestamp) => convertirTimestampAFecha(timestamp))}
             datos={data.pesos}
             dato="Peso"
           />
@@ -59,7 +70,7 @@ const VerGrafica = ({ user }) => {
 
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
-            fechas={data.fecha_seguimiento}
+            fechas={data.fecha_seguimiento?.map((timestamp) => convertirTimestampAFecha(timestamp))}
             datos={data.talla}
             dato="Talla"
           />
@@ -67,7 +78,7 @@ const VerGrafica = ({ user }) => {
 
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
-            fechas={data.fecha_seguimiento}
+            fechas={data.fecha_seguimiento?.map((timestamp) => convertirTimestampAFecha(timestamp))}
             datos={data.hgb}
             dato="HGB"
           />
@@ -86,7 +97,7 @@ const VerGrafica = ({ user }) => {
         <tbody>
           {data.fecha_seguimiento?.map((mes, index) => (
             <tr key={index}>
-              <td>{mes}</td>
+              <td>{convertirTimestampAFecha(mes)}</td>
               <td>{data.pesos[index]}</td>
               <td>{data.talla[index]}</td>
               <td>{data.hgb[index]}</td>

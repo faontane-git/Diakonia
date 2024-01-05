@@ -51,6 +51,8 @@ import Privada from "./components/Privadas.js"
 import UserRoute from "./components/UserRoute.js"
 import RegistradorRoute from "./components/RegistradorRoute.js"
 import { SupervisedUserCircleOutlined } from "@mui/icons-material";
+import AsistenciaConvenios from "./components/AsistenciaConvenios.js";
+import NutricionConvenios from "./components/NutricionConvenios.js";
 
 
 
@@ -140,12 +142,14 @@ function Aplicacion() {
     <Route path="editar-beneficiario/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<EditarBeneficiario  />} />
          
     <Route path="asistencias" element={<VerAsistencias/>} />
-    <Route path="asistencias/:institucionId" element={<ListaAsistencias  />} />
+    <Route path="asistencias/:institucionId/:institucionN" element={<AsistenciaConvenios  />} />
+    <Route path="asistencias/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaAsistencias  />} />
     <Route path="nutricion" element={<Nutricion />} />
-    <Route path="nutricion/:institucionId/:institucionN" element={<ListaNutricion />} />
-    <Route path="verGrafica/:institucionId/:beneficiarioid" element={<VerGrafica />} />
+    <Route path="nutricion/:institucionId/:institucionN" element={<NutricionConvenios />} />
+    <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaNutricion />} />
+    <Route path="verGrafica/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<VerGrafica />} />
     <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN/añadirbenef" element={<LeerExcel/>} />
-    <Route path="nutricion/:institucionId/:institucionN/añadirNutricion" element={<AñadirNutricion />} />
+    <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN/añadirNutricion" element={<AñadirNutricion />} />
 
     <Route path="usuarios" element={<UserRoute/>}>
       <Route index element={<Usuarios />} />

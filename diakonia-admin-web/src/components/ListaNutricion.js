@@ -4,16 +4,25 @@ import Cabecera from './Cabecera';
 import '../estilos/ListaNutricion.css';
 import { useNavigate } from 'react-router-dom';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { toBeInvalid } from '@testing-library/jest-dom/matchers';
 
 
 const ListaBeneficiarios = ({ user }) => {
-  const { institucionId, institucionN } = useParams();
+  const { institucionId, institucionN, convenioId, convenioN } = useParams();
 
   const navigate = useNavigate();
   const goAñadirNutri = () => {
     navigate('añadirNutricion');
   };
 
+
+  const convertirTimestampAFecha = (timestamp) => {
+    const fecha = new Date(timestamp.seconds * 1000);
+    if(isNaN(fecha)){
+      return "-";
+    }
+    return fecha.toLocaleDateString('es-ES');
+  };
   /*const institucionSeleccionada = instituciones.find((inst) => inst.id === parseInt(institucionId, 10));
   const beneficiariosDeInstitucion = nutricion.filter(
     (nutricion) => nutricion.institucionId === institucionSeleccionada.id
@@ -76,9 +85,9 @@ if(fechas.length>0){
               <td>{LeerUltimoValor(beneficiario.pesos,beneficiario.fecha_seguimiento)}</td>
               <td>{LeerUltimoValor(beneficiario.talla,beneficiario.fecha_seguimiento)}</td>
               <td>{LeerUltimoValor(beneficiario.hgb,beneficiario.fecha_seguimiento)}</td>
-              <td>{LeerUltimoValor(beneficiario.fecha_seguimiento,beneficiario.fecha_seguimiento)}</td>
+              <td>{convertirTimestampAFecha(LeerUltimoValor(beneficiario.fecha_seguimiento,beneficiario.fecha_seguimiento))}</td>
               <td>
-                <Link to={`/verGrafica/${institucionId}/${beneficiario.id}`}>
+                <Link to={`/verGrafica/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}>
                   <button>Ver gráfica</button>
                 </Link>
                 {/* Agrega más botones según sea necesario */}

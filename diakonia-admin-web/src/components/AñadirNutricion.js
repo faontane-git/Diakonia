@@ -6,7 +6,7 @@ import Cabecera from "./Cabecera";
 import { getFirestore, doc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 
 const AñadirNutricion = ({user}) => {
-  const { institucionId, institucionN } = useParams();
+  const { institucionId, institucionN, convenioId, convenioN } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
@@ -15,10 +15,20 @@ const AñadirNutricion = ({user}) => {
     navigate(`/nutricion/${institucionId}/${institucionN}`);
   }
 
+  const convertirTimestampAFecha = (timestamp) => {
+    return timestamp.toLocaleDateString('es-ES');
+  };
+
+
   useEffect(() => {
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+    const beneficiariosQuery = query(
+      beneficiariosCollection,
+      where('institucionId', '==', institucionId),
+      where('convenioId', '==', convenioId)
+    );
+
 
     getDocs(beneficiariosQuery).then((res) =>
       setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
@@ -50,14 +60,20 @@ const AñadirNutricion = ({user}) => {
       const talla = jsonData.slice(1).map((fila) => fila[4]);
       const hgb = jsonData.slice(1).map((fila) => fila[5]);
 
-      const nuevosBeneficiarios = nombres.map((nombre, index) => ({
-        nombre,
-        cedula: cedula[index],
-        fecha_seguimiento: f_registro[index],
-        pesos: peso[index],
-        talla: talla[index],
-        hgb: hgb[index],
-      }));
+      const nuevosBeneficiarios = nombres.map((nombre, index) => {
+        
+        const fechaSegui = new Date((f_registro[index] - 2) * 24 * 60 * 60 * 1000 + new Date(1900, 0, 1).getTime());
+
+        return {
+          nombre,
+          cedula: cedula[index],
+          fecha_seguimiento: fechaSegui,
+          pesos: peso[index],
+          talla: talla[index],
+          hgb: hgb[index],
+        };
+      });
+
 
       setNBeneficiarios(nuevosBeneficiarios);
     };
@@ -68,6 +84,9 @@ const AñadirNutricion = ({user}) => {
   async function añadir() {
     const firestore = getFirestore()
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
+    
+
+
     for (const beneficiario of Nbeneficiarios) {
       const update = data.find((doc) => doc.cedula === beneficiario.cedula);
       if (update != undefined) {
@@ -96,6 +115,7 @@ const AñadirNutricion = ({user}) => {
       <div className="centered-container">
         <Cabecera user={user}/>
         <h1>Añadir Seguimiento en {institucionN}</h1>
+        <h2>Convenio: {convenioN}</h2>
         <h3>¡Porfavor suba el excel con la información solicitada!</h3>
         <input type="file" onChange={handleFileUpload} />
         {Nbeneficiarios.length > 0 && (
@@ -114,8 +134,8 @@ const AñadirNutricion = ({user}) => {
               {Nbeneficiarios.map((Nbeneficiario, index) => (
                 <tr key={index}>
                   <td>{Nbeneficiario.nombre}</td>
-                  <td>{Nbeneficiario.fecha_nacimiento}</td>
-                  <td>{Nbeneficiario.fecha_seguimiento}</td>
+                  <td>{Nbeneficiario.cedula}</td>
+                  <td>{convertirTimestampAFecha(Nbeneficiario.fecha_seguimiento)}</td>
                   <td>{Nbeneficiario.pesos}</td>
                   <td>{Nbeneficiario.talla}</td>
                   <td>{Nbeneficiario.hgb}</td>
