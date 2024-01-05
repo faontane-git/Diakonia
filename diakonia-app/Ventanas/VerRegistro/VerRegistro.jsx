@@ -49,13 +49,14 @@ const VerRegistro = () => {
     navigation.navigate('Info', {
       nombre: item.nombre,
       cedula: item.cedula,
-      fecha_nacimiento: item.fecha_nacimiento,
+      fecha_nacimiento: new Date(item.fecha_nacimiento.seconds * 1000).toLocaleDateString('es-ES'),
       genero: item.genero,
       numero_contacto: item.numero_contacto,
       numero_de_personas_mayores_en_el_hogar: item.numero_de_personas_mayores_en_el_hogar,
       numero_de_personas_menores_en_el_hogar: item.numero_de_personas_menores_en_el_hogar
     });
   };
+
 
   return (
     <View style={styles.container}>

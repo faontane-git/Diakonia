@@ -23,12 +23,16 @@ const OpcionesSeguimiento = () => {
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         const beneficiarioData = querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() }))[0];
-
         // Obtener fechas de seguimiento y pesos del beneficiario
-        const fechasSeguimiento = beneficiarioData.fecha_seguimiento;
+        const fechasSeguimiento = beneficiarioData.fecha_seguimiento.map((timestamp) => {
+          return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
+        });
+
         const peso = beneficiarioData.pesos;
         const hgb = beneficiarioData.hgb;
         const talla = beneficiarioData.talla;
+
+ 
         setFecha(fechasSeguimiento);
         setPeso(peso);
         setHGB(hgb);
@@ -37,7 +41,6 @@ const OpcionesSeguimiento = () => {
         console.error('Error al obtener documentos:', error);
       }
     };
-
     obtenerDatos();
   }, []);
 
@@ -45,11 +48,11 @@ const OpcionesSeguimiento = () => {
   const screenWidth = Dimensions.get('window').width;
   const handleOptionPress = (option) => {
     if (option === 'Peso') {
-      navigation.navigate(option, { nombreBeneficiario,fechas, pesos });
+      navigation.navigate(option, { nombreBeneficiario, fechas, pesos });
     } else if (option === 'Talla') {
-      navigation.navigate(option, { nombreBeneficiario,fechas, tallas });
+      navigation.navigate(option, { nombreBeneficiario, fechas, tallas });
     } else if (option === 'Hemoglobina') {
-      navigation.navigate(option, { nombreBeneficiario,fechas, hgbs });
+      navigation.navigate(option, { nombreBeneficiario, fechas, hgbs });
     }
   };
 
