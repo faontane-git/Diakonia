@@ -44,7 +44,7 @@ const AñadirNutricion = ({user}) => {
       }
 
       const nombres = jsonData.slice(1).map((fila) => fila[0])
-      const f_nacimiento = jsonData.slice(1).map((fila) => fila[1]);
+      const cedula = jsonData.slice(1).map((fila) => fila[1]);
       const f_registro = jsonData.slice(1).map((fila) => fila[2]);
       const peso = jsonData.slice(1).map((fila) => fila[3]);
       const talla = jsonData.slice(1).map((fila) => fila[4]);
@@ -52,7 +52,7 @@ const AñadirNutricion = ({user}) => {
 
       const nuevosBeneficiarios = nombres.map((nombre, index) => ({
         nombre,
-        fecha_nacimiento: f_nacimiento[index],
+        cedula: cedula[index],
         fecha_seguimiento: f_registro[index],
         pesos: peso[index],
         talla: talla[index],
@@ -69,7 +69,7 @@ const AñadirNutricion = ({user}) => {
     const firestore = getFirestore()
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     for (const beneficiario of Nbeneficiarios) {
-      const update = data.find((doc) => doc.nombre === beneficiario.nombre && doc.fecha_nacimiento === beneficiario.fecha_nacimiento);
+      const update = data.find((doc) => doc.cedula === beneficiario.cedula);
       if (update != undefined) {
         update.fecha_seguimiento.push(beneficiario.fecha_seguimiento);
         update.pesos.push(beneficiario.pesos);

@@ -20,6 +20,7 @@ const LeerExcel = ({ user }) => {
   };
 
 
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -77,7 +78,7 @@ const LeerExcel = ({ user }) => {
         //const [dia, mes, anio] = f_nacimiento[index].split('/');
         //const fechaNacimiento = new Date(`${anio}-${mes}-${dia}`);
         const fechaNacimiento = new Date((f_nacimiento[index] - 2) * 24 * 60 * 60 * 1000 + new Date(1900, 0, 1).getTime());
-        console.log(fechaNacimiento);
+
 
         const codigoQR = generateQRCode(cedula[index]);
         return {
@@ -112,12 +113,17 @@ const LeerExcel = ({ user }) => {
   async function añadir() {
     const firestore = getFirestore()
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
-    const instColect = collection(firestore, "instituciones");
-    const institutionRef = doc(instColect, institucionId);
+    const ConvenioColect = collection(firestore, "convenios");
+    const ConvenioRef = doc(ConvenioColect, convenioId);
 
-    getDoc(institutionRef).then((doc) => {
+    getDoc(ConvenioRef).then((doc) => {
       if (doc.exists) {
-        const days = (Date.parse(doc.data().fecha_final) - Date.parse(doc.data().fecha_inicial)) / 86400000;
+       
+        //const days = (Date.parse(doc.data().fecha_final) - Date.parse(doc.data().fecha_inicial)) / 86400000;
+      
+        const final = new Date(doc.data().fecha_final.seconds * 1000)
+        const inicio = new Date(doc.data().fecha_inicial.seconds * 1000)
+        const diferenciaEnMilisegundos = final - inicio;
 
         for (const beneficiario of Nbeneficiarios) {
           if (data.cedulas.includes(beneficiario.cedula)) {
@@ -128,9 +134,15 @@ const LeerExcel = ({ user }) => {
             });
           }
           else {
-            for (let i = 0; i <= days; i++) {
-              beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
+             
+            for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
+              const fechaActual = new Date(inicio.getTime() + i);
+              beneficiario.dias.push(fechaActual);
             }
+
+            /*for (let i = 0; i <= days; i++) {
+              beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
+            }*/
             for (const date of beneficiario.dias) {
               if (doc.data().desayuno === true) { beneficiario.desayuno.push("-"); }
               if (doc.data().almuerzo === true) { beneficiario.almuerzo.push("-"); }
