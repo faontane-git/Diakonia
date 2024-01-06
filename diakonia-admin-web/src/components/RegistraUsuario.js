@@ -109,6 +109,16 @@ const RegistroUsuario = ({ user }) => {
       setInstitucionId("DiakoníaWeb");
       setInstitucionN("DiakoníaWeb");
     }
+    if(rol=== "Registrador"){
+      if(institucionId==="DiakoníaWeb"){
+        Swal.fire('Error', 'Institución no seleccionado', 'error');
+        return
+      }
+      else if(convenioId=== ""){
+        Swal.fire('Error', 'Convenio no seleccionado', 'error');
+        return
+      }
+    }
     console.log('institucion:', institucionN)
     registrarUsuario(email, contraseña, rol, institucionId, institucionN,nombre,convenioN,convenioId);
   };
@@ -200,6 +210,8 @@ const RegistroUsuario = ({ user }) => {
               setInstitucionId(e.target.value);
               const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
               setInstitucionN(selectedInstitucion?.nombre);
+              setConvenioId("");
+              setConvenioN("");
             }}>
               <option value="" disabled selected>Selecciona una institución</option>
               {data.map((institucion) => (
@@ -211,7 +223,7 @@ const RegistroUsuario = ({ user }) => {
 
           <div id="txtConvenios">
           <label htmlFor="convenios">Convenio</label>
-          <select id="convenios" onChange={(e) => {
+          <select id="convenios" value={convenioId} onChange={(e) => {
             const valores = e.target.value.split("/");
             console.log(valores);
             setConvenioId(valores[0]);         

@@ -5,6 +5,9 @@ import '../estilos/ListaNutricion.css';
 import { useNavigate } from 'react-router-dom';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { toBeInvalid } from '@testing-library/jest-dom/matchers';
+import { differenceInYears } from 'date-fns';
+
 
 const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
@@ -21,6 +24,17 @@ const ListaBeneficiarios = ({ user }) => {
     }
     return fecha.toLocaleDateString('es-ES');
   };
+
+  const calcularEdad = (fechaNacimiento) => {
+    if (!fechaNacimiento) return '-';
+    const fechaNac = new Date(fechaNacimiento.seconds * 1000);
+    const edad = differenceInYears(new Date(), fechaNac);
+    return edad;
+  };
+  /*const institucionSeleccionada = instituciones.find((inst) => inst.id === parseInt(institucionId, 10));
+  const beneficiariosDeInstitucion = nutricion.filter(
+    (nutricion) => nutricion.institucionId === institucionSeleccionada.id
+  );*/
 
   const [data, setData] = useState([]);
 
@@ -66,6 +80,7 @@ const ListaBeneficiarios = ({ user }) => {
           <TableHead>
             <TableRow>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Edad</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Último Peso(KG)</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Última Talla(M)</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Último HGB(g/dL)</TableCell>
@@ -77,6 +92,7 @@ const ListaBeneficiarios = ({ user }) => {
             {data.map((beneficiario) => (
               <TableRow key={beneficiario.id}>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{calcularEdad(beneficiario.fecha_nacimiento)}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.pesos, beneficiario.fecha_seguimiento)}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.talla, beneficiario.fecha_seguimiento)}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.hgb, beneficiario.fecha_seguimiento)}</TableCell>

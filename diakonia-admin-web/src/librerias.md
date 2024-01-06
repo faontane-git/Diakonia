@@ -17,4 +17,7 @@ npm i bcryptjs
 npm install react-datepicker
 npm install qrcode.react
 npm install @react-pdf/renderer --save
+
 npm install @mui/material @emotion/react @emotion/styled
+
+npm install date-fns
