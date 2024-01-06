@@ -5,6 +5,20 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
 import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 
@@ -37,7 +51,7 @@ const AsistenciaConvenios = () => {
     convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
+
   function esActivo(convenio) {
     console.log(convenio.activo)
     return convenio.activo === true;
@@ -48,30 +62,89 @@ const AsistenciaConvenios = () => {
     <div className="centered-container">
       <Cabecera />
       <h1>Asistencias</h1>
-      <h2>Seleccione un Convenio de {institucionN}</h2>
+      <h3>Seleccione un Convenio de {institucionN}</h3>
+
       <div className="search-container">
-        <input
+        <TextField
           type="text"
-          placeholder="Buscar institución"
+          placeholder="Buscar por Convenio"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+            style: { fontSize: '14px' },
+          }}
+          fullWidth
+          variant="outlined"
         />
       </div>
-      <div className="list-container">
-        <ul id="listaInstituciones">
-          {filteredData.length > 0 ? (
-            filteredData.map((convenio) => (
-              <li key={convenio.id}>
-                <Link to={`/asistencias/${institucionId}/${institucionN}/${convenio.id}/${convenio.nombre}`} className="centered-link">
-                  {convenio.nombre}- Rango de Fecha: {convertirTimestampAFecha(convenio.fecha_inicial)} - {convertirTimestampAFecha(convenio.fecha_final)}
-                </Link>
-              </li>
-            ))
-          ) : (
-            <li id="especial">¡No hay convenios disponibles!</li>
-          )}
-        </ul>
-      </div>
+
+      <TableContainer component={Paper} className="list-container">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                id="cuerpo_tabla"
+                style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}
+              >
+                Convenio
+              </TableCell>
+              <TableCell
+                id="cuerpo_tabla"
+                style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}
+              >
+                Fecha Inicial
+              </TableCell>
+              <TableCell
+                id="cuerpo_tabla"
+                style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}
+              >
+                Fecha Final
+              </TableCell>
+              <TableCell
+                id="cuerpo_tabla"
+                style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}
+              >
+                Acceder
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.length > 0 ? (
+              filteredData.map((convenio) => (
+                <TableRow key={convenio.id}>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convenio.nombre}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                    <Link
+                      to={`/asistencias/${institucionId}/${institucionN}/${convenio.id}/${convenio.nombre}`}
+                      className="centered-link"
+                    >
+                      <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
+                        Acceder
+                      </Button>
+                    </Link>
+
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} id="especial">
+                  ¡No hay convenios disponibles!
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

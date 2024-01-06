@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
-import LinesChart from './Linechart';
 import { Link } from 'react-router-dom';
+import { getFirestore, collection, getDocs, query, orderBy } from 'firebase/firestore';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 import '../estilos/Nutricion.css';
-
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { useState, useEffect } from 'react';
 
 const Nutricion = ({ user }) => {
   const [data, setData] = useState([]);
@@ -14,57 +25,77 @@ const Nutricion = ({ user }) => {
   useEffect(() => {
     const querydb = getFirestore();
     const queryCollection = collection(querydb, 'instituciones');
-
-    getDocs(queryCollection).then((res) =>
+    // Ordenar por el campo 'nombre' de forma ascendente
+    const orderedQuery = query(queryCollection, orderBy('nombre'));
+    getDocs(orderedQuery).then((res) =>
       setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
     );
   }, []);
 
-  // Función para filtrar la lista por nombre
   const filteredData = data.filter((institucion) =>
     institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="centered-container">
-      <Cabecera user={user}/>
+      <Cabecera user={user} />
       <h1>Seguimiento</h1>
       <div className="list-container-nutricion">
-        <h2>Seleccione una institución</h2>
-        {/*  
-        <div id="txtUopcion">
-          <select id="opcion">
-            <option value="" disabled selected>
-              Selecciona un rol
-            </option>
-            <option value="desayuno">Desayuno</option>
-            <option value="almuerzo">Almuerzo</option>
-          </select>
-        </div>
-         */}
+        <h3>Seleccione una institución</h3>
 
-        <div className="search-container-name">
-          <input
+        <div className="search-container">
+          <TextField
             type="text"
-            placeholder="Buscar por nombre"
+            placeholder="Buscar por Institución"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+            }}
+            fullWidth
+            variant="outlined"
           />
         </div>
 
-        <ul id="listaNutriciones">
-          {filteredData.length > 0 ? (
-            filteredData.map((institucion) => (
-              <li key={institucion.id}>
-                <Link to={`/nutricion/${institucion.id}/${institucion.nombre}`}>
-                  {institucion.nombre}- Rango de Fecha: {institucion.fecha_inicial}/{institucion.fecha_final}
-                </Link>
-              </li>
-            ))
-          ) : (
-            <li id="no-instituciones">¡No hay instituciones disponibles!</li>
-          )}
-        </ul>
+        {filteredData.length > 0 ? (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Institución</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha Inicial</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha Final</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData.map((institucion) => (
+                  <TableRow key={institucion.id}>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.nombre}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.fecha_inicial}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.fecha_final}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                      <Link to={`/nutricion/${institucion.id}/${institucion.nombre}`}>
+                        <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
+                          Ver Detalles
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <p className="centered-container">¡No hay instituciones disponibles!</p>
+        )}
       </div>
     </div>
   );

@@ -1,47 +1,45 @@
-#listaInstituciones {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.beneficiarios-container {
+    padding: 20px;
 }
 
-
-#listaInstituciones a {
-    display: block;
-    color: white;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-#especial {
+.centered-container {
     text-align: center;
-    /* Alinea el texto al centro */
-    margin-bottom: 10px;
-    /* Ajusta según sea necesario para agregar espacio entre elementos */
-    background-color:white;
-    /* Fondo rojo */
-    padding: 10px;
-    /* Ajusta según sea necesario para el espaciado interno */
-    width: 50%;
 }
 
-#listaInstituciones li {
-    text-align: center;
-    /* Alinea el texto al centro */
-    margin-bottom: 10px;
-    /* Ajusta según sea necesario para agregar espacio entre elementos */
-    background-color: #890202;
+.table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.ingresar-button {
+    padding: 8px 16px;
+    background-color: #4caf50;
     color: white;
-    /* Fondo rojo */
-    padding: 10px;
-    /* Ajusta según sea necesario para el espaciado interno */
-    width: 50%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
+.ingresar-button:hover {
+    background-color: #45a049;
+}
 
-.search-container input {
-    width: 51%;
-    height: 25px;
+#cuerpo_tabla {
+    text-align: center;
 }

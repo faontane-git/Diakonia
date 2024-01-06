@@ -4,6 +4,7 @@ import LinesChart from './Linechart';
 import { useParams } from 'react-router-dom';
 import { getFirestore, doc, collection, getDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import '../estilos/Vergrafica.css';
 
 const VerGrafica = ({ user }) => {
@@ -13,7 +14,7 @@ const VerGrafica = ({ user }) => {
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
-    if(isNaN(fecha)){
+    if (isNaN(fecha)) {
       return "-";
     }
     return fecha.toLocaleDateString('es-ES');
@@ -26,7 +27,6 @@ const VerGrafica = ({ user }) => {
       const docuCifrada = doc(docuRef, beneficiarioid);
       const documento = await getDoc(docuCifrada);
       setData(documento.data());
-
     }
     extraer();
   }, []);
@@ -57,7 +57,6 @@ const VerGrafica = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Nutricion gráfica de {data.nombre}</h1>
-      
 
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>
@@ -85,31 +84,32 @@ const VerGrafica = ({ user }) => {
         </div>
       </div>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Fechas</th>
-            <th>Peso(KG)</th>
-            <th>Talla(M)</th>
-            <th>HGB(g/dL)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.fecha_seguimiento?.map((mes, index) => (
-            <tr key={index}>
-              <td>{convertirTimestampAFecha(mes)}</td>
-              <td>{data.pesos[index]}</td>
-              <td>{data.talla[index]}</td>
-              <td>{data.hgb[index]}</td>
-             b</tr>
-          ))}
-        </tbody>
-      </table>
+      <TableContainer component={Paper}>
+        <Table className="table">
+          <TableHead>
+            <TableRow>
+              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fechas</TableCell>
+              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Peso(KG)</TableCell>
+              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Talla(M)</TableCell>
+              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>HGB(g/dL)</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.fecha_seguimiento?.map((mes, index) => (
+              <TableRow key={index}>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(mes)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{data.pesos[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{data.talla[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{data.hgb[index]}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <div id="export-button-container">
-        <button onClick={exportToXLSX}>Exportar a Excel</button>
+        <Button onClick={exportToXLSX} variant="contained" style={{ backgroundColor: '#890202', color: 'white' }}>Exportar a Excel</Button>
       </div>
-
     </div>
   );
 };

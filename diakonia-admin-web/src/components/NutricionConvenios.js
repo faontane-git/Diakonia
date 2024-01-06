@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Await, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Cabecera from './Cabecera';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import '../estilos/ListaBeneficiarios.css';
-import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
-import Swal from 'sweetalert2';
-import * as XLSX from 'xlsx';
+import '../estilos/NutricionConvenios.css';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 
 const NutricionConvenios = () => {
   const { institucionId, institucionN } = useParams();
@@ -26,55 +43,96 @@ const NutricionConvenios = () => {
   useEffect(() => {
     const querydb = getFirestore();
     const conveniosCollection = collection(querydb, 'convenios');
-    const conveniosQuery = query(conveniosCollection, where('institucionId', '==', institucionId));
-
-    getDocs(conveniosQuery).then((res) =>
-      setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
+    const conveniosQuery = query(
+      conveniosCollection,
+      where('institucionId', '==', institucionId)
     );
+
+    getDocs(conveniosQuery).then((res) => {
+      const conveniosData = res.docs.map((convenio) => ({
+        id: convenio.id,
+        ...convenio.data(),
+      }));
+
+      // Ordenar por nombre alfabéticamente
+      const sortedData = conveniosData.sort((a, b) =>
+        a.nombre.localeCompare(b.nombre)
+      );
+
+      setData(sortedData);
+    });
   }, [institucionId]);
 
   const filteredData = data.filter((convenio) =>
     convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
-  function esActivo(convenio) {
-    console.log(convenio.activo)
-    return convenio.activo === true;
-  }
-
-
   return (
     <div className="centered-container">
       <Cabecera />
       <h1>Nutricion</h1>
-      <h2>Seleccione un Convenio de {institucionN}</h2>
+      <h3>Seleccione un Convenio de {institucionN}</h3>
+
       <div className="search-container">
-        <input
+        <TextField
           type="text"
-          placeholder="Buscar institución"
+          placeholder="Buscar por Convenio"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+            style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+          }}
+          fullWidth
+          variant="outlined"
         />
       </div>
+
       <div className="list-container">
-        <ul id="listaInstituciones">
-          {filteredData.length > 0 ? (
-            filteredData.map((convenio) => (
-              <li key={convenio.id}>
-                <Link to={`/nutricion/${institucionId}/${institucionN}/${convenio.id}/${convenio.nombre}`} className="centered-link">
-                  {convenio.nombre}- Rango de Fecha: {convertirTimestampAFecha(convenio.fecha_inicial)} - {convertirTimestampAFecha(convenio.fecha_final)}
-                </Link>
-              </li>
-            ))
-          ) : (
-            <li id="especial">¡No hay convenios disponibles!</li>
-          )}
-        </ul>
+        {filteredData.length > 0 ? (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Convenio</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha Inicial</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha Final</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData.map((convenio) => (
+                  <TableRow key={convenio.id}>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convenio.nombre}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                      <Link
+                        to={`/nutricion/${institucionId}/${institucionN}/${convenio.id}/${convenio.nombre}`}
+                        className="centered-link"
+                      >
+                        <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
+                          Acceder
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <p id="especial">¡No hay convenios disponibles!</p>
+        )}
       </div>
     </div>
   );
 };
-
 
 export default NutricionConvenios;

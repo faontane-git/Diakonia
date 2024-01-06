@@ -25,6 +25,22 @@
     width: 50%;
 }
 
-#button-pie{
-    padding-top: 10px;
+#btn_editar {
+    margin-left: 10px;
+}
+
+/* En tu archivo ListaInstituciones.css */
+.centered-element {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.centered-button {
+    margin: 10px;
+    /* Ajusta el margen según tus preferencias */
+}
+
+#cuerpo_tabla{
+    text-align: center;
 }

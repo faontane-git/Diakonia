@@ -6,7 +6,21 @@ import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
 import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-import QRCode from 'qrcode.react'; // Importa la biblioteca qrcode.react
+import QRCode from 'qrcode.react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 
 const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
@@ -26,7 +40,6 @@ const ListaBeneficiarios = ({ user }) => {
   useEffect(() => {
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    //const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
     const beneficiariosQuery = query(
       beneficiariosCollection,
       where('institucionId', '==', institucionId),
@@ -52,82 +65,105 @@ const ListaBeneficiarios = ({ user }) => {
       text: `Está seguro que desea eliminar ${beneficiario.nombre}`,
       icon: 'error',
       showDenyButton: true,
-      denyButtonText: "No",
-      confirmButtonText: "Si",
-      confirmButtonColor: "#000000"
-    }).then(async response => {
+      denyButtonText: 'No',
+      confirmButtonText: 'Si',
+      confirmButtonColor: '#000000',
+    }).then(async (response) => {
       if (response.isConfirmed) {
         const querydb = getFirestore();
         const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
         try {
           await updateDoc(docuRef, { activo: false });
-          window.location.reload()
+          window.location.reload();
         } catch (error) {
-          console.error('Error al eliminar institución:', error);
+          console.error('Error al eliminar beneficiario:', error);
           alert(error.message);
         }
       }
-    })
-  };
+    });
+  }
 
   return (
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Lista de Beneficiarios de {institucionN}</h1>
-      <h2>Convenio: {convenioN}</h2>
-      <button id="buttonABeneficiarios" onClick={goAñadirBenef}>
+      <h3>Convenio: {convenioN}</h3>
+      <Button id="buttonABeneficiarios" style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }} onClick={goAñadirBenef} variant="contained">
         Añadir Beneficiarios
-      </button>
+      </Button>
 
-      <div className="search-container-name">
-        <input
+      <div className="search-container">
+        <TextField
           type="text"
-          placeholder="Buscar por nombre"
+          placeholder="Buscar por Nombre"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+            style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+          }}
+          fullWidth
+          variant="outlined"
         />
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Cédula</th>
-            <th>Fecha de nacimiento</th>
-            <th>Género</th>
-            <th>Menores en casa</th>
-            <th>Mayores en casa</th>
-            <th>Desayuno</th>
-            <th>Almuerzo</th>
-            <th>Código QR</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.filter(esActivo).map((beneficiario) => (
-            <tr key={beneficiario.id}>
-              <td>{beneficiario.nombre}</td>
-              <td>{beneficiario.cedula}</td>
-              <td>{convertirTimestampAFecha(beneficiario.fecha_nacimiento)}</td>
-              <td>{beneficiario.genero}</td>
-              <td>{beneficiario.numero_de_personas_menores_en_el_hogar}</td>
-              <td>{beneficiario.numero_de_personas_mayores_en_el_hogar}</td>
-              {beneficiario.desayuno.length !== 0 ? <td>Si</td> : <td>No</td>}
-              {beneficiario.almuerzo.length !== 0 ? <td>Si</td> : <td>No</td>}
-              {/* Muestra el código QR utilizando la biblioteca qrcode.react */}
-              <td>
-                <QRCode value={beneficiario.cedula} size={64} />
-              </td>
-              <td>
-                <Link to={`/editar-beneficiario/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}>
-                  <button>Editar</button>
-                </Link>
-                <button onClick={() => eliminarBeneficiario(beneficiario)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha de nacimiento</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Género</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Menores en casa</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Mayores en casa</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Desayuno</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Almuerzo</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Código QR</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.filter(esActivo).map((beneficiario) => (
+              <TableRow key={beneficiario.id}>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(beneficiario.fecha_nacimiento)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.genero}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_menores_en_el_hogar}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.desayuno.length !== 0 ? 'Si' : 'No'}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.almuerzo.length !== 0 ? 'Si' : 'No'}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                  <QRCode value={beneficiario.cedula} size={64} />
+                </TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px', marginBottom: '8px' }}>
+                  <Link
+                    to={`/editar-beneficiario/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}
+                  >
+                    <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px' }}>
+                      Editar
+                    </Button>
+                  </Link>
+                  <Button
+                    onClick={() => eliminarBeneficiario(beneficiario)}
+                    variant="contained"
+                    style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px' }}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

@@ -4,6 +4,16 @@ import { Link } from 'react-router-dom';
 import { getFirestore, deleteUser } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import * as XLSX from 'xlsx';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+} from '@mui/material';
 
 const ListaUsuarios = ({ usuarios }) => {
   const auth = getAuth();
@@ -76,45 +86,51 @@ const ListaUsuarios = ({ usuarios }) => {
         </select>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Rol</th>
-            <th>Institución</th>
-            <th>Convenio</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios
-            .filter((usuario) =>
-              selectedInstitucion ? usuario.institucionN === selectedInstitucion : true
-            )
-            .map((usuario, index) => (
-              <tr key={index}>
-                 <td>{usuario.nombre}</td>
-                <td>{usuario.correo}</td>
-                <td>{usuario.rol}</td>
-                <td>{usuario.institucionN}</td>
-                <td>{usuario.convenioN}</td>
-                <td>
-                  <Link to={`/usuarios/editar-usuario/${usuario.id}`}>
-                    <button>Editar</button>
-                  </Link>
-                  {/* Descomenta la siguiente línea si deseas permitir eliminar usuarios */}
-                  {/* <button onClick={() => eliminarUsuario(usuario.id)}>Eliminar</button> */}
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Correo</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Rol</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Institución</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Convenio</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acción</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {usuarios
+              .filter((usuario) =>
+                selectedInstitucion ? usuario.institucionN === selectedInstitucion : true
+              )
+              .map((usuario, index) => (
+                <TableRow key={index}>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{usuario.nombre}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{usuario.correo}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{usuario.rol}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{usuario.institucionN}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{usuario.convenioN}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                    <Link to={`/usuarios/editar-usuario/${usuario.id}`}>
+                      <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                        Editar
+                      </Button>
+                    </Link>
+                    {/* Descomenta la siguiente línea si deseas permitir eliminar usuarios */}
+                    {/* <Button variant="contained" color="secondary" onClick={() => eliminarUsuario(usuario.id)}>
+                      Eliminar
+                    </Button> */}
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <div id="export-button-container">
         <button onClick={exportToXLSX}>Exportar Tabla</button>
       </div>
-    </div>
+    </div >
   );
 };
 
