@@ -88,6 +88,8 @@ const ListaBeneficiarios = ({ user }) => {
       <Cabecera user={user} />
       <h1>Lista de Beneficiarios de {institucionN}</h1>
       <h3>Convenio: {convenioN}</h3>
+      <h3>Servicios: {data[0]?.desayuno.length !== 0 ? 'Desayuno ' : '' }{data[0]?.almuerzo.length !== 0 ? 'Almuerzo' : ''}</h3>
+
       <Button id="buttonABeneficiarios" style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }} onClick={goAñadirBenef} variant="contained">
         Añadir Beneficiarios
       </Button>
@@ -121,10 +123,8 @@ const ListaBeneficiarios = ({ user }) => {
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha de nacimiento</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Género</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Menores en casa</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Mayores en casa</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Desayuno</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Almuerzo</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>N° de personas menores en casa que viven con el beneficiario</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>N° de personas mayores en casa que viven con el beneficiario</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Código QR</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
             </TableRow>
@@ -138,8 +138,6 @@ const ListaBeneficiarios = ({ user }) => {
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.genero}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_menores_en_el_hogar}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.desayuno.length !== 0 ? 'Si' : 'No'}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.almuerzo.length !== 0 ? 'Si' : 'No'}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                   <QRCode value={beneficiario.cedula} size={64} />
                 </TableCell>

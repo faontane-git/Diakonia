@@ -72,6 +72,8 @@ const ListaBeneficiarios = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Lista de Nutrición de {institucionN}</h1>
+      <h3>Convenio: {convenioN}</h3>
+
       <Button id="buttonABeneficiarios" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goAñadirNutri} variant="contained">
         Añadir Seguimiento
       </Button>
