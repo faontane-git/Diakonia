@@ -3,6 +3,7 @@ import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc, getDocs, collection, query, where } from 'firebase/firestore';
 import '../estilos/EditarUsuarios.css';
+import Swal from 'sweetalert2';
 
 const EditarInstitucion = ({ user }) => {
   const { usuarioId } = useParams();
@@ -82,6 +83,17 @@ const EditarInstitucion = ({ user }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('institucion:', institucionN)
+    if(rol=== "Registrador"){
+      console.log("entra")
+      if(institucionId==="DiakoníaWeb"){
+        Swal.fire('Error', 'Institución no seleccionado', 'error');
+        return
+      }
+      else if(convenioId=== ""){
+        Swal.fire('Error', 'Convenio no seleccionado', 'error');
+        return
+      }
+    }
     ActualizarUsuario(rol, institucionId, institucionN,convenioId,convenioN,nombre);
   };
 
@@ -131,7 +143,7 @@ const EditarInstitucion = ({ user }) => {
           <select id="rol" onChange={(e) => {
             setRol(e.target.value);
             setMostrarBarraAdicional(e.target.value === "Registrador");
-            if (mostrarBarraAdicional === false) {
+            if (e.target.value !== "Registrador") {
               setInstitucionId("DiakoníaWeb");
               setInstitucionN("DiakoníaWeb");
               setConvenioId("DiakoníaWeb");
@@ -152,6 +164,8 @@ const EditarInstitucion = ({ user }) => {
               setInstitucionId(e.target.value);
               const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
               setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+              setConvenioId("");
+              setConvenioN("");
             }}>
               <option value="" disabled selected>Selecciona una institucion</option>
               {data.map((institucion) => (
@@ -160,9 +174,10 @@ const EditarInstitucion = ({ user }) => {
             </select>
           </div>
 
-          <div id="txtConvenios">
+
+        {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
           <label htmlFor="convenios">Convenio</label>
-          <select id="convenios" onChange={(e) => {
+          <select id="convenios" value={convenioN} onChange={(e) => {
             const valores = e.target.value.split("/");
             console.log(valores);
             setConvenioId(valores[0]);         
@@ -174,7 +189,8 @@ const EditarInstitucion = ({ user }) => {
               <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
             ))}
           </select>
-        </div>
+        </div>)}
+          
           </>
         )}
 
