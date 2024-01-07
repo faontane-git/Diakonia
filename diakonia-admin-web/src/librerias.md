@@ -21,3 +21,6 @@ npm install @react-pdf/renderer --save
 npm install @mui/material @emotion/react @emotion/styled
 
 npm install date-fns
+npm install jspdf
+npm install html2canvas
+npm install html2pdf.js

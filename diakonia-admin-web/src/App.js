@@ -11,6 +11,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import Inicio from "./components/Inicio.js"
 import Instituciones from "./components/Instituciones.js"
 import Beneficiarios from "./components/Beneficiarios.js"
+import CredencialesComponent from "./components/Credencial.js"
 import Seguimiento from "./components/Seguimiento.js"
 
 import Registrar from "./components/Registrar.js"
@@ -132,6 +133,8 @@ function Aplicacion() {
     <Route path="instituciones/:institucionId/:institucionN/añadirConvenio" element={<AñadirConvenio/>} />
 
     <Route path="beneficiarios" element={<Beneficiarios  />} />
+    <Route path="credencial/:arreglo" element={<CredencialesComponent />} />
+
     <Route path="seguimiento" element={<Seguimiento  />} />
           
     <Route path="registrar" element={<Registrar />} />

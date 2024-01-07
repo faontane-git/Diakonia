@@ -1,0 +1,28 @@
+.carnet-container-horizontal {
+    display: flex;
+    flex-wrap: wrap; /* Esto permite que los elementos pasen a la siguiente línea */
+    justify-content: center; /* Alinea los elementos al inicio del contenedor */
+  }
+  
+  .carnet-item {
+    display: flex;
+    border: 1px solid #ccc;
+    margin: 10px;
+    width: 350px; /* Ajusta el ancho según tus necesidades */
+  }
+  
+  .datos-container {
+    flex: 1;
+    padding: 10px;
+  }
+  
+  .codigo-qr-container {
+    flex: 0 0 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  /* Ajusta los estilos según sea necesario */
+  

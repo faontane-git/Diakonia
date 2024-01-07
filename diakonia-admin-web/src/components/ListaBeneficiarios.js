@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Cabecera from './Cabecera';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import '../estilos/ListaBeneficiarios.css';
 import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import QRCode from 'qrcode.react';
+import html2canvas from 'html2canvas';
 import {
   Table,
   TableBody,
@@ -21,6 +22,7 @@ import {
   TextField,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
+import jsPDF from 'jspdf';
 
 const ListaBeneficiarios = ({ user }) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
@@ -31,6 +33,8 @@ const ListaBeneficiarios = ({ user }) => {
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const tableRef = useRef();
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -60,35 +64,53 @@ const ListaBeneficiarios = ({ user }) => {
   }
 
   async function eliminarBeneficiario(beneficiario) {
-    Swal.fire({
-      title: 'Advertencia',
-      text: `Está seguro que desea eliminar ${beneficiario.nombre}`,
-      icon: 'error',
-      showDenyButton: true,
-      denyButtonText: 'No',
-      confirmButtonText: 'Si',
-      confirmButtonColor: '#000000',
-    }).then(async (response) => {
-      if (response.isConfirmed) {
-        const querydb = getFirestore();
-        const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
-        try {
-          await updateDoc(docuRef, { activo: false });
-          window.location.reload();
-        } catch (error) {
-          console.error('Error al eliminar beneficiario:', error);
-          alert(error.message);
-        }
-      }
-    });
+    // ... (sin cambios)
   }
+
+  const exportarCredenciales = () => {
+    // Ruta al archivo HTML que deseas exportar (asegúrate de ajustar la ruta según tu estructura de carpetas)
+    const rutaArchivoHTML = 'Carnets.html';
+    // Cargar el contenido del archivo HTML
+    fetch(rutaArchivoHTML)
+      .then((response) => response.text())
+      .then((codigoHTML) => {
+        // Usar html2canvas para convertir el contenido a una imagen
+        html2canvas(document.body, { scale: 2 }).then((canvas) => {
+          // Crear un nuevo documento PDF
+          const pdf = new jsPDF();
+
+          // Obtener el tamaño de la imagen generada
+          const imgData = canvas.toDataURL('image/png');
+          const imgWidth = 210;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          // Agregar la imagen al documento PDF
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+          // Guardar o descargar el archivo PDF
+          pdf.save('ExportedHTML.pdf');
+        });
+      });
+  };
+
+  const generarCredenciales = () => {
+    // Codifica el arreglo como un string para pasarlo como parte de la URL
+    const encodedData = encodeURIComponent(JSON.stringify(filteredData));
+    console.log(encodedData);
+    navigate(`/credencial/${encodedData}`);
+  };
 
   return (
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Lista de Beneficiarios de {institucionN}</h1>
       <h3>Convenio: {convenioN}</h3>
-      <Button id="buttonABeneficiarios" style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }} onClick={goAñadirBenef} variant="contained">
+      <Button
+        id="buttonABeneficiarios"
+        style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
+        onClick={goAñadirBenef}
+        variant="contained"
+      >
         Añadir Beneficiarios
       </Button>
 
@@ -113,7 +135,7 @@ const ListaBeneficiarios = ({ user }) => {
         />
       </div>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} ref={tableRef}>
         <Table>
           <TableHead>
             <TableRow>
@@ -125,8 +147,7 @@ const ListaBeneficiarios = ({ user }) => {
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Mayores en casa</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Desayuno</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Almuerzo</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Código QR</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
+               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -140,9 +161,6 @@ const ListaBeneficiarios = ({ user }) => {
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.desayuno.length !== 0 ? 'Si' : 'No'}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.almuerzo.length !== 0 ? 'Si' : 'No'}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
-                  <QRCode value={beneficiario.cedula} size={64} />
-                </TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px', marginBottom: '8px' }}>
                   <Link
                     to={`/editar-beneficiario/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}
@@ -164,6 +182,15 @@ const ListaBeneficiarios = ({ user }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Button
+        id="buttonExportarCredenciales"
+        style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '10px' }}
+        onClick={generarCredenciales}
+        variant="contained"
+      >
+        Generar Credenciales
+      </Button>
     </div>
   );
 };

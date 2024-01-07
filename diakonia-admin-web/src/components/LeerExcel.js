@@ -41,8 +41,8 @@ const LeerExcel = ({ user }) => {
     );
   }, [institucionId]);
 
-  const generateQRCode = (cedula) => {
-    return `Institución: ${institucionN}, ID: ${institucionId}, Cédula: ${cedula}`;
+  const generateQRCode = (nombre, cedula) => {
+    return `Nombre: ${nombre},ConvenioNombre:${convenioN},ConvenioID:${convenioId},Institución: ${institucionN}, Institución_ID: ${institucionId}, Cédula: ${cedula}`;
   };
 
   const handleFileUpload = (e) => {
@@ -71,16 +71,16 @@ const LeerExcel = ({ user }) => {
       const n_menores = jsonData.slice(1).map((fila) => fila[5]);
       const n_mayores = jsonData.slice(1).map((fila) => fila[6]);
 
-      
+
 
       const nuevosBeneficiarios = nombres.map((nombre, index) => {
-        
+
         //const [dia, mes, anio] = f_nacimiento[index].split('/');
         //const fechaNacimiento = new Date(`${anio}-${mes}-${dia}`);
         const fechaNacimiento = new Date((f_nacimiento[index] - 2) * 24 * 60 * 60 * 1000 + new Date(1900, 0, 1).getTime());
 
 
-        const codigoQR = generateQRCode(cedula[index]);
+        const codigoQR = generateQRCode(nombre,cedula[index]);
         return {
           institucionId: institucionId,
           convenioId: convenioId,
@@ -118,9 +118,9 @@ const LeerExcel = ({ user }) => {
 
     getDoc(ConvenioRef).then((doc) => {
       if (doc.exists) {
-       
+
         //const days = (Date.parse(doc.data().fecha_final) - Date.parse(doc.data().fecha_inicial)) / 86400000;
-      
+
         const final = new Date(doc.data().fecha_final.seconds * 1000)
         const inicio = new Date(doc.data().fecha_inicial.seconds * 1000)
         const diferenciaEnMilisegundos = final - inicio;
@@ -134,7 +134,7 @@ const LeerExcel = ({ user }) => {
             });
           }
           else {
-             
+
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
               const fechaActual = new Date(inicio.getTime() + i);
               beneficiario.dias.push(fechaActual);
@@ -184,7 +184,6 @@ const LeerExcel = ({ user }) => {
               <th>Número de contacto</th>
               <th>Menores en casa</th>
               <th>Mayores en casa</th>
-              <th>Código QR</th>
             </tr>
           </thead>
           <tbody>
@@ -197,9 +196,6 @@ const LeerExcel = ({ user }) => {
                 <td>{Nbeneficiario.numero_contacto}</td>
                 <td>{Nbeneficiario.numero_de_personas_menores_en_el_hogar}</td>
                 <td>{Nbeneficiario.numero_de_personas_mayores_en_el_hogar}</td>
-                <td>
-                  <QRCode value={Nbeneficiario.codigoQR} size={64} />
-                </td>
               </tr>
             ))}
           </tbody>
