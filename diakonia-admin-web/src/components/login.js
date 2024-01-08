@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import Logo from '../imagenes/logo-banco-alimentos.png'
-import Img1 from '../imagenes/foto1.png'
-import Img2 from '../imagenes/foto2.png'
+import Logo from '../imagenes/logo-banco-alimentos.png';
+import Img1 from '../imagenes/foto1.png';
+import Img2 from '../imagenes/foto2.png';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from './AuthContext.js';
 import '../estilos/login.css';
 import Inicio from './Inicio';
-import firebaseApp from "../firebase-config";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, } from "firebase/auth";
-import { getFirestore, doc, collection, getDocs, query, where } from "firebase/firestore";
+import firebaseApp from '../firebase-config';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
+import {
+  getFirestore,
+  doc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
 
 var bcrypt = require('bcryptjs');
 const auth = getAuth(firebaseApp);
@@ -55,14 +67,23 @@ function Login({ user }) {
 
           const correo = userData.correo;
           const rol = userData.rol;
-          const id = userDocument.id;
+          const nombre = userData.nombre; // Asegúrate de que este campo existe en tu base de datos
+
           const usuario = {
-            id: id,
+            id: userDocument.id,
             email: correo,
             rol: rol,
           };
           login(usuario);
-          // Puedes redirigir al usuario a la página de inicio, por ejemplo
+
+          // Muestra un mensaje de bienvenida
+          Swal.fire({
+            icon: 'success',
+            title: `¡Bienvenido, ${nombre || correo}!`,
+            text: 'Inicio de sesión exitoso',
+          });
+
+          // Redirige al usuario a la página de inicio, por ejemplo
         } else {
           Swal.fire({
             icon: 'error',
@@ -118,15 +139,11 @@ function Login({ user }) {
                 value="Iniciar sesión"
               />
             </form>
-
           </div>
         </div>
-
-
       </div>
     </div>
   );
 }
-
 
 export default Login;

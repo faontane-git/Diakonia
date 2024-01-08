@@ -127,10 +127,11 @@ const ListaUsuarios = ({ usuarios }) => {
         </Table>
       </TableContainer>
 
-      <div id="export-button-container">
-        <button onClick={exportToXLSX}>Exportar Tabla</button>
-      </div>
-    </div >
+
+      <Button onClick={exportToXLSX} variant="contained" style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
+        Exportar Tabla
+      </Button>
+    </div>
   );
 };
 

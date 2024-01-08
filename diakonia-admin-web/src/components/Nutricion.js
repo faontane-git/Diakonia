@@ -70,8 +70,6 @@ const Nutricion = ({ user }) => {
               <TableHead>
                 <TableRow>
                   <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Institución</TableCell>
-                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha Inicial</TableCell>
-                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha Final</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -79,8 +77,6 @@ const Nutricion = ({ user }) => {
                 {filteredData.map((institucion) => (
                   <TableRow key={institucion.id}>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.nombre}</TableCell>
-                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.fecha_inicial}</TableCell>
-                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.fecha_final}</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                       <Link to={`/nutricion/${institucion.id}/${institucion.nombre}`}>
                         <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>

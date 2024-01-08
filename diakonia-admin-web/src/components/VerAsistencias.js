@@ -68,8 +68,7 @@ const VerAsistencias = ({ user }) => {
           <TableHead>
             <TableRow>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Institución</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Rango de Fecha</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
+               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -77,8 +76,7 @@ const VerAsistencias = ({ user }) => {
               filteredData.map((institucion) => (
                 <TableRow key={institucion.id}>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.nombre}</TableCell>
-                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{`Rango de Fecha: ${institucion.fecha_inicial}/${institucion.fecha_final}`}</TableCell>
-                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                     <Link to={`/asistencias/${institucion.id}/${institucion.nombre}`} className="centered-link">
                       <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
                         Acceder

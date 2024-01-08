@@ -13,7 +13,6 @@ const CredencialesComponent = () => {
     try {
       const decodedData = JSON.parse(decodeURIComponent(arreglo));
       const datos = parseDatosCredencial(decodedData);
-      console.log(datos);
       setDatosCredencial(datos);
     } catch (error) {
       console.error('Error al decodificar los datos:', error);
@@ -38,20 +37,21 @@ const CredencialesComponent = () => {
     const container = document.getElementById('pdf-container');
 
     if (container) {
-      html2pdf(container, {
+      const options = {
         margin: 0,
         filename: 'credenciales.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 1 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-        pagebreak: { avoid: '.avoid-this-class' },
-      });
+        pagebreak: { mode: 'avoid-all' }, // Establece el modo de salto de página
+      };
+
+      html2pdf(container, options);
     } else {
       console.error('No se encontró el contenedor para generar el PDF.');
     }
   };
 
-  // Contenido de tu componente de credenciales
   const Carnet = ({ datos }) => {
     const carnetsPorPagina = 9;
 
@@ -78,6 +78,8 @@ const CredencialesComponent = () => {
                 </div>
               </div>
             ))}
+            {/* Agrega un salto de página después de cada página */}
+            {paginaIndex < paginas.length - 1 && <div className="page-break"></div>}
           </div>
         ))}
       </div>
