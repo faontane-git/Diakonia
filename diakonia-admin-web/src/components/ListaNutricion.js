@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { toBeInvalid } from '@testing-library/jest-dom/matchers';
-import { differenceInYears } from 'date-fns';
+import { differenceInYears, differenceInMonths } from 'date-fns';
+import * as XLSX from 'xlsx';
+
 
 
 const ListaBeneficiarios = ({ user }) => {
@@ -31,6 +33,14 @@ const ListaBeneficiarios = ({ user }) => {
     const edad = differenceInYears(new Date(), fechaNac);
     return edad;
   };
+  const calcularEdadEnMeses = (fechaNacimiento) => {
+    if (!fechaNacimiento) return '-';
+    const fechaNac = new Date(fechaNacimiento.seconds * 1000);
+    const edadEnMeses = differenceInMonths(new Date(), fechaNac);
+    return edadEnMeses;
+  };
+
+  
   /*const institucionSeleccionada = instituciones.find((inst) => inst.id === parseInt(institucionId, 10));
   const beneficiariosDeInstitucion = nutricion.filter(
     (nutricion) => nutricion.institucionId === institucionSeleccionada.id
@@ -51,8 +61,8 @@ const ListaBeneficiarios = ({ user }) => {
   function LeerUltimoValor(valor, fechas) {
     if (fechas.length > 0) {
       const fechaMayor = fechas.reduce((fechaMayorActual, fecha) => {
-        const fechaActual = new Date(fecha);
-        const fechaMayor = new Date(fechaMayorActual);
+        const fechaActual = new Date(fecha.seconds * 1000);
+        const fechaMayor = new Date(fechaMayorActual.seconds * 1000);
 
         if (fechaActual > fechaMayor) {
           fechaMayorActual = fecha;
@@ -68,6 +78,128 @@ const ListaBeneficiarios = ({ user }) => {
     }
   }
 
+
+
+  const handleModifyExcel = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.xlsx';
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const hoja = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(hoja, { type: 'array' });
+
+          workbook.Props = {
+            ...workbook.Props,
+            language: 'es-ES' // Reemplaza 'es-ES' con el código de idioma correcto
+          };
+
+          // Modificar el workbook según tus necesidades
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        //const firstSheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+        const secondSheet = workbook.Sheets[workbook.SheetNames[1]];
+        const thirdSheet = workbook.Sheets[workbook.SheetNames[2]];
+        const fourthSheet = workbook.Sheets[workbook.SheetNames[3]];
+
+        // Agregar los datos de data.Hgb en la columna "J", comenzando desde la fila 4
+        data.forEach((value, index) => {
+          const rowIndex = index + 3; // Offset de 3 para comenzar desde la fila 4
+          
+          const nameCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 0 }); // Columna "A" es el índice 0
+          firstSheet[nameCellAddress] = { v: value.nombre };
+
+          const SeguimientoCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 1 }); // Columna "A" es el índice 0
+          firstSheet[SeguimientoCellAddress] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento,value.fecha_seguimiento)) };
+
+          const NacimientoCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 5 }); // Columna "A" es el índice 0
+          firstSheet[NacimientoCellAddress] = { v: convertirTimestampAFecha(value.fecha_nacimiento) };
+
+          const EdadCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 6 }); // Columna "A" es el índice 0
+          firstSheet[EdadCellAddress] = { v: calcularEdad(value.fecha_nacimiento) };
+
+          const hgbCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "J" es el índice 9
+          firstSheet[hgbCellAddress] = { v: LeerUltimoValor(value.hgb,value.fecha_seguimiento) };
+
+
+
+          const nameCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 8 }); // Columna "A" es el índice 0
+          secondSheet[nameCellAddress2] = { v: value.nombre };
+
+          const SeguimientoCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "A" es el índice 0
+          secondSheet[SeguimientoCellAddress2] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento,value.fecha_seguimiento)) };
+          
+          const EdadMesesCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 10 }); // Columna "A" es el índice 0
+          secondSheet[EdadMesesCellAddress2] = { v: calcularEdadEnMeses(value.fecha_nacimiento) };
+
+          const SexoCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 11 }); // Columna "A" es el índice 0
+          secondSheet[SexoCellAddress2] = { v: value.genero };
+
+          const PesoCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 12 }); // Columna "J" es el índice 9
+          secondSheet[PesoCellAddress2] = { v: LeerUltimoValor(value.pesos,value.fecha_seguimiento) };
+
+          const TallaCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 13 }); // Columna "J" es el índice 9
+          secondSheet[TallaCellAddress2] = { v: LeerUltimoValor(value.talla,value.fecha_seguimiento) };
+          
+
+
+          const nameCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 8 }); // Columna "A" es el índice 0
+          thirdSheet[nameCellAddress3] = { v: value.nombre };
+
+          const SeguimientoCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "A" es el índice 0
+          thirdSheet[SeguimientoCellAddress3] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento,value.fecha_seguimiento)) };
+          
+          const EdadMesesCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 10 }); // Columna "A" es el índice 0
+          thirdSheet[EdadMesesCellAddress3] = { v: calcularEdadEnMeses(value.fecha_nacimiento) };
+
+          const SexoCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 11 }); // Columna "A" es el índice 0
+          thirdSheet[SexoCellAddress3] = { v: value.genero };
+
+          const PesoCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 12 }); // Columna "J" es el índice 9
+          thirdSheet[PesoCellAddress3] = { v: LeerUltimoValor(value.pesos,value.fecha_seguimiento) };
+
+          const TallaCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 13 }); // Columna "J" es el índice 9
+          thirdSheet[TallaCellAddress3] = { v: LeerUltimoValor(value.talla,value.fecha_seguimiento) };
+
+
+
+          const nameCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 8 }); // Columna "A" es el índice 0
+          fourthSheet[nameCellAddress4] = { v: value.nombre };
+
+          const SeguimientoCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "A" es el índice 0
+          fourthSheet[SeguimientoCellAddress4] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento,value.fecha_seguimiento)) };
+          
+          const EdadMesesCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 10 }); // Columna "A" es el índice 0
+          fourthSheet[EdadMesesCellAddress4] = { v: calcularEdadEnMeses(value.fecha_nacimiento) };
+
+          const SexoCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 11 }); // Columna "A" es el índice 0
+          fourthSheet[SexoCellAddress4] = { v: value.genero };
+
+          const PesoCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 12 }); // Columna "J" es el índice 9
+          fourthSheet[PesoCellAddress4] = { v: LeerUltimoValor(value.pesos,value.fecha_seguimiento) };
+
+          const TallaCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 13 }); // Columna "J" es el índice 9
+          fourthSheet[TallaCellAddress4] = { v: LeerUltimoValor(value.talla,value.fecha_seguimiento) };
+          
+        });
+
+        // Actualizar la hoja de cálculo con los nuevos datos
+        //XLSX.utils.sheet_add_json(firstSheet, firstSheetData, { header: 1, skipHeader: true });
+
+          // Guardar el workbook modificado
+          XLSX.writeFile(workbook, 'modified_lista_beneficiarios.xlsx');
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    });
+
+    fileInput.click();
+  };
+
   return (
     <div className="centered-container">
       <Cabecera user={user} />
@@ -77,15 +209,21 @@ const ListaBeneficiarios = ({ user }) => {
       <Button id="buttonABeneficiarios" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goAñadirNutri} variant="contained">
         Añadir Seguimiento
       </Button>
+
+      <Button onClick={handleModifyExcel} variant="contained">
+        Modificar Excel
+      </Button>
+
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Edad</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Último Peso(KG)</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Última Talla(M)</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Último HGB(g/dL)</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Último Peso(kg)</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Última Talla(cm)</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Último HGB(mg/dL)</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Última revisión</TableCell>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
             </TableRow>
