@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Await, useParams } from 'react-router-dom';
-import Cabecera from './Cabecera';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import '../estilos/ListaBeneficiarios.css';
 import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
+import Cabecera from './Cabecera';
+import '../estilos/ListaBeneficiarios.css';
 
 const Convenios = () => {
-  const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
+  const { institucionId, institucionN } = useParams();
+
   const goAñadirBenef = () => {
     navigate('añadirConvenio');
   };
@@ -60,7 +74,6 @@ const Convenios = () => {
   };
 
   function esActivo(convenio) {
-    console.log(convenio.activo)
     return convenio.activo === true;
   }
 
@@ -70,23 +83,23 @@ const Convenios = () => {
       text: `Está seguro que desea eliminar ${convenio.nombre}`,
       icon: 'error',
       showDenyButton: true,
-      denyButtonText: "No",
-      confirmButtonText: "Si",
-      confirmButtonColor: "#000000"
-    }).then(async response => {
+      denyButtonText: 'No',
+      confirmButtonText: 'Si',
+      confirmButtonColor: '#000000',
+    }).then(async (response) => {
       if (response.isConfirmed) {
         const querydb = getFirestore();
         const docuRef = doc(querydb, 'convenios', convenio.id);
         try {
           await updateDoc(docuRef, { activo: false });
-          window.location.reload()
+          window.location.reload();
         } catch (error) {
           console.error('Error al eliminar institución:', error);
           alert(error.message);
         }
       }
-    })
-  };
+    });
+  }
 
   return (
     <div className="centered-container">
@@ -94,91 +107,78 @@ const Convenios = () => {
         <Cabecera />
         <h1>Lista de convenios de {institucionN}</h1>
       </div>
+      
+      <div className="centered-container">
+        <Button variant="contained" onClick={goAñadirBenef} style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
+          Añadir Convenio
+        </Button>
+      </div>
 
-      <button id="buttonABeneficiarios" onClick={goAñadirBenef}>
-        Añadir Convenio
-      </button>
-
-      <div className="search-container-name">
-        <input
+      <div className="search-container">
+        <TextField
           type="text"
           placeholder="Buscar por nombre"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+            style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+          }}
+          fullWidth
+          variant="outlined"
         />
       </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Servicios</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Fin</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.filter(esActivo).map((convenio) => (
-            <tr key={convenio.id}>
-              <td>{convenio.nombre}</td>
-              <td>{convenio.direccion}</td>
-              <td> {convenio.desayuno && 'Desayuno '}
-                {convenio.almuerzo && 'Almuerzo'}</td>
-              <td>{convertirTimestampAFecha(convenio.fecha_inicial)}</td>
-              <td>{convertirTimestampAFecha(convenio.fecha_final)}</td>
-              <td>
-                <Link to={`/editar-convenio/${institucionId}/${institucionN}/${convenio.id}`}>
-                  <button>Editar</button>
-                </Link>
-
-                <button onClick={() => eliminarConvenio(convenio)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button id="buttonExport" onClick={exportToXLSX}>
-        Exportar a Excel
-      </button>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Nombre</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Dirección</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Servicios</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Inicio</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Fin</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.filter(esActivo).map((convenio) => (
+              <TableRow key={convenio.id}>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.nombre}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.direccion}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
+                  {convenio.desayuno && 'Desayuno '}
+                  {convenio.almuerzo && 'Almuerzo'}
+                </TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
+                  <Link to={`/editar-convenio/${institucionId}/${institucionN}/${convenio.id}`}>
+                    <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                      Editar
+                    </Button>
+                  </Link>
+                  <Button variant="contained" onClick={() => eliminarConvenio(convenio)} style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <div className="centered-container">
+        <Button variant="contained" style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }} onClick={exportToXLSX}>
+          Exportar a Excel
+        </Button>
+      </div>
     </div>
   );
 };
 
-
 export default Convenios;
-
-
-
-
-
-/*<thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Servicios</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Fin</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.filter(esActivo).map((convenio) => (
-            <tr key={convenio.id}>
-              <td>{convenio.nombre}</td>
-              <td>{convenio.direccion}</td>
-              <td> {convenio.desayuno && 'Desayuno '}
-                {convenio.almuerzo && 'Almuerzo'}</td>
-              <td>{convenio.fecha_inicial}</td>
-              <td>{convenio.fecha_final}</td>
-              <td>
-                <Link to={`/editar-convenio/${institucionId}/${institucionN}/${convenio.id}`}>
-                  <button>Editar</button>
-                </Link>
-                
-                <button onClick={() => eliminarConvenio(convenio)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>*/

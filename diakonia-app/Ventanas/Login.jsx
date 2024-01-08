@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal, Button } from 'react-native';
+import {
+   View,
+   Text,
+   TextInput,
+   TouchableOpacity,
+   StyleSheet,
+   Image,
+   Modal,
+   Button,
+   ActivityIndicator,
+   Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
-import { Alert } from 'react-native';
 
 const Login = () => {
    const navigation = useNavigation();
-   const { institucionId, setInstitucionId } = useAuth();
-   const { institucionN, setInstitucionN } = useAuth();
-   const { convenioN, setConvenioN } = useAuth();
-   const { convenioId, setConvenioId } = useAuth();
+   const { setInstitucionId, setInstitucionN, setConvenioN, setConvenioId } = useAuth();
 
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [errorModalVisible, setErrorModalVisible] = useState(false);
    const [errorMessage, setErrorMessage] = useState('');
+   const [loading, setLoading] = useState(false);
 
    const handleLogin = async () => {
+      setLoading(true);
+
       const auth = getAuth();
       const db = getFirestore();
-
-      console.log('Iniciando sesión con correo electrónico:', email);
-      console.log('Iniciando sesión con contraseña:', password);
 
       try {
          const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -39,8 +46,8 @@ const Login = () => {
                const userRole = userData.rol;
                const institucionId = userData.institucionId;
                const institucionN = userData.institucionN;
-               const convenioId=userData.convenioId;
-               console.log(institucionN);
+               const convenioId = userData.convenioId;
+
                setInstitucionId(institucionId);
                setInstitucionN(institucionN);
                setConvenioId(convenioId);
@@ -57,10 +64,11 @@ const Login = () => {
             setErrorMessage('¡El Correo o Contraseña ingresado es incorrecto!\nVuelva a ingresar');
             setErrorModalVisible(true);
          }
-
       } catch (error) {
          setErrorMessage('¡El Correo o Contraseña ingresado es incorrecto!\nVuelva a ingresar');
          setErrorModalVisible(true);
+      } finally {
+         setLoading(false);
       }
    };
 
@@ -70,43 +78,44 @@ const Login = () => {
 
    return (
       <View style={styles.container}>
-         <Image
-            style={[styles.image, { marginTop: 0 }]}
-            source={require('../assets/imagenes/logo-banco-alimentos.png')}
-         />
-         <Text style={styles.title}>
-            Sistema de Gestión y Análisis de Impacto en Beneficiarios de Alimentos
-         </Text>
-         <TextInput
-            style={styles.input}
-            placeholder="Correo electrónico"
-            onChangeText={setEmail}
-            value={email}
-         />
-         <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            onChangeText={setPassword}
-            value={password}
-            secureTextEntry
-         />
-         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Iniciar sesión</Text>
-         </TouchableOpacity>
+         {loading ? (
+            <ActivityIndicator size="large" color="#890202" />
+         ) : (
+            <>
+               <Image
+                  style={[styles.image, { marginTop: 0 }]}
+                  source={require('../assets/imagenes/logo-banco-alimentos.png')}
+               />
+               <Text style={styles.title}>
+                  Sistema de Gestión y Análisis de Impacto en Beneficiarios de Alimentos
+               </Text>
+               <TextInput
+                  style={styles.input}
+                  placeholder="Correo electrónico"
+                  onChangeText={setEmail}
+                  value={email}
+               />
+               <TextInput
+                  style={styles.input}
+                  placeholder="Contraseña"
+                  onChangeText={setPassword}
+                  value={password}
+                  secureTextEntry
+               />
+               <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                  <Text style={styles.buttonText}>Iniciar sesión</Text>
+               </TouchableOpacity>
 
-         {/* Modal para mostrar el mensaje de error */}
-         <Modal
-            visible={errorModalVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={closeModal}>
-            <View style={styles.modalContainer}>
-               <View style={styles.modalContent}>
-                  <Text style={styles.modalText}>{errorMessage}</Text>
-                  <Button title="OK" onPress={closeModal} />
-               </View>
-            </View>
-         </Modal>
+               <Modal visible={errorModalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
+                  <View style={styles.modalContainer}>
+                     <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{errorMessage}</Text>
+                        <Button title="OK" onPress={closeModal} />
+                     </View>
+                  </View>
+               </Modal>
+            </>
+         )}
       </View>
    );
 };

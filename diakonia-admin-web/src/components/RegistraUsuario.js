@@ -64,7 +64,7 @@ const RegistroUsuario = ({ user }) => {
       Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');
       return;
     }
-    else if(convenioN=== undefined || convenioId=== undefined){
+    else if (convenioN === undefined || convenioId === undefined) {
       Swal.fire('Error', 'Convenio no seleccionado', 'error');
       return;
     }
@@ -105,22 +105,28 @@ const RegistroUsuario = ({ user }) => {
 
   function handleSubmit(event) {
     event.preventDefault();
+    // Validar campos en blanco
+    if (nombre.trim() === '' || email.trim() === '' || contraseña.trim() === '') {
+      Swal.fire('Error', 'Nombre, Email y Constraseña son campos obligatorios.', 'error');
+      return;
+    }
+
     if (mostrarBarraAdicional === false) {
       setInstitucionId("DiakoníaWeb");
       setInstitucionN("DiakoníaWeb");
     }
-    if(rol=== "Registrador"){
-      if(institucionId==="DiakoníaWeb"){
+    if (rol === "Registrador") {
+      if (institucionId === "DiakoníaWeb") {
         Swal.fire('Error', 'Institución no seleccionado', 'error');
         return
       }
-      else if(convenioId=== ""){
+      else if (convenioId === "") {
         Swal.fire('Error', 'Convenio no seleccionado', 'error');
         return
       }
     }
     console.log('institucion:', institucionN)
-    registrarUsuario(email, contraseña, rol, institucionId, institucionN,nombre,convenioN,convenioId);
+    registrarUsuario(email, contraseña, rol, institucionId, institucionN, nombre, convenioN, convenioId);
   };
 
 
@@ -130,16 +136,16 @@ const RegistroUsuario = ({ user }) => {
       console.log("entra")
       const querydb = getFirestore();
       const conveniosCollection = collection(querydb, 'convenios');
-      const conveniosQuery = query(conveniosCollection,where('institucionId', '==', institucionId));
+      const conveniosQuery = query(conveniosCollection, where('institucionId', '==', institucionId));
 
-      getDocs(conveniosQuery).then((res) =>{
-          if(res!== undefined){
-            console.log("cambio")
-            setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
-          }
-      }  
+      getDocs(conveniosQuery).then((res) => {
+        if (res !== undefined) {
+          console.log("cambio")
+          setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
+        }
+      }
       );
-      
+
     }
   }, [institucionId]);
 
@@ -154,7 +160,7 @@ const RegistroUsuario = ({ user }) => {
 
 
 
-      <div id="txtUemail">
+        <div id="txtUemail">
           <label htmlFor="email">Nombre Completo</label>
           <input
             type="nombre"
@@ -202,41 +208,41 @@ const RegistroUsuario = ({ user }) => {
           </select>
         </div>
 
-        {mostrarBarraAdicional && ( 
+        {mostrarBarraAdicional && (
           <>
-          <div id="txtUrol">
-            <label htmlFor="rol">Institución a la que pertenece</label>
-            <select id="rol" onChange={(e) => {
-              setInstitucionId(e.target.value);
-              const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-              setInstitucionN(selectedInstitucion?.nombre);
-              setConvenioId("");
-              setConvenioN("");
-            }}>
-              <option value="" disabled selected>Selecciona una institución</option>
-              {data.map((institucion) => (
-                <option value={institucion.id}>{institucion.nombre}</option>
-              ))}
-            </select>
-          </div>
+            <div id="txtUrol">
+              <label htmlFor="rol">Institución a la que pertenece</label>
+              <select id="rol" onChange={(e) => {
+                setInstitucionId(e.target.value);
+                const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+                setInstitucionN(selectedInstitucion?.nombre);
+                setConvenioId("");
+                setConvenioN("");
+              }}>
+                <option value="" disabled selected>Selecciona una institución</option>
+                {data.map((institucion) => (
+                  <option value={institucion.id}>{institucion.nombre}</option>
+                ))}
+              </select>
+            </div>
 
 
-          <div id="txtConvenios">
-          <label htmlFor="convenios">Convenio</label>
-          <select id="convenios" value={convenioId} onChange={(e) => {
-            const valores = e.target.value.split("/");
-            console.log(valores);
-            setConvenioId(valores[0]);         
-            setConvenioN(valores[1]);
-            console.log("convenio", convenioId, convenioN)
-            }}>
-            <option value="" disabled selected>Selecciona un convenio</option>
-            {convenios.map((convenio) => (
-              <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
-            ))}
-          </select>
-        </div>
-        </> 
+            <div id="txtConvenios">
+              <label htmlFor="convenios">Convenio</label>
+              <select id="convenios" value={convenioId} onChange={(e) => {
+                const valores = e.target.value.split("/");
+                console.log(valores);
+                setConvenioId(valores[0]);
+                setConvenioN(valores[1]);
+                console.log("convenio", convenioId, convenioN)
+              }}>
+                <option value="" disabled selected>Selecciona un convenio</option>
+                {convenios.map((convenio) => (
+                  <option key={convenio.id} value={convenio.id + "/" + convenio.nombre}>{convenio.nombre}</option>
+                ))}
+              </select>
+            </div>
+          </>
         )}
 
         <button id="buttonIRegistrar" type="submit">Registrar</button>
