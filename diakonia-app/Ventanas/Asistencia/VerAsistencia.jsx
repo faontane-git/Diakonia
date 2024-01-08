@@ -6,6 +6,7 @@ import { getFirestore, collection, getDocs, query, where } from 'firebase/firest
 
 const VerAsistencia = () => {
     const { institucionId } = useAuth();
+    const { convenioId } = useAuth();
     const [data, setData] = useState([]);
     const [date, setDate] = useState(new Date());
     const [busqueda, setBusqueda] = useState('');
@@ -28,9 +29,9 @@ const VerAsistencia = () => {
         const beneficiariosCollection = collection(querydb, 'beneficiarios');
         const beneficiariosQuery = query(
             beneficiariosCollection,
-            where('institucionId', '==', institucionId)
+            where('institucionId', '==', institucionId),
+            where('convenioId', '==', convenioId)
         );
-
         try {
             const querySnapshot = await getDocs(beneficiariosQuery);
             const beneficiariosData = querySnapshot.docs.map((benf) => ({

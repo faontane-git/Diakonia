@@ -5,11 +5,15 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [institucionId, setInstitucionId] = useState(null);
   const [institucionN, setInstitucionN] = useState(null);
+  const [convenioN, setConvenioN] = useState(null);
+  const [convenioId, setConvenioId] = useState(null);
+
   const [scannedData, setScannedData] = useState({
     nombre: '',
     institucion: '',
     iDinstitucion: '',
-    idBeneficiario: ''
+    idBeneficiario: '',
+    convenio:''
   });
 
   const updateScannedData = (newData) => {
@@ -21,6 +25,10 @@ export const AuthProvider = ({ children }) => {
     setInstitucionId,
     institucionN,
     setInstitucionN,
+    convenioN,
+    setConvenioN,
+    convenioId,
+    setConvenioId,
     scannedData,
     updateScannedData,
   };

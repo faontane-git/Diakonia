@@ -9,7 +9,7 @@ const Seguimiento = () => {
   const [busqueda, setBusqueda] = useState('');
   const [nutrientes, setNutrientes] = useState([]);
   const { institucionId } = useAuth();
-
+  const { convenioId } = useAuth();
 
   const buscar = (texto) => {
     setBusqueda(texto);
@@ -19,7 +19,11 @@ const Seguimiento = () => {
     const obtenerDatos = async () => {
       const querydb = getFirestore();
       const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+      const beneficiariosQuery = query(
+        beneficiariosCollection,
+        where('institucionId', '==', institucionId),
+        where('convenioId', '==', convenioId)
+      );
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));

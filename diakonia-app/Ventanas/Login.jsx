@@ -4,11 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
+import { Alert } from 'react-native';
 
 const Login = () => {
    const navigation = useNavigation();
    const { institucionId, setInstitucionId } = useAuth();
    const { institucionN, setInstitucionN } = useAuth();
+   const { convenioN, setConvenioN } = useAuth();
+   const { convenioId, setConvenioId } = useAuth();
+
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -34,15 +38,18 @@ const Login = () => {
                const userData = doc.data();
                const userRole = userData.rol;
                const institucionId = userData.institucionId;
-               const institucionN=userData.institucionN;
+               const institucionN = userData.institucionN;
+               const convenioId=userData.convenioId;
                console.log(institucionN);
                setInstitucionId(institucionId);
                setInstitucionN(institucionN);
+               setConvenioId(convenioId);
 
                if (userRole !== 'Registrador') {
                   setErrorMessage('¡No tienes permisos para iniciar sesión en esta aplicación!');
                   setErrorModalVisible(true);
                } else {
+                  Alert.alert('Bienvenido ' + institucionN, '¡Has iniciado sesión exitosamente!');
                   navigation.navigate('Home');
                }
             });

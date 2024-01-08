@@ -15,6 +15,7 @@ const TomarAsistencia = () => {
     const [servicio, setServicio] = useState('');
     const nombre = scannedData?.nombre || '';
     const institucion = scannedData?.institucion || '';
+    const convenio = scannedData?.convenio || '';
     const iDinstitucion = scannedData?.iDinstitucion || '';
     const idBeneficiario = scannedData?.iDinstitucion || '';
 
@@ -143,6 +144,11 @@ const TomarAsistencia = () => {
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Institución</Text>
                     <TextInput style={styles.inputInstitucion} value={institucion || ''} editable={false} />
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Convenio</Text>
+                    <TextInput style={styles.inputInstitucion} value={convenio || ''} editable={false} />
                 </View>
 
                 <View style={styles.inputContainer}>

@@ -18,12 +18,14 @@ const TomarHuella = () => {
   }, []);
 
   const handleBarCodeScanned = ({ data }) => {
+    console.log(data);
     setScanned(true);
     const parsedData = JSON.parse(data);
     updateScannedData({
-      nombre: parsedData.nombre || '',
-      institucion: parsedData.institucion || '',
-      iDinstitucion: parsedData.iDinstitucion || '',
+      nombre: parsedData.Nombre || '',
+      institucion: parsedData.Institución || '',
+      iDinstitucion: parsedData.Institución_ID || '',
+      convenio: parsedData.ConvenioNombre || '',
     });
     Alert.alert(
       '¡Notificación!',

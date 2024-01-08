@@ -18,13 +18,17 @@ const VerRegistro = () => {
     { label: 'Almuerzo', value: 'Almuerzo' },
   ]);
   const { institucionId } = useAuth();
+  const { convenioId } = useAuth();
 
   useEffect(() => {
     const obtenerDatos = async () => {
       const querydb = getFirestore();
       const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
-      try {
+      const beneficiariosQuery = query(
+        beneficiariosCollection,
+        where('institucionId', '==', institucionId),
+        where('convenioId', '==', convenioId)
+      ); try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         setNutrientes(querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() })));
       } catch (error) {
