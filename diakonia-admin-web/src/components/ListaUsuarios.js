@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import '../estilos/ListaUsuarios.css';
 import { Link } from 'react-router-dom';
-import { getFirestore, deleteUser } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getFirestore, deleteDoc, doc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 import {
   Table,
   TableBody,
@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 
 const ListaUsuarios = ({ usuarios }) => {
-  const auth = getAuth();
   const firestore = getFirestore();
 
   const [selectedInstitucion, setSelectedInstitucion] = useState('');
@@ -26,22 +25,38 @@ const ListaUsuarios = ({ usuarios }) => {
   };
 
   async function eliminarUsuario(usuario) {
-    const auth = getAuth();
-    const firestore = getFirestore();
+    // Mostrar la alerta de confirmación
+    const result = await Swal.fire({
+      title: 'Advertencia',
+      text: `¿Está seguro que desea eliminar al usuario?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No',
+    });
 
-    try {
-      // Eliminar el usuario de Firebase Auth
-      // await deleteUser(usuario);
+    // Si el usuario confirma la eliminación, proceder
+    if (result.isConfirmed) {
+      try {
+        const querydb = getFirestore();
+        const docRef = doc(querydb, 'usuarios', usuario);
 
-      // Eliminar el documento del usuario en Firestore
-      // await deleteDoc(doc(firestore, 'usuarios', usuario));
+        // Eliminar el documento del usuario en Firestore
+        await deleteDoc(docRef);
 
-      // Actualizar el estado de los usuarios (si es necesario)
-      // ...
+        // Actualizar el estado de los usuarios (si es necesario)
+        // ...
 
-    } catch (error) {
-      console.error('Error al eliminar usuario:', error);
-      alert(error.message);
+        // Mostrar mensaje de éxito o recargar la página si es necesario
+        Swal.fire('Eliminado', `El usuario ha sido eliminado.`, 'success').then(() => {
+          window.location.reload();
+        });
+      } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        alert(error.message);
+      }
     }
   }
 
@@ -116,17 +131,20 @@ const ListaUsuarios = ({ usuarios }) => {
                         Editar
                       </Button>
                     </Link>
-                    {/* Descomenta la siguiente línea si deseas permitir eliminar usuarios */}
-                    {/* <Button variant="contained" color="secondary" onClick={() => eliminarUsuario(usuario.id)}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => eliminarUsuario(usuario.id)}
+                      style={{ margin: '5px', fontSize: '14px' }}
+                    >
                       Eliminar
-                    </Button> */}
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
-
 
       <Button onClick={exportToXLSX} variant="contained" style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
         Exportar Tabla

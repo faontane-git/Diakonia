@@ -83,7 +83,9 @@ const LeerExcel = ({ user }) => {
         const codigoQR = generateQRCode(nombre,cedula[index]);
         return {
           institucionId: institucionId,
+          institucionN:institucionN,
           convenioId: convenioId,
+          ConvenioNombre:convenioN,
           nombre,
           cedula: cedula[index],
           fecha_nacimiento: fechaNacimiento,
@@ -100,6 +102,7 @@ const LeerExcel = ({ user }) => {
           talla: [],
           hgb: [],
           activo: true,
+          observacion:'',
           qr_url: codigoQR,
         };
       });

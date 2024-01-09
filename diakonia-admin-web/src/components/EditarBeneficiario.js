@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
 
 const EditarBeneficiario = ({ user }) => {
-  const { institucionId, institucionN, convenioId, convenioN ,beneficiarioid } = useParams();
+  const { institucionId, institucionN, convenioId, convenioN, beneficiarioid } = useParams();
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState('');
@@ -15,6 +15,8 @@ const EditarBeneficiario = ({ user }) => {
   const [n_contacto, setNContacto] = useState('');
   const [n_menores, setNMenores] = useState('');
   const [n_mayores, setNMayores] = useState('');
+  const [paisOrigen, setPaisOrigen] = useState('');
+  const [paises, setPaises] = useState([]);
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -38,24 +40,27 @@ const EditarBeneficiario = ({ user }) => {
         setNContacto(beneficiarioData.numero_contacto || '');
         setNMenores(beneficiarioData.numero_de_personas_menores_en_el_hogar || '');
         setNMayores(beneficiarioData.numero_de_personas_mayores_en_el_hogar || '');
+        setPaisOrigen(beneficiarioData.pais_de_origen || '');
       }
     };
 
     obtenerDatosBeneficiario();
   }, [beneficiarioid]);
 
+  useEffect(() => {
+    const obtenerListaPaises = async () => {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all');
+        const data = await response.json();
+        const paisesNombres = data.map((pais) => pais.name.common);
+        setPaises(paisesNombres);
+      } catch (error) {
+        console.error('Error al obtener la lista de países:', error);
+      }
+    };
 
-  const validarFormatoFecha = (input) => {
-    const regexFecha = /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
-
-    if (regexFecha.test(input)) {
-     
-    } else {
-      // La fecha no tiene el formato correcto, puedes mostrar un mensaje de error o tomar otra acción.
-      alert('Por favor, ingresa una fecha en formato dd/mm/yyyy');
-      return false
-    }
-  };
+    obtenerListaPaises();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,7 +70,7 @@ const EditarBeneficiario = ({ user }) => {
       const querydb = getFirestore();
       const docuRef = doc(querydb, 'beneficiarios', beneficiarioid);
 
-      const fechaString =f_nacimiento;
+      const fechaString = f_nacimiento;
       const [dia, mes, anio] = fechaString.split('/');
       const fechaNaci = new Date(`${anio}-${mes}-${dia}T00:00:00`);
       const beneficiario = {
@@ -76,6 +81,7 @@ const EditarBeneficiario = ({ user }) => {
         numero_contacto: n_contacto,
         numero_de_personas_menores_en_el_hogar: n_menores,
         numero_de_personas_mayores_en_el_hogar: n_mayores,
+        pais_de_origen: paisOrigen,
       };
       try {
         await updateDoc(docuRef, beneficiario);
@@ -85,9 +91,10 @@ const EditarBeneficiario = ({ user }) => {
         console.error('Error al modificar beneficiario:', error);
         alert(error.message);
       }
-  }else{
-    alert('Por favor, ingresa una fecha en formato dd/mm/yyyy');
-  }};
+    } else {
+      alert('Por favor, ingresa una fecha en formato dd/mm/yyyy');
+    }
+  };
 
   return (
     <div>
@@ -96,7 +103,6 @@ const EditarBeneficiario = ({ user }) => {
         <h3>Institución: {institucionN}</h3>
         <h3>Convenio: {convenioN}</h3>
         <h3>Editar Beneficiario</h3>
-
       </div>
 
       <form id="form_ebeneficiario" onSubmit={handleSubmit}>
@@ -109,7 +115,22 @@ const EditarBeneficiario = ({ user }) => {
             onChange={(e) => setNombre(e.target.value)}
           />
         </div>
-
+        {/* 
+        <div id="txtPaisOrigen">
+          <label htmlFor="paisOrigen"><b>País de Origen</b></label>
+          <select
+            id="l_beneficiario"
+            value={paisOrigen}
+            onChange={(e) => setPaisOrigen(e.target.value)}
+          >
+            {paises.map((pais) => (
+              <option key={pais} value={pais}>
+                {pais}
+              </option>
+            ))}
+          </select>
+        </div>  
+        */}
         <div id="txtcedula">
           <label htmlFor="cedula"><b>Cédula</b></label>
           <input
@@ -117,8 +138,8 @@ const EditarBeneficiario = ({ user }) => {
             id="l_beneficiario"
             value={cedula}
             onChange={(e) => {
-              // Permitir solo números y limitar la longitud a 10 dígitos
-              const inputCedula = e.target.value.replace(/\D/g, '').slice(0, 10);
+              // Permitir solo letras y números y hasta 15 letras
+              const inputCedula = e.target.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 15);
               setCedula(inputCedula);
             }}
           />
@@ -145,6 +166,7 @@ const EditarBeneficiario = ({ user }) => {
             <option value="femenino">Femenino</option>
           </select>
         </div>
+
         <div id="txtn_contacto">
           <label htmlFor="n_contacto"><b>Número de contacto</b></label>
           <input
@@ -160,7 +182,7 @@ const EditarBeneficiario = ({ user }) => {
         </div>
 
         <div id="txtn_menores">
-          <label htmlFor="n_menores"><b>N. Hermanos menores</b></label>
+          <label htmlFor="n_menores"><b>N° de personas menores en casa que viven con el beneficiario</b></label>
           <input
             type="text"
             id="l_beneficiario"
@@ -174,7 +196,7 @@ const EditarBeneficiario = ({ user }) => {
         </div>
 
         <div id="txtn_mayores">
-          <label htmlFor="n_mayores"><b>N. Hermanos mayores:</b></label>
+          <label htmlFor="n_mayores"><b>N° de personas mayores en casa que viven con el beneficiario</b></label>
           <input
             type="text"
             id="l_beneficiario"
@@ -186,6 +208,7 @@ const EditarBeneficiario = ({ user }) => {
             }}
           />
         </div>
+
         <div id='btnRegistrar'>
           <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
         </div>

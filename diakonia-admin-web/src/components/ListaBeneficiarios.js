@@ -19,6 +19,11 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
@@ -31,6 +36,7 @@ const ListaBeneficiarios = ({ user }) => {
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activoFilter, setActivoFilter] = useState('activos');
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -51,9 +57,13 @@ const ListaBeneficiarios = ({ user }) => {
     );
   }, [institucionId]);
 
-  const filteredData = data.filter((beneficiario) =>
-    beneficiario.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = data
+    .filter((beneficiario) =>
+      beneficiario.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((beneficiario) =>
+      activoFilter === 'activos' ? beneficiario.activo === true : beneficiario.activo === false
+    );
 
   function esActivo(beneficiario) {
     return beneficiario.activo === true;
@@ -72,7 +82,7 @@ const ListaBeneficiarios = ({ user }) => {
   };
 
   async function eliminarBeneficiario(beneficiario) {
-    Swal.fire({
+    const confirmResult = await Swal.fire({
       title: 'Advertencia',
       text: `¿Está seguro que desea eliminar ${beneficiario.nombre}?`,
       icon: 'error',
@@ -80,36 +90,104 @@ const ListaBeneficiarios = ({ user }) => {
       denyButtonText: 'No',
       confirmButtonText: 'Si',
       confirmButtonColor: '#000000',
-    }).then(async (response) => {
-      if (response.isConfirmed) {
-        const querydb = getFirestore();
-        const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
-        try {
-          await updateDoc(docuRef, { activo: false });
-          window.location.reload();
-        } catch (error) {
-          console.error('Error al eliminar beneficiario:', error);
-          alert(error.message);
-        }
-      }
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      input: 'text',
+      inputPlaceholder: 'Agrega una observación (opcional)',
     });
+
+    if (confirmResult.isConfirmed) {
+      const observacion = confirmResult.value;
+
+      const querydb = getFirestore();
+      const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
+
+      try {
+        await updateDoc(docuRef, { activo: false, observacion });
+
+        // Muestra el segundo SweetAlert para la observación
+        const observacionResult = await Swal.fire({
+          title: 'Observación',
+          text: 'Por favor, agrega una observación',
+          input: 'text',
+          inputPlaceholder: 'Observación',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+        });
+
+        if (observacionResult.isConfirmed) {
+          const nuevaObservacion = observacionResult.value;
+          // Puedes hacer algo con la nueva observación si lo necesitas
+        }
+
+        window.location.reload();
+      } catch (error) {
+        console.error('Error al eliminar beneficiario:', error);
+        alert(error.message);
+      }
+    }
+  }
+
+  async function activarBeneficiario(beneficiario) {
+    const confirmResult = await Swal.fire({
+      title: 'Advertencia',
+      text: `¿Está seguro que desea regresar al convenio a ${beneficiario.nombre}?`,
+      icon: 'error',
+      showDenyButton: true,
+      denyButtonText: 'No',
+      confirmButtonText: 'Si',
+      confirmButtonColor: '#000000',
+     });
+
+    if (confirmResult.isConfirmed) {
+      const observacion = confirmResult.value;
+
+      const querydb = getFirestore();
+      const docuRef = doc(querydb, 'beneficiarios', beneficiario.id);
+
+      try {
+        await updateDoc(docuRef, { activo: true, observacion });
+
+        window.location.reload();
+      } catch (error) {
+        console.error('Error al eliminar beneficiario:', error);
+        alert(error.message);
+      }
+    }
   }
 
   return (
     <div className="centered-container">
       <Cabecera user={user} />
+
       <h1>Lista de Beneficiarios de {institucionN}</h1>
       <h3>Convenio: {convenioN}</h3>
       <h3>Servicios: {data[0]?.desayuno.length !== 0 ? 'Desayuno ' : ''}{data[0]?.almuerzo.length !== 0 ? 'Almuerzo' : ''}</h3>
 
-      <Button
-        id="buttonABeneficiarios"
-        style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
-        onClick={goAñadirBenef}
-        variant="contained"
-      >
-        Añadir Beneficiarios
-      </Button>
+      <FormControl component="fieldset">
+        <RadioGroup
+          row
+          aria-label="activoFilter"
+          name="activoFilter"
+          value={activoFilter}
+          onChange={(e) => setActivoFilter(e.target.value)}
+        >
+          <FormControlLabel value="activos" control={<Radio />} label="Activos" />
+          <FormControlLabel value="inactivos" control={<Radio />} label="No Activos" />
+        </RadioGroup>
+      </FormControl>
+
+      <div className="centered-container">
+        <Button
+          id="buttonABeneficiarios"
+          style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
+          onClick={goAñadirBenef}
+          variant="contained"
+        >
+          Añadir Beneficiarios
+        </Button>
+      </div>
 
       <div className="search-container">
         <TextField
@@ -125,66 +203,103 @@ const ListaBeneficiarios = ({ user }) => {
                 </IconButton>
               </InputAdornment>
             ),
-            style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+            style: { fontSize: '14px' },
           }}
           fullWidth
           variant="outlined"
         />
       </div>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha de nacimiento</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Género</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>N° de personas menores en casa que viven con el beneficiario</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>N° de personas mayores en casa que viven con el beneficiario</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData.filter(esActivo).map((beneficiario) => (
-              <TableRow key={beneficiario.id}>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(beneficiario.fecha_nacimiento)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.genero}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_menores_en_el_hogar}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
-
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px', marginBottom: '8px' }}>
-                  <Link
-                    to={`/editar-beneficiario/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}
-                  >
-                    <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}>
-                      Editar
-                    </Button>
-                  </Link>
-                  <Button
-                    onClick={() => eliminarBeneficiario(beneficiario)}
-                    variant="contained"
-                    style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}
-                  >
-                    Eliminar
-                  </Button>
-                  <Button
-                    id="buttonGenerarCarnet"
-                    style={{ backgroundColor: '#4caf50', color: 'white', width: '100%' }}
-                    onClick={() => generarCredencial(beneficiario)}
-                    variant="contained"
-                  >
-                    Credencial
-                  </Button>
-                </TableCell>
-
+      {activoFilter === 'activos' && filteredData.some(esActivo) ? (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
+                {/* <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202, color: 'white', fontSize: '16px' }}>País de Origen</TableCell> */}
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha de nacimiento</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Género</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>N° de personas menores en casa que viven con el beneficiario</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>N° de personas mayores en casa que viven con el beneficiario</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acciones</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {filteredData.map((beneficiario) => (
+                <TableRow key={beneficiario.id}>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
+                  {/* <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.pais_de_origen}</TableCell> */}
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(beneficiario.fecha_nacimiento)}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.genero}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_menores_en_el_hogar}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px', marginBottom: '8px' }}>
+                    <Link
+                      to={`/editar-beneficiario/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}
+                    >
+                      <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}>
+                        Editar
+                      </Button>
+                    </Link>
+                    <Button
+                      onClick={() => eliminarBeneficiario(beneficiario)}
+                      variant="contained"
+                      style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}
+                    >
+                      Eliminar
+                    </Button>
+                    <Button
+                      id="buttonGenerarCarnet"
+                      style={{ backgroundColor: '#4caf50', color: 'white', width: '100%' }}
+                      onClick={() => generarCredencial(beneficiario)}
+                      variant="contained"
+                    >
+                      Credencial
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <div>
+          <h2>Beneficiarios No Activos</h2>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Observaciones</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acción</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData.map((beneficiario) => (
+                  <TableRow key={beneficiario.id}>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.observacion}</TableCell>
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                      <Button
+                        onClick={() => activarBeneficiario(beneficiario)}
+                        variant="contained"
+                        style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}
+                      >
+                        Activar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
+
       <Button
         id="buttonExportarCredenciales"
         style={{ backgroundColor: '#890202', color: 'white', marginTop: '10px' }}
