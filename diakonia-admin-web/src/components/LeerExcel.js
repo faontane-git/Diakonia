@@ -6,6 +6,24 @@ import Cabecera from "./Cabecera";
 import QRCode from 'qrcode.react';
 import Swal from 'sweetalert2';
 import { getFirestore, doc, collection, addDoc, getDoc, getDocs, where, query } from "firebase/firestore";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  IconButton,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormLabel,
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 
 const LeerExcel = ({ user }) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
@@ -14,19 +32,17 @@ const LeerExcel = ({ user }) => {
 
   const goBack = () => {
     navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
-  }
+  };
+
   const convertirTimestampAFecha = (timestamp) => {
     return timestamp.toLocaleDateString('es-ES');
   };
-
-
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    //const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
     const beneficiariosQuery = query(
       beneficiariosCollection,
       where('institucionId', '==', institucionId),
@@ -71,21 +87,14 @@ const LeerExcel = ({ user }) => {
       const n_menores = jsonData.slice(1).map((fila) => fila[5]);
       const n_mayores = jsonData.slice(1).map((fila) => fila[6]);
 
-
-
       const nuevosBeneficiarios = nombres.map((nombre, index) => {
-
-        //const [dia, mes, anio] = f_nacimiento[index].split('/');
-        //const fechaNacimiento = new Date(`${anio}-${mes}-${dia}`);
         const fechaNacimiento = new Date((f_nacimiento[index] - 2) * 24 * 60 * 60 * 1000 + new Date(1900, 0, 1).getTime());
-
-
-        const codigoQR = generateQRCode(nombre,cedula[index]);
+        const codigoQR = generateQRCode(nombre, cedula[index]);
         return {
           institucionId: institucionId,
-          institucionN:institucionN,
+          institucionN: institucionN,
           convenioId: convenioId,
-          ConvenioNombre:convenioN,
+          ConvenioNombre: convenioN,
           nombre,
           cedula: cedula[index],
           fecha_nacimiento: fechaNacimiento,
@@ -102,7 +111,7 @@ const LeerExcel = ({ user }) => {
           talla: [],
           hgb: [],
           activo: true,
-          observacion:'',
+          observacion: '',
           qr_url: codigoQR,
         };
       });
@@ -121,9 +130,6 @@ const LeerExcel = ({ user }) => {
 
     getDoc(ConvenioRef).then((doc) => {
       if (doc.exists) {
-
-        //const days = (Date.parse(doc.data().fecha_final) - Date.parse(doc.data().fecha_inicial)) / 86400000;
-
         const final = new Date(doc.data().fecha_final.seconds * 1000)
         const inicio = new Date(doc.data().fecha_inicial.seconds * 1000)
         const diferenciaEnMilisegundos = final - inicio;
@@ -135,20 +141,18 @@ const LeerExcel = ({ user }) => {
               text: `El usuario ${beneficiario.nombre} ya está registrado`,
               icon: 'error',
             });
-          }
-          else {
-
+          } else {
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
               const fechaActual = new Date(inicio.getTime() + i);
               beneficiario.dias.push(fechaActual);
             }
-
-            /*for (let i = 0; i <= days; i++) {
-              beneficiario.dias.push(new Date(Date.parse(doc.data().fecha_inicial) + (i * 24 * 60 * 60 * 1000)));
-            }*/
             for (const date of beneficiario.dias) {
-              if (doc.data().desayuno === true) { beneficiario.desayuno.push("-"); }
-              if (doc.data().almuerzo === true) { beneficiario.almuerzo.push("-"); }
+              if (doc.data().desayuno === true) {
+                beneficiario.desayuno.push("-");
+              }
+              if (doc.data().almuerzo === true) {
+                beneficiario.almuerzo.push("-");
+              }
             }
             addDoc(beneficiarioCollection, beneficiario).catch((error) => {
               const errorCode = error.code;
@@ -177,35 +181,43 @@ const LeerExcel = ({ user }) => {
       <h3>¡Por favor, suba el Excel con la información solicitada!</h3>
       <input type="file" onChange={handleFileUpload} />
       {Nbeneficiarios.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Cédula</th>
-              <th>Fecha de nacimiento</th>
-              <th>Género</th>
-              <th>Número de contacto</th>
-              <th>Menores en casa</th>
-              <th>Mayores en casa</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Nbeneficiarios.map((Nbeneficiario, index) => (
-              <tr key={index}>
-                <td>{Nbeneficiario.nombre}</td>
-                <td>{Nbeneficiario.cedula}</td>
-                <td>{convertirTimestampAFecha(Nbeneficiario.fecha_nacimiento)}</td>
-                <td>{Nbeneficiario.genero}</td>
-                <td>{Nbeneficiario.numero_contacto}</td>
-                <td>{Nbeneficiario.numero_de_personas_menores_en_el_hogar}</td>
-                <td>{Nbeneficiario.numero_de_personas_mayores_en_el_hogar}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha de nacimiento</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Género</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Número de contacto</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Menores en casa</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Mayores en casa</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Nbeneficiarios.map((Nbeneficiario, index) => (
+                <TableRow key={index}>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{Nbeneficiario.nombre}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{Nbeneficiario.cedula}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(Nbeneficiario.fecha_nacimiento)}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{Nbeneficiario.genero}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{Nbeneficiario.numero_contacto}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{Nbeneficiario.numero_de_personas_menores_en_el_hogar}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{Nbeneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
       {Nbeneficiarios.length > 0 && (
-        <button onClick={añadir}>Añadir</button>
+        <Button
+          onClick={añadir}
+          variant="contained"
+          style={{ backgroundColor: '#890202', color: 'white', marginBottom: '4px', width: '100%' }}
+        >
+          Añadir
+        </Button>
       )}
     </div>
   );

@@ -6,6 +6,19 @@ import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as XLSX from 'xlsx';
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  Paper,
+  Select,
+  MenuItem,
+  Button,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 
 const ListaAsistencias = ({ user }) => {
   const { institucionId } = useParams();
@@ -143,66 +156,56 @@ const ListaAsistencias = ({ user }) => {
         {/* Filtro por Fecha Inicial */}
         <div className="filter-fecha-inicial">
           <label htmlFor="filtroFechaInicial">Fecha Inicial: </label>
-          <DatePicker
-            id="filtroFecha"
-            selected={filtroFechaInicial}
-            onChange={handleFiltroFechaInicialChange}
-            dateFormat="dd/MM/yyyy"
-          />
+          <DatePicker id="filtroFecha" selected={filtroFechaInicial} onChange={handleFiltroFechaInicialChange} dateFormat="dd/MM/yyyy" />
         </div>
 
         {/* Filtro por Fecha Final */}
         <div className="filter-fecha-final">
           <label htmlFor="filtroFechaFinal">Fecha Final: </label>
-          <DatePicker
-            id="filtroFecha"
-            selected={filtroFechaFinal}
-            onChange={handleFiltroFechaFinalChange}
-            dateFormat="dd/MM/yyyy"
-          />
+          <DatePicker id="filtroFecha" selected={filtroFechaFinal} onChange={handleFiltroFechaFinalChange} dateFormat="dd/MM/yyyy" />
         </div>
 
         <div id="btn_consultar">
           <button onClick={consulta}>Consultar</button>
         </div>
-
       </div>
 
       {/* Mostrar la tabla si hay datos */}
       {arregloNombresFechas.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              {arregloNombresFechas[0].dias.map((dia, index) => (
-                <th key={index}>{convertirTimestampAFecha(dia)}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {arregloNombresFechas.map((item, index) => (
-              <tr key={index}>
-                <td>{item.nombre}</td>
-                {item.desayuno.map((dia, index) => (
-                  <td key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</td>
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>Nombre</TableCell>
+                {arregloNombresFechas[0].dias.map((dia, index) => (
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }} key={index}>{convertirTimestampAFecha(dia)}</TableCell>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {arregloNombresFechas.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.nombre}</TableCell>
+                  {item.desayuno.map((dia, index) => (
+                    <TableCell key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
       )}
 
-      <div className="centered-container" >
+      <div className="centered-container">
         <div id='btnEAsistencia'>
-          <button onClick={exportarExcel}>Exportar Tabla</button>
-        </div>
-        <div id="btn_consultar">
-          <button onClick={exportarAsistenciasCompleto}>Exportar Asistencias</button>
+          <Button variant="contained" onClick={exportarExcel} style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>
+            Exportar Tabla
+          </Button>
         </div>
       </div>
-
     </div>
   );
+
 };
 
 export default ListaAsistencias;

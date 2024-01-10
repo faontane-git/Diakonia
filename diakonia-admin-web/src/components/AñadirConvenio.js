@@ -9,6 +9,7 @@ import { getFirestore, collection, setDoc, addDoc } from "firebase/firestore";
 
 const AñadirConvenio = ({ user }) => {
   const { institucionId, institucionN } = useParams();
+  const today = new Date().toISOString().split("T")[0];
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -152,6 +153,7 @@ const AñadirConvenio = ({ user }) => {
             placeholder="Fecha inicial"
             id="l_añadirConvenio"
             onChange={(e) => setInitialDate(e.target.value)}
+            min={today}  // Configura la fecha mínima como la fecha actual
           />
         </div>
 
@@ -163,6 +165,7 @@ const AñadirConvenio = ({ user }) => {
             placeholder="Fecha final"
             id="l_añadirConvenio"
             onChange={(e) => setFinalDate(e.target.value)}
+            min={today}  // Configura la fecha mínima como la fecha actual
           />
         </div>
 

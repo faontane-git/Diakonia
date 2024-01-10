@@ -12,6 +12,11 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
@@ -27,10 +32,15 @@ const ListaInstituciones = ({ instituciones }) => {
   };
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [activoFilter, setActivoFilter] = useState('activos');
 
-  const filteredInstituciones = instituciones.filter((institucion) =>
-    institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredInstituciones = instituciones
+    .filter((institucion) =>
+      institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((institucion) =>
+      activoFilter === 'activos' ? institucion.activo === true : institucion.activo === false
+    );
 
   function esActivo(institucion) {
     return institucion.activo === true;
@@ -55,6 +65,33 @@ const ListaInstituciones = ({ instituciones }) => {
         } catch (error) {
           console.error('Error al eliminar institución:', error);
           alert(error.message);
+        }
+      }
+    });
+  }
+
+  async function activarInstitucion(institucion) {
+    Swal.fire({
+      title: 'Advertencia',
+      text: `¿Está seguro que desea activar ${institucion.nombre}?`,
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: true,
+      denyButtonText: 'No',
+      confirmButtonText: 'Sí',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const querydb = getFirestore();
+        const docuRef = doc(querydb, 'instituciones', institucion.id);
+        try {
+          await updateDoc(docuRef, { activo: true });
+          Swal.fire('Activado', `${institucion.nombre} ha sido activado.`, 'success');
+          window.location.reload();
+        } catch (error) {
+          console.error('Error al activar institución:', error);
+          Swal.fire('Error', `Hubo un error al activar la institución: ${error.message}`, 'error');
         }
       }
     });
@@ -97,12 +134,24 @@ const ListaInstituciones = ({ instituciones }) => {
                   </IconButton>
                 </InputAdornment>
               ),
-              style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+              style: { fontSize: '14px' },
             }}
             fullWidth
             variant="outlined"
           />
         </div>
+        <FormControl component="fieldset" style={{ margin: '10px 0' }}>
+          <RadioGroup
+            row
+            aria-label="activoFilter"
+            name="activoFilter"
+            value={activoFilter}
+            onChange={(e) => setActivoFilter(e.target.value)}
+          >
+            <FormControlLabel value="activos" control={<Radio />} label="Activos" />
+            <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
+          </RadioGroup>
+        </FormControl>
       </div>
 
       <div id='tabla'>
@@ -117,20 +166,32 @@ const ListaInstituciones = ({ instituciones }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredInstituciones.filter(esActivo).map((institucion, index) => (
+              {filteredInstituciones.map((institucion, index) => (
                 <TableRow key={index}>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.nombre}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.telefono}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.ruc}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
-                    <Link to={`/editar-institucion/${institucion.id}`}>
-                      <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
-                        Editar
+                    {activoFilter === 'activos' && (
+                      <>
+                        <Button onClick={() => goConvenios(institucion)} variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                          Convenios
+                        </Button>
+                        <Link to={`/editar-institucion/${institucion.id}`}>
+                          <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                            Editar
+                          </Button>
+                        </Link>
+                        <Button onClick={() => eliminarInstitucion(institucion)} variant="contained" style={{ backgroundColor: '#f44336', color: 'white', margin: '5px', fontSize: '14px' }}>
+                          Eliminar
+                        </Button>
+                      </>
+                    )}
+                    {activoFilter === 'inactivos' && (
+                      <Button onClick={() => activarInstitucion(institucion)} variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                        Activar
                       </Button>
-                    </Link>
-                    <Button onClick={() => goConvenios(institucion)} variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
-                      Convenios
-                    </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

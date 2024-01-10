@@ -34,10 +34,12 @@ const Beneficiarios = ({ user }) => {
       const querySnapshot = await getDocs(orderedQuery);
 
       setData(
-        querySnapshot.docs.map((institucion) => ({
-          id: institucion.id,
-          ...institucion.data(),
-        }))
+        querySnapshot.docs
+          .filter((doc) => doc.data().activo === true) // Filtrar solo las instituciones activas
+          .map((institucion) => ({
+            id: institucion.id,
+            ...institucion.data(),
+          }))
       );
     };
 
