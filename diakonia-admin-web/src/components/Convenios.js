@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getFirestore, collection, getDocs, query, where, doc,getDoc,updateDoc } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import { PDFDocument } from 'pdf-lib'; // Importa PDFDocument de pdf-lib
 import {
   Table,
   TableBody,
@@ -55,6 +56,61 @@ const Convenios = () => {
     navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioNombre}`);
   };
 
+  const descargarPDF = async (convenioId, convenioNombre) => {
+    try {
+      const db = getFirestore();
+      // Obtener referencia al documento del convenio en Firestore
+      const convenioDocRef = doc(db, 'convenios', convenioId);
+      // Obtener el documento del convenio
+      const convenioDocSnapshot = await getDoc(convenioDocRef);
+      // Verificar si el documento existe
+      if (convenioDocSnapshot.exists()) {
+        // Obtener el atributo pdfBase64 del documento
+        const pdfBase64 = convenioDocSnapshot.data().pdfBase64;
+        if (pdfBase64) {
+          // Descargar el PDF utilizando pdfBase64
+          const byteCharacters = atob(pdfBase64);
+          const byteNumbers = new Array(byteCharacters.length);
+  
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+  
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: 'application/pdf' });
+  
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          // Nombre del archivo con el formato 'Convenio_nombre.pdf'
+          link.download = `Convenio_${convenioNombre}.pdf`;
+  
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se encontró el atributo pdfBase64 en el documento del convenio.',
+            icon: 'error',
+          });
+        }
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'No se encontró el documento del convenio.',
+          icon: 'error',
+        });
+      }
+    } catch (error) {
+      console.error('Error al obtener o descargar el PDF:', error);
+      Swal.fire({
+        title: 'Error',
+        text: '¡Error al obtener o descargar el PDF!',
+        icon: 'error',
+      });
+    }
+  };
+
   const exportToXLSX = () => {
     const wsData = filteredData
       .filter(esActivo)
@@ -71,7 +127,6 @@ const Convenios = () => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Convenios');
 
-    // Agrega el nombre de la institución al nombre del archivo
     const fileName = `convenios_${institucionN}.xlsx`;
 
     XLSX.writeFile(wb, fileName);
@@ -105,6 +160,7 @@ const Convenios = () => {
     });
   }
 
+
   return (
     <div className="centered-container">
       <div>
@@ -113,7 +169,6 @@ const Convenios = () => {
       </div>
 
       <div className="search-export-container">
-
         <div className="centered-container">
           <Button variant="contained" onClick={goAñadirBenef} style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
             Añadir Convenio
@@ -125,8 +180,8 @@ const Convenios = () => {
             Exportar a Excel
           </Button>
         </div>
-
       </div>
+
       <div className="search-export-container">
         <div className="search-container">
           <TextField
@@ -142,7 +197,7 @@ const Convenios = () => {
                   </IconButton>
                 </InputAdornment>
               ),
-              style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+              style: { fontSize: '14px' },
             }}
             fullWidth
             variant="outlined"
@@ -178,6 +233,13 @@ const Convenios = () => {
                     <Button variant="contained" onClick={() => handleVerBeneficiarios(convenio.id, convenio.nombre)} style={{ backgroundColor: '#4caf50', color: 'white' }}>
                       Beneficiarios
                     </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => descargarPDF(convenio.id, convenio.nombre)}
+                      style={{ backgroundColor: '#2196f3', color: 'white', margin: '5px', fontSize: '14px' }}
+                    >
+                      Descargar PDF
+                    </Button>
                     <Link to={`/editar-convenio/${institucionId}/${institucionN}/${convenio.id}`}>
                       <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
                         Editar
@@ -194,8 +256,6 @@ const Convenios = () => {
         </TableContainer>
       </div>
       <h1>Tabla de reportes</h1>
-
-
     </div>
   );
 };

@@ -25,3 +25,4 @@ npm install jspdf
 npm install html2canvas
 npm install html2pdf.js
 npm install react-slick slick-carousel
+npm install pdf-lib

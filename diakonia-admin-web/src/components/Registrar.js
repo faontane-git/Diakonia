@@ -123,14 +123,7 @@ const RegistroInstitucion = ({ user }) => {
             }}
           />
         </div>
-
-        <div id="txtArchivo">
-          <label htmlFor="archivo">
-            <b>Certificado de la institución</b>
-          </label>
-          <input type="file" id="archivo" accept=".pdf, .doc, .docx" onChange={handleArchivoChange} />
-        </div>
-
+        
         <div id="btnRegistrar">
           <button id="buttonRRegistrar" type="submit">
             Registrar

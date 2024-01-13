@@ -160,13 +160,11 @@ const ListaInstituciones = ({ instituciones }) => {
             />
           </div>
 
-          <div className="centered-container">
-            <div hidden={false}>
-              <Button className="button-exportar" onClick={goRegistrar} style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}>
+          <div className="centered-container" hidden={ activoFilter !== 'activos' }> 
+               <Button className="button-exportar" onClick={goRegistrar} style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}>
                 Crear Institución
               </Button>
-            </div>
-            <Button className="button-exportar" onClick={exportToXLSX} style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '150px', height: '40px' }}>
+             <Button className="button-exportar" onClick={exportToXLSX} style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '150px', height: '40px' }}>
               Exportar Tabla
             </Button>
           </div>
