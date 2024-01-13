@@ -1,0 +1,30 @@
+#form_horarios {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#horaAlmuerzo{
+    margin-bottom: 10%;
+}
+
+
+#l_desayuno,
+#l_almuerzo {
+    display: flex;
+}
+
+input[type="time"] {
+    width: 95%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#btnRegistrar {
+    margin-top: 20px;
+}

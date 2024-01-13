@@ -61,7 +61,7 @@ const ListaUsuarios = ({ usuarios }) => {
       }
     }
   }
-  
+
   const exportToXLSX = () => {
     const filteredUsers = selectedInstitucion
       ? usuarios.filter((usuario) => usuario.institucionN === selectedInstitucion)
@@ -150,9 +150,8 @@ const ListaUsuarios = ({ usuarios }) => {
                     </Link>
                     <Button
                       variant="contained"
-                      color="secondary"
                       onClick={() => eliminarUsuario(usuario.id)}
-                      style={{ margin: '5px', fontSize: '14px' }}
+                      style={{ backgroundColor: '#f44336', margin: '5px', fontSize: '14px' }}
                     >
                       Eliminar
                     </Button>

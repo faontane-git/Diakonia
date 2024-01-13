@@ -192,7 +192,7 @@ const ListaInstituciones = ({ instituciones }) => {
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
                     {activoFilter === 'activos' && (
                       <>
-                        <Button onClick={() => goConvenios(institucion)} variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                        <Button onClick={() => goConvenios(institucion)} variant="contained" style={{ backgroundColor: '#4cb8c4', color: 'white', margin: '5px', fontSize: '14px' }}>
                           Convenios
                         </Button>
                         <Link to={`/editar-institucion/${institucion.id}`}>

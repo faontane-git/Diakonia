@@ -67,18 +67,16 @@ const CredencialesComponent = () => {
             {pagina.map((item, index) => (
               <div key={index} className={`carnet-item ${index > 0 ? 'avoid-this-class' : ''}`}>
                 <div className="info-container">
-                  <h2>{item.Nombre}</h2>
-                  <p>Cédula: {item.Cédula}</p>
-                  <p>Institución: {item.Institución}</p>
-                  <p>Convenio: {item.ConvenioNombre}</p>
-                  {/* Agrega más información según las propiedades de tu objeto */}
+                  <h3>{item.Nombre}</h3>
+                  <p><b>Cédula:</b> {item.Cédula} </p>
+                  <p><b>Institución:</b> {item.Institución}</p>
+                  <p><b>Convenio:</b> {item.ConvenioNombre}</p>
                 </div>
                 <div className="codigo-qr-container">
                   <QRCode value={JSON.stringify(item)} size={128} />
                 </div>
               </div>
             ))}
-            {/* Agrega un salto de página después de cada página */}
             {paginaIndex < paginas.length - 1 && <div className="page-break"></div>}
           </div>
         ))}

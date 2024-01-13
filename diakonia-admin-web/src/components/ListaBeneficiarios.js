@@ -164,7 +164,7 @@ const ListaBeneficiarios = ({ user }) => {
       </FormControl>
 
       <div className="search-export-container">
-        <div className="centered-container">
+        <div className="centered-container" hidden={activoFilter != 'activos'}>
           <Button
             id="buttonABeneficiarios"
             style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
@@ -175,7 +175,7 @@ const ListaBeneficiarios = ({ user }) => {
           </Button>
         </div>
 
-        <div className="centered-container">
+        <div className="centered-container" hidden={activoFilter != 'activos'}>
           <Button
             id="buttonExportarCredenciales"
             style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
@@ -238,6 +238,15 @@ const ListaBeneficiarios = ({ user }) => {
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_menores_en_el_hogar}</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.numero_de_personas_mayores_en_el_hogar}</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px', marginBottom: '8px' }}>
+                      <Button
+                        id="buttonGenerarCarnet"
+                        style={{ backgroundColor: '#2196f3', color: 'white', marginBottom: '4px', width: '100%' }}
+                        onClick={() => generarCredencial(beneficiario)}
+                        variant="contained"
+                      >
+                        Credencial
+                      </Button>
+
                       <Link
                         to={`/editar-beneficiario/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}
                       >
@@ -245,21 +254,15 @@ const ListaBeneficiarios = ({ user }) => {
                           Editar
                         </Button>
                       </Link>
+
                       <Button
                         onClick={() => eliminarBeneficiario(beneficiario)}
                         variant="contained"
-                        style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}
+                        style={{ backgroundColor: '#f44336', color: 'white', marginBottom: '4px', width: '100%' }}
                       >
-                        Eliminar
+                        Inactivar
                       </Button>
-                      <Button
-                        id="buttonGenerarCarnet"
-                        style={{ backgroundColor: '#4caf50', color: 'white', width: '100%' }}
-                        onClick={() => generarCredencial(beneficiario)}
-                        variant="contained"
-                      >
-                        Credencial
-                      </Button>
+
                     </TableCell>
                   </TableRow>
                 ))}

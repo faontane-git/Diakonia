@@ -39,6 +39,7 @@ import Usuarios from "./components/Usuarios.js"
 import RegistroUsuario from "./components/RegistraUsuario.js"
 import VerUsuarios from "./components/VerUsuarios.js"
 import EditarUsuarios from "./components/EditarUsuarios.js"
+import Horarios from "./components/Horarios.js"
 
 
 import CambiarContra from "./components/CambiarContra.js"
@@ -67,7 +68,7 @@ const firestore = getFirestore(firebaseApp);
 
 
 function Aplicacion() {
- 
+
   //const {  user } = useAuthContext();
 
   //const [user, setUser] = useState(null);
@@ -108,67 +109,68 @@ function Aplicacion() {
 
   return (
     <div className="Aplicacion">
-<AuthContextProvider>
+      <AuthContextProvider>
 
- <Routes>
+        <Routes>
 
-<Route path="/login" element={<Publicas />} >
-  <Route index element={<Login />} />
-</Route>
+          <Route path="/login" element={<Publicas />} >
+            <Route index element={<Login />} />
+          </Route>
 
-<Route path="Registrador" element={<RegistradorRoute/>}>
-  <Route index element={<Inicio />} />
-  <Route path="cambiarContra" element={<CambiarContra />} />
-</Route>
+          <Route path="Registrador" element={<RegistradorRoute />}>
+            <Route index element={<Inicio />} />
+            <Route path="cambiarContra" element={<CambiarContra />} />
+          </Route>
 
-  <Route path="/" element={<Privada/>}>
+          <Route path="/" element={<Privada />}>
 
-  <Route index element={<Inicio />} />
-  <Route path="cambiarContra" element={<CambiarContra />} />
-  
-    <Route path="instituciones" element={<Instituciones  />} />
+            <Route index element={<Inicio />} />
+            <Route path="cambiarContra" element={<CambiarContra />} />
 
-    <Route path="instituciones/:institucionId/:institucionN" element={<Convenios  />} />
-    <Route path="editar-convenio/:institucionId/:institucionN/:convenioId" element={<EditarConvenio  />} />
-    <Route path="instituciones/:institucionId/:institucionN/añadirConvenio" element={<AñadirConvenio/>} />
+            <Route path="instituciones" element={<Instituciones />} />
 
-    <Route path="beneficiarios" element={<Beneficiarios  />} />
-    <Route path="credencial/:arreglo" element={<CredencialesComponent />} />
+            <Route path="instituciones/:institucionId/:institucionN" element={<Convenios />} />
+            <Route path="editar-convenio/:institucionId/:institucionN/:convenioId" element={<EditarConvenio />} />
+            <Route path="instituciones/:institucionId/:institucionN/añadirConvenio" element={<AñadirConvenio />} />
 
-    <Route path="seguimiento" element={<Seguimiento  />} />
-          
-    <Route path="registrar" element={<Registrar />} />
-    <Route path="verInstitucion" element={<VerInstitucion />} />
-    <Route path="editar-institucion/:institucionId" element={<EditarInstitucion />} />
-    <Route path="beneficiarios/:institucionId/:institucionN" element={<BeneficiariosConvenios  />} />
-    <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaBeneficiarios  />} />
-    <Route path="editar-beneficiario/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<EditarBeneficiario  />} />
-         
-    <Route path="asistencias" element={<VerAsistencias/>} />
-    <Route path="asistencias/:institucionId/:institucionN" element={<AsistenciaConvenios  />} />
-    <Route path="asistencias/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaAsistencias  />} />
-    <Route path="nutricion" element={<Nutricion />} />
-    <Route path="nutricion/:institucionId/:institucionN" element={<NutricionConvenios />} />
-    <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaNutricion />} />
-    <Route path="verGrafica/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<VerGrafica />} />
-    <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN/añadirbenef" element={<LeerExcel/>} />
-    <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN/añadirNutricion" element={<AñadirNutricion />} />
+            <Route path="beneficiarios" element={<Beneficiarios />} />
+            <Route path="credencial/:arreglo" element={<CredencialesComponent />} />
 
-    <Route path="usuarios" element={<UserRoute/>}>
-      <Route index element={<Usuarios />} />
-      <Route path="verUsuarios" element={<VerUsuarios  />} />
-      <Route path="registrarUsuario" element={<RegistroUsuario />} />
-      <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios />} />
+            <Route path="seguimiento" element={<Seguimiento />} />
 
-    </Route>
-  </Route>
- 
+            <Route path="registrar" element={<Registrar />} />
+            <Route path="verInstitucion" element={<VerInstitucion />} />
+            <Route path="editar-institucion/:institucionId" element={<EditarInstitucion />} />
+            <Route path="beneficiarios/:institucionId/:institucionN" element={<BeneficiariosConvenios />} />
+            <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaBeneficiarios />} />
+            <Route path="editar-beneficiario/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<EditarBeneficiario />} />
 
-</Routes>
+            <Route path="asistencias" element={<VerAsistencias />} />
+            <Route path="asistencias/:institucionId/:institucionN" element={<AsistenciaConvenios />} />
+            <Route path="asistencias/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaAsistencias />} />
+            <Route path="nutricion" element={<Nutricion />} />
+            <Route path="horarios" element={<Horarios />} />
+            <Route path="nutricion/:institucionId/:institucionN" element={<NutricionConvenios />} />
+            <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaNutricion />} />
+            <Route path="verGrafica/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<VerGrafica />} />
+            <Route path="beneficiarios/:institucionId/:institucionN/:convenioId/:convenioN/añadirbenef" element={<LeerExcel />} />
+            <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN/añadirNutricion" element={<AñadirNutricion />} />
+
+            <Route path="usuarios" element={<UserRoute />}>
+              <Route index element={<Usuarios />} />
+              <Route path="verUsuarios" element={<VerUsuarios />} />
+              <Route path="registrarUsuario" element={<RegistroUsuario />} />
+              <Route path="editar-usuario/:usuarioId" element={<EditarUsuarios />} />
+
+            </Route>
+          </Route>
 
 
+        </Routes>
 
-{/*}            // El usuario no está autenticado, mostrar componente de inicio de sesión
+
+
+        {/*}            // El usuario no está autenticado, mostrar componente de inicio de sesión
             <Login user={user} /> 
           ) : (
             // El usuario está autenticado, mostrar rutas protegidas
@@ -211,8 +213,8 @@ function Aplicacion() {
           )*/}
 
 
-</AuthContextProvider>
-      
+      </AuthContextProvider>
+
     </div>
   )
 }

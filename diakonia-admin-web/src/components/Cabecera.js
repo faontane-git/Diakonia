@@ -77,7 +77,7 @@ function Cabecera() {
               </li> : <li></li>}
 
             {user.rol === "Administrador" ? <li id="opcion">
-              <Link to="/usuarios/verUsuarios">Horarios</Link>
+              <Link to="/horarios">Horarios</Link>
             </li> : <li></li>}
 
             {user.rol === "Administrador" ? <li id="opcion">

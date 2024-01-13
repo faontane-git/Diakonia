@@ -81,7 +81,7 @@ const Nutricion = ({ user }) => {
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.nombre}</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                       <Link to={`/asistencias/${institucion.id}/${institucion.nombre}`} className="centered-link">
-                        <Button variant="contained" style={{ backgroundColor: '#4caf50', margin: '5px', color: 'white' }}>
+                        <Button variant="contained" style={{ backgroundColor: '#4cb8c4', margin: '5px', color: 'white' }}>
                           Asistencia
                         </Button>
                       </Link>

@@ -90,7 +90,7 @@ const Convenios = () => {
         } else {
           Swal.fire({
             title: 'Error',
-            text: 'No se encontró el atributo pdfBase64 en el documento del convenio.',
+            text: '¡No se encontró un documento del convenio registrado en el sistema!',
             icon: 'error',
           });
         }
@@ -230,7 +230,7 @@ const Convenios = () => {
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
-                    <Button variant="contained" onClick={() => handleVerBeneficiarios(convenio.id, convenio.nombre)} style={{ backgroundColor: '#4caf50', color: 'white' }}>
+                    <Button variant="contained" onClick={() => handleVerBeneficiarios(convenio.id, convenio.nombre)} style={{ backgroundColor: '#7366bd', color: 'white' }}>
                       Beneficiarios
                     </Button>
                     <Button
@@ -245,7 +245,7 @@ const Convenios = () => {
                         Editar
                       </Button>
                     </Link>
-                    <Button variant="contained" onClick={() => eliminarConvenio(convenio)} style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                    <Button variant="contained" onClick={() => eliminarConvenio(convenio)} style={{ backgroundColor: '#f44336', color: 'white', margin: '5px', fontSize: '14px' }}>
                       Eliminar
                     </Button>
                   </TableCell>
