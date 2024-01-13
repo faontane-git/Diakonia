@@ -43,30 +43,32 @@ const Nutricion = ({ user }) => {
       <div className="list-container-nutricion">
         <h3>Seleccione una institución</h3>
 
-        <div className="search-container">
-          <TextField
-            type="text"
-            placeholder="Buscar por Institución"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton>
-                    <Search />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
-            }}
-            fullWidth
-            variant="outlined"
-          />
+        <div className="search-export-container">
+          <div className="search-container">
+            <TextField
+              type="text"
+              placeholder="Buscar por Institución"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+              }}
+              fullWidth
+              variant="outlined"
+            />
+          </div>
         </div>
 
         {filteredData.length > 0 ? (
           <TableContainer component={Paper}>
-            <Table>
+            <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Institución</TableCell>
@@ -78,9 +80,14 @@ const Nutricion = ({ user }) => {
                   <TableRow key={institucion.id}>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.nombre}</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                      <Link to={`/asistencias/${institucion.id}/${institucion.nombre}`} className="centered-link">
+                        <Button variant="contained" style={{ backgroundColor: '#4caf50', margin: '5px', color: 'white' }}>
+                          Asistencia
+                        </Button>
+                      </Link>
                       <Link to={`/nutricion/${institucion.id}/${institucion.nombre}`}>
-                        <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
-                          Ver Detalles
+                        <Button variant="contained" style={{ backgroundColor: '#4caf50', margin: '5px', color: 'white' }}>
+                          Nutrición
                         </Button>
                       </Link>
                     </TableCell>

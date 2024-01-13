@@ -1,5 +1,5 @@
 #form_eañadirconvenio {
-    max-width: 400px;
+    max-width: 700px;
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ddd;
@@ -7,7 +7,42 @@
     background-color: #f9f9f9;
 }
 
-#l_añadirConvenio{
+/* Agrega un nuevo estilo para la línea que contiene los campos de Nombre y Dirección */
+#linea {
+    display: flex;
+    justify-content: space-between;
+}
+
+#linea2 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Agrega un nuevo estilo para el contenedor de opciones de servicios */
+#opcionesServicios {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: auto;
+}
+
+/* Ajusta los estilos de las casillas de verificación para ocupar el ancho deseado */
+#opcionesServicios input[type="checkbox"] {
+    /* Permitir que las casillas de verificación ocupen el espacio necesario */
+    /* Añade un margen entre las casillas de verificación */
+    margin-bottom: 8px;
+}
+
+/* Ajusta los estilos de los campos de Nombre y Dirección para ocupar el ancho deseado */
+#txtNombreConvenio,
+#txtDireccionConvenio,
+#rangoFechasInicial,
+#rangoFechasFinal {
+    width: 48%;
+    /* Puedes ajustar este valor según tus necesidades */
+}
+
+#l_añadirConvenio {
     width: 100%;
     padding: 8px;
     margin-bottom: 16px;
@@ -16,7 +51,7 @@
     box-sizing: border-box;
 }
 
-#buttonAConvenio{
+#buttonAConvenio {
     background-color: #890202;
     color: white;
     padding: 8px;

@@ -24,6 +24,10 @@ const AñadirConvenio = ({ user }) => {
   const [initialDate, setInitialDate] = useState(null);
   const [finalDate, setFinalDate] = useState(null);
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowString = tomorrow.toISOString().split("T")[0];
+
   // Función para manejar el envío del formulario
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -95,32 +99,35 @@ const AñadirConvenio = ({ user }) => {
     <div>
       <Cabecera />
       <div className="centered-container">
-        <h1>Registrar Convenio de {institucionN}</h1>
+        <h1>Registrar Convenio</h1>
+        <h1>{institucionN}</h1>
       </div>
 
       <form id="form_eañadirconvenio" onSubmit={handleSubmit}>
+        <div id="linea">
+          <div id="txtNombreConvenio">
+            <label htmlFor="nombre"><b>Nombre</b></label>
+            <input
+              type="text"
+              id="l_añadirConvenio"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+          </div>
 
-        <div id="txtNombre">
-          <label htmlFor="nombre"><b>Nombre</b></label>
-          <input
-            type="text"
-            id="l_añadirConvenio"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
+          <div id="txtDireccionConvenio">
+            <label htmlFor="direccion"><b>Dirección</b></label>
+            <input
+              type="text"
+              id="l_añadirConvenio"
+              value={direccion}
+              onChange={(e) => {
+                setDireccion(e.target.value);;
+              }}
+            />
+          </div>
         </div>
 
-        <div id="txtDireccion">
-          <label htmlFor="direccion"><b>Dirección</b></label>
-          <input
-            type="text"
-            id="l_añadirConvenio"
-            value={direccion}
-            onChange={(e) => {
-              setDireccion(e.target.value);;
-            }}
-          />
-        </div>
 
         <div id="txtServicios">
           <label><b>Servicios:</b></label>
@@ -131,42 +138,42 @@ const AñadirConvenio = ({ user }) => {
               checked={desayuno}
               onChange={() => setDesayuno(!desayuno)}
             />
-            <label htmlFor="desayuno">Desayuno</label>
+            <label id="acc" htmlFor="desayuno">Desayuno</label>
 
-            <div>
-              <input
-                type="checkbox"
-                id=""
-                checked={almuerzo}
-                onChange={() => setAlmuerzo(!almuerzo)}
-              />
-              <label htmlFor="almuerzo">Almuerzo</label>
-            </div>
+            <input
+              type="checkbox"
+              id=""
+              checked={almuerzo}
+              onChange={() => setAlmuerzo(!almuerzo)}
+            />
+            <label htmlFor="almuerzo">Almuerzo</label>
           </div>
         </div>
 
-        <div id="rangoFechasInicial">
-          <label htmlFor="Fecha_inicial"><b>Fecha Inicial</b></label>
-          <input
-            type="date"
-            name="initialDate"
-            placeholder="Fecha inicial"
-            id="l_añadirConvenio"
-            onChange={(e) => setInitialDate(e.target.value)}
-            min={today}  // Configura la fecha mínima como la fecha actual
-          />
-        </div>
+        <div id="linea2">
+          <div id="rangoFechasInicial">
+            <label htmlFor="Fecha_inicial"><b>Fecha Inicial</b></label>
+            <input
+              type="date"
+              name="initialDate"
+              placeholder="Fecha inicial"
+              id="l_añadirConvenio"
+              onChange={(e) => setInitialDate(e.target.value)}
+              min={tomorrowString}  // Configura la fecha mínima como la fecha siguiente a la actual
+            />
+          </div>
 
-        <div id="rangoFechasFinal">
-          <label htmlFor="Fecha_final"><b>Fecha Final</b></label>
-          <input
-            type="date"
-            name="finalDate"
-            placeholder="Fecha final"
-            id="l_añadirConvenio"
-            onChange={(e) => setFinalDate(e.target.value)}
-            min={today}  // Configura la fecha mínima como la fecha actual
-          />
+          <div id="rangoFechasFinal">
+            <label htmlFor="Fecha_final"><b>Fecha Final</b></label>
+            <input
+              type="date"
+              name="finalDate"
+              placeholder="Fecha final"
+              id="l_añadirConvenio"
+              onChange={(e) => setFinalDate(e.target.value)}
+              min={initialDate}  // Configura la fecha mínima como la fecha inicial seleccionada
+            />
+          </div>
         </div>
 
         <div id='btnaconvenio'>

@@ -51,6 +51,10 @@ const Convenios = () => {
     convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleVerBeneficiarios = (convenioId, convenioNombre) => {
+    navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioNombre}`);
+  };
+
   const exportToXLSX = () => {
     const wsData = filteredData
       .filter(esActivo)
@@ -107,76 +111,91 @@ const Convenios = () => {
         <Cabecera />
         <h1>Lista de convenios de {institucionN}</h1>
       </div>
-      
-      <div className="centered-container">
-        <Button variant="contained" onClick={goAñadirBenef} style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
-          Añadir Convenio
-        </Button>
+
+      <div className="search-export-container">
+
+        <div className="centered-container">
+          <Button variant="contained" onClick={goAñadirBenef} style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
+            Añadir Convenio
+          </Button>
+        </div>
+
+        <div className="centered-container">
+          <Button variant="contained" style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }} onClick={exportToXLSX}>
+            Exportar a Excel
+          </Button>
+        </div>
+
+      </div>
+      <div className="search-export-container">
+        <div className="search-container">
+          <TextField
+            type="text"
+            placeholder="Buscar por nombre"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+            }}
+            fullWidth
+            variant="outlined"
+          />
+        </div>
       </div>
 
-      <div className="search-container">
-        <TextField
-          type="text"
-          placeholder="Buscar por nombre"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
-          }}
-          fullWidth
-          variant="outlined"
-        />
-      </div>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Nombre</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Dirección</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Servicios</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Inicio</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Fin</TableCell>
-              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData.filter(esActivo).map((convenio) => (
-              <TableRow key={convenio.id}>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.nombre}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.direccion}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
-                  {convenio.desayuno && 'Desayuno '}
-                  {convenio.almuerzo && 'Almuerzo'}
-                </TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
-                  <Link to={`/editar-convenio/${institucionId}/${institucionN}/${convenio.id}`}>
-                    <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
-                      Editar
-                    </Button>
-                  </Link>
-                  <Button variant="contained" onClick={() => eliminarConvenio(convenio)} style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
-                    Eliminar
-                  </Button>
-                </TableCell>
+      <div id="tabla">
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Nombre</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Dirección</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Servicios</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Inicio</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Fin</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Acciones</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <div className="centered-container">
-        <Button variant="contained" style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }} onClick={exportToXLSX}>
-          Exportar a Excel
-        </Button>
+            </TableHead>
+            <TableBody>
+              {filteredData.filter(esActivo).map((convenio) => (
+                <TableRow key={convenio.id}>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.nombre}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.direccion}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
+                    {convenio.desayuno && 'Desayuno '}
+                    {convenio.almuerzo && 'Almuerzo'}
+                  </TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
+                  <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
+                    <Button variant="contained" onClick={() => handleVerBeneficiarios(convenio.id, convenio.nombre)} style={{ backgroundColor: '#4caf50', color: 'white' }}>
+                      Beneficiarios
+                    </Button>
+                    <Link to={`/editar-convenio/${institucionId}/${institucionN}/${convenio.id}`}>
+                      <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                        Editar
+                      </Button>
+                    </Link>
+                    <Button variant="contained" onClick={() => eliminarConvenio(convenio)} style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                      Eliminar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
+      <h1>Tabla de reportes</h1>
+
+
     </div>
   );
 };

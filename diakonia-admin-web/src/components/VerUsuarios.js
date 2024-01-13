@@ -25,7 +25,7 @@ const VerUsuario = ({ user }) => {
   
 
   return (
-    <div>
+    <div className="centered-container">
       <Cabecera user={user}/>
       <ListaUsuarios usuarios={data} />
       

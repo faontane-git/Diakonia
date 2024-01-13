@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../estilos/ListaUsuarios.css';
 import { Link } from 'react-router-dom';
 import { getFirestore, deleteDoc, doc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import {
@@ -17,6 +18,7 @@ import {
 
 const ListaUsuarios = ({ usuarios }) => {
   const firestore = getFirestore();
+  const navigate = useNavigate();
 
   const [selectedInstitucion, setSelectedInstitucion] = useState('');
 
@@ -59,7 +61,7 @@ const ListaUsuarios = ({ usuarios }) => {
       }
     }
   }
-
+  
   const exportToXLSX = () => {
     const filteredUsers = selectedInstitucion
       ? usuarios.filter((usuario) => usuario.institucionN === selectedInstitucion)
@@ -82,6 +84,21 @@ const ListaUsuarios = ({ usuarios }) => {
     <div className="centered-container">
       <h1>Lista de Usuarios</h1>
 
+      <div className="search-export-container">
+        <div className="centered-container">
+          <Link to="/usuarios/registrarUsuario">
+            <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }}>
+              Crear Usuario
+            </Button>
+          </Link>
+        </div>
+        <div className="centered-container">
+          <Button onClick={exportToXLSX} variant="contained" style={{ backgroundColor: '#890202', color: 'white' }}>
+            Exportar Tabla
+          </Button>
+        </div>
+      </div>
+
       <div className="filter-container">
         <label htmlFor="institucionFilter">Filtrar por Institución:</label>
         <select
@@ -102,7 +119,7 @@ const ListaUsuarios = ({ usuarios }) => {
       </div>
 
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Responsable</TableCell>
@@ -145,10 +162,6 @@ const ListaUsuarios = ({ usuarios }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Button onClick={exportToXLSX} variant="contained" style={{ marginTop: '10px', backgroundColor: '#890202', color: 'white' }}>
-        Exportar Tabla
-      </Button>
     </div>
   );
 };

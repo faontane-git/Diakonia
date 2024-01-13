@@ -20,15 +20,15 @@ function Cabecera() {
   const { logout, user } = useAuthContext();
 
   const auth = getAuth(firebaseApp);
-const navigate = useNavigate();
-const goBack = () => {    
-  navigate('/');
-}
-const goContraseña = () => {    
-  navigate('/cambiarContra');
-}
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate('/');
+  }
+  const goContraseña = () => {
+    navigate('/cambiarContra');
+  }
 
-const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -59,31 +59,37 @@ const [anchorEl, setAnchorEl] = useState(null);
               <Link to="/">Inicio</Link>
             </li>
 
-            {user.rol !== "Registrador"? 
-            <li id="opcion">
-              <Link to="/instituciones">Instituciones y Convenios</Link>
+            {user.rol !== "Registrador" ?
+              <li id="opcion">
+                <Link to="/verInstitucion">Instituciones y Convenios</Link>
               </li> : <li></li>}
 
+            {/*
             {user.rol !== "Registrador"? 
             <li id="opcion">
               <Link to="/beneficiarios">Beneficiarios</Link>
               </li> : <li></li>}
+            */}
 
-            {user.rol !== "Registrador"? 
-            <li id="opcion">
-              <Link to="/seguimiento">Seguimiento</Link>
+            {user.rol !== "Registrador" ?
+              <li id="opcion">
+                <Link to="/nutricion">Seguimiento</Link>
               </li> : <li></li>}
 
-            {user.rol === "Administrador"? <li id="opcion">
-              <Link to="/usuarios">Usuarios</Link>
+            {user.rol === "Administrador" ? <li id="opcion">
+              <Link to="/usuarios/verUsuarios">Horarios</Link>
             </li> : <li></li>}
-            
+
+            {user.rol === "Administrador" ? <li id="opcion">
+              <Link to="/usuarios/verUsuarios">Usuarios</Link>
+            </li> : <li></li>}
+
 
           </ul>
         </div>
 
         <div >
-        <IconButton
+          <IconButton
             id="buttonCCerrarSesion"
             onClick={handleClick}
             color="inherit"

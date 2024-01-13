@@ -27,7 +27,7 @@ const VerInstitucion = ({ user }) => {
   }, []);
 
   return (
-    <div>
+    <div className="centered-container">
       <Cabecera user={user} />
       {/* Muestra la lista de instituciones */}
       <ListaInstituciones instituciones={data} />

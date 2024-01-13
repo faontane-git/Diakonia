@@ -70,7 +70,7 @@ const NutricionConvenios = () => {
   return (
     <div className="centered-container">
       <Cabecera />
-      <h1>Nutricion</h1>
+      <h1>Nutrición</h1>
       <h3>Seleccione un Convenio de {institucionN}</h3>
 
       <div className="search-container">

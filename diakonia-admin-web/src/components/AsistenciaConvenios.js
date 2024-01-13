@@ -64,25 +64,27 @@ const AsistenciaConvenios = () => {
       <h1>Asistencias</h1>
       <h3>Seleccione un Convenio de {institucionN}</h3>
 
-      <div className="search-container">
-        <TextField
-          type="text"
-          placeholder="Buscar por Convenio"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: { fontSize: '14px' },
-          }}
-          fullWidth
-          variant="outlined"
-        />
+      <div className="search-export-container">
+        <div className="search-container">
+          <TextField
+            type="text"
+            placeholder="Buscar por Convenio"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { fontSize: '14px' },
+            }}
+            fullWidth
+            variant="outlined"
+          />
+        </div>
       </div>
 
       <TableContainer component={Paper} className="list-container">
@@ -128,7 +130,7 @@ const AsistenciaConvenios = () => {
                       className="centered-link"
                     >
                       <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
-                        Acceder
+                        Ver Asistencia
                       </Button>
                     </Link>
 

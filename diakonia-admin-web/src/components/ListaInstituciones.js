@@ -97,6 +97,10 @@ const ListaInstituciones = ({ instituciones }) => {
     });
   }
 
+  const goRegistrar = () => {
+    navigate('/registrar');
+  }
+
   const exportToXLSX = () => {
     const ws = XLSX.utils.json_to_sheet(
       filteredInstituciones
@@ -120,26 +124,7 @@ const ListaInstituciones = ({ instituciones }) => {
     <div className="beneficiarios-container">
       <div className="centered-container">
         <h1 style={{ fontSize: '24px' }}>Lista de Instituciones</h1>
-        <div className="search-container">
-          <TextField
-            type="text"
-            placeholder="Buscar por nombre"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton>
-                    <Search />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              style: { fontSize: '14px' },
-            }}
-            fullWidth
-            variant="outlined"
-          />
-        </div>
+
         <FormControl component="fieldset" style={{ margin: '10px 0' }}>
           <RadioGroup
             row
@@ -152,11 +137,46 @@ const ListaInstituciones = ({ instituciones }) => {
             <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
           </RadioGroup>
         </FormControl>
+
+        <div className="search-export-container">
+          <div className="search-container">
+            <TextField
+              type="text"
+              placeholder="Buscar por nombre"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                style: { fontSize: '14px' },
+              }}
+              fullWidth
+              variant="outlined"
+            />
+          </div>
+
+          <div className="centered-container">
+            <div hidden={false}>
+              <Button className="button-exportar" onClick={goRegistrar} style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}>
+                Crear Institución
+              </Button>
+            </div>
+            <Button className="button-exportar" onClick={exportToXLSX} style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '150px', height: '40px' }}>
+              Exportar Tabla
+            </Button>
+          </div>
+        </div>
+
       </div>
 
       <div id='tabla'>
         <TableContainer component={Paper}>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Institución</TableCell>
@@ -183,7 +203,7 @@ const ListaInstituciones = ({ instituciones }) => {
                           </Button>
                         </Link>
                         <Button onClick={() => eliminarInstitucion(institucion)} variant="contained" style={{ backgroundColor: '#f44336', color: 'white', margin: '5px', fontSize: '14px' }}>
-                          Eliminar
+                          Inactivar
                         </Button>
                       </>
                     )}
@@ -200,11 +220,7 @@ const ListaInstituciones = ({ instituciones }) => {
         </TableContainer>
       </div>
 
-      <div className="centered-container">
-        <button className="centered-button" onClick={exportToXLSX} style={{ fontSize: '16px' }}>
-          Exportar Tabla
-        </button>
-      </div>
+
     </div>
   );
 };

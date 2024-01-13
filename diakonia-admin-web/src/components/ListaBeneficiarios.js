@@ -159,46 +159,62 @@ const ListaBeneficiarios = ({ user }) => {
           onChange={(e) => setActivoFilter(e.target.value)}
         >
           <FormControlLabel value="activos" control={<Radio />} label="Activos" />
-          <FormControlLabel value="inactivos" control={<Radio />} label="No Activos" />
+          <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
         </RadioGroup>
       </FormControl>
 
-      <div className="centered-container">
-        <Button
-          id="buttonABeneficiarios"
-          style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
-          onClick={goAñadirBenef}
-          variant="contained"
-        >
-          Añadir Beneficiarios
-        </Button>
+      <div className="search-export-container">
+        <div className="centered-container">
+          <Button
+            id="buttonABeneficiarios"
+            style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
+            onClick={goAñadirBenef}
+            variant="contained"
+          >
+            Añadir Beneficiarios
+          </Button>
+        </div>
+
+        <div className="centered-container">
+          <Button
+            id="buttonExportarCredenciales"
+            style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
+            onClick={() => generarCredenciales(filteredData)}
+            variant="contained"
+          >
+            Generar Credenciales
+          </Button>
+        </div>
       </div>
 
-      <div className="search-container">
-        <TextField
-          type="text"
-          placeholder="Buscar por Nombre"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: { fontSize: '14px' },
-          }}
-          fullWidth
-          variant="outlined"
-        />
+      <div className="search-export-container">
+        <div className="search-container">
+          <TextField
+            type="text"
+            placeholder="Buscar por Nombre"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { fontSize: '14px' },
+            }}
+            fullWidth
+            variant="outlined"
+          />
+        </div>
       </div>
+
 
       {activoFilter === 'activos' && filteredData.some(esActivo) ? (
         <div>
           <TableContainer component={Paper}>
-            <Table>
+            <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
@@ -250,20 +266,11 @@ const ListaBeneficiarios = ({ user }) => {
               </TableBody>
             </Table>
           </TableContainer>
-
-          <Button
-            id="buttonExportarCredenciales"
-            style={{ backgroundColor: '#890202', color: 'white', marginTop: '10px' }}
-            onClick={() => generarCredenciales(filteredData)}
-            variant="contained"
-          >
-            Generar Credenciales
-          </Button>
         </div>
       ) : (
         <div>
           <TableContainer component={Paper}>
-            <Table>
+            <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>

@@ -1,20 +1,22 @@
-#listaInsituciones {
-    padding: 0;
+/* Estilos CSS (pueden variar según tus necesidades) */
+
+.search-export-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
-
-#listaInsituciones a {
-    display: block;
-    color: white;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-weight: bold;
+.search-container,
+.centered-container {
+    margin-bottom: 10px;
+    /* Ajusta según sea necesario */
 }
 
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center; /* Centra los elementos horizontalmente */
+}
 
 #listaInsituciones li {
     text-align: center;
@@ -41,6 +43,6 @@
     /* Ajusta el margen según tus preferencias */
 }
 
-#cuerpo_tabla{
+#cuerpo_tabla {
     text-align: center;
 }
