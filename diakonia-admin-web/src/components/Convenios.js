@@ -38,6 +38,10 @@ const Convenios = () => {
     navigate('añadirConvenio');
   };
 
+  const goBack = () => {
+    navigate('/verInstitucion');
+  };
+
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
     return fecha.toLocaleDateString('es-ES');
@@ -287,6 +291,14 @@ const Convenios = () => {
       <div>
         <Cabecera />
         <h1>Lista de convenios de {institucionN}</h1>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
       </div>
 
       <FormControl component="fieldset">

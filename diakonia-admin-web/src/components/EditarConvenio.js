@@ -4,10 +4,16 @@ import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarConvenio.css';
+import { Button } from '@mui/material';
 
 const EditarConvenio = ({ user }) => {
   const { institucionId, institucionN, convenioId } = useParams();
   const navigate = useNavigate();
+
+  const goBack = () => {
+    navigate(`/instituciones/${institucionId}/${institucionN}`);
+  };
+
 
   const [nombre, setNombre] = useState('');
   const [direccion, setDireccion] = useState('');
@@ -84,6 +90,14 @@ const EditarConvenio = ({ user }) => {
       <Cabecera user={user} />
       <div className="centered-container">
         <h1>Editar Convenio</h1>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
       </div>
 
       <form id="form_econvenio" onSubmit={handleSubmit}>

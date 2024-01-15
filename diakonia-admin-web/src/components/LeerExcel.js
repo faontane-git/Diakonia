@@ -181,6 +181,15 @@ const LeerExcel = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Institución: {institucionN}</h1>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
+
       <h3>Añadir Beneficiarios</h3>
       <h3>¡Por favor, suba el Excel con la información solicitada!</h3>
       <input type="file" onChange={handleFileUpload} />

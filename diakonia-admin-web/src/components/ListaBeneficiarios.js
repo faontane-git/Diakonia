@@ -34,6 +34,10 @@ const ListaBeneficiarios = ({ user }) => {
     navigate('añadirBenef');
   };
 
+  const goBack = () => {
+    navigate(`/instituciones/${institucionId}/${institucionN}`);
+  };
+
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activoFilter, setActivoFilter] = useState('activos');
@@ -149,6 +153,15 @@ const ListaBeneficiarios = ({ user }) => {
       <h1>Lista de Beneficiarios de {institucionN}</h1>
       <h3>Convenio: {convenioN}</h3>
       <h3>Servicios: {data[0]?.desayuno.length !== 0 ? 'Desayuno ' : ''}{data[0]?.almuerzo.length !== 0 ? 'Almuerzo' : ''}</h3>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
+     
 
       <FormControl component="fieldset">
         <RadioGroup

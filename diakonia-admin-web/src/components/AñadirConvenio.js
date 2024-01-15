@@ -7,6 +7,8 @@ import firebaseApp from "../firebase-config";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import '../estilos/AñadirConvenio.css';
+import { Button } from '@mui/material';
+
 
 const AñadirConvenio = ({ user }) => {
   const { institucionId, institucionN } = useParams();
@@ -145,6 +147,14 @@ const AñadirConvenio = ({ user }) => {
       <div className="centered-container">
         <h1>Registrar Convenio</h1>
         <h1>{institucionN}</h1>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
       </div>
 
       <form id="form_eañadirconvenio" onSubmit={handleSubmit}>
