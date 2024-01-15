@@ -49,7 +49,7 @@ const ListaInstituciones = ({ instituciones }) => {
   async function eliminarInstitucion(institucion) {
     Swal.fire({
       title: 'Advertencia',
-      text: `¿Está seguro que desea eliminar ${institucion.nombre}?`,
+      text: `¿Está seguro que desea inactivar ${institucion.nombre}?`,
       icon: 'error',
       showDenyButton: true,
       denyButtonText: 'No',

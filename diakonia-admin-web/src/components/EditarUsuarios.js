@@ -4,12 +4,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc, getDocs, collection, query, where } from 'firebase/firestore';
 import '../estilos/EditarUsuarios.css';
 import Swal from 'sweetalert2';
+import { Button } from '@mui/material';
 
 const EditarInstitucion = ({ user }) => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
-  const [nombre, setNombre]= useState('')
+  const [nombre, setNombre] = useState('')
   const [rol, setRol] = useState('Administrador');
   const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
   const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
@@ -33,6 +34,10 @@ const EditarInstitucion = ({ user }) => {
       setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
     );
   }, []);
+
+  const goBack = () => {
+    navigate(`/usuarios/verUsuarios`);
+  }
 
   useEffect(() => {
     const obtenerDatosInstitucion = async () => {
@@ -83,18 +88,18 @@ const EditarInstitucion = ({ user }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('institucion:', institucionN)
-    if(rol=== "Registrador"){
+    if (rol === "Registrador") {
       console.log("entra")
-      if(institucionId==="DiakoníaWeb"){
+      if (institucionId === "DiakoníaWeb") {
         Swal.fire('Error', 'Institución no seleccionado', 'error');
         return
       }
-      else if(convenioId=== ""){
+      else if (convenioId === "") {
         Swal.fire('Error', 'Convenio no seleccionado', 'error');
         return
       }
     }
-    ActualizarUsuario(rol, institucionId, institucionN,convenioId,convenioN,nombre);
+    ActualizarUsuario(rol, institucionId, institucionN, convenioId, convenioN, nombre);
   };
 
   useEffect(() => {
@@ -103,16 +108,16 @@ const EditarInstitucion = ({ user }) => {
       console.log("entra")
       const querydb = getFirestore();
       const conveniosCollection = collection(querydb, 'convenios');
-      const conveniosQuery = query(conveniosCollection,where('institucionId', '==', institucionId));
+      const conveniosQuery = query(conveniosCollection, where('institucionId', '==', institucionId));
 
-      getDocs(conveniosQuery).then((res) =>{
-          if(res!== undefined){
-            console.log("cambio")
-            setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
-          }
-      }  
+      getDocs(conveniosQuery).then((res) => {
+        if (res !== undefined) {
+          console.log("cambio")
+          setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
+        }
+      }
       );
-      
+
     }
   }, [institucionId]);
 
@@ -121,7 +126,18 @@ const EditarInstitucion = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <h1>Editar Usuario</h1>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+
+        <div id='titulo' style={{ marginLeft: '32.0em' }}>
+          <h1>Editar Usuario</h1>
+        </div>
       </div>
 
       <form id="form_eusuario" onSubmit={handleSubmit}>
@@ -158,39 +174,39 @@ const EditarInstitucion = ({ user }) => {
 
         {mostrarBarraAdicional && (
           <>
-          <div id="txtUrol">
-            <label htmlFor="rol">Institución a la que pertenece:</label>
-            <select id="rol" onChange={(e) => {
-              setInstitucionId(e.target.value);
-              const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-              setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
-              setConvenioId("");
-              setConvenioN("");
-            }}>
-              <option value="" disabled selected>Selecciona una institucion</option>
-              {data.map((institucion) => (
-                <option value={institucion.id}>{institucion.nombre}</option>
-              ))}
-            </select>
-          </div>
+            <div id="txtUrol">
+              <label htmlFor="rol">Institución a la que pertenece:</label>
+              <select id="rol" onChange={(e) => {
+                setInstitucionId(e.target.value);
+                const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+                setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+                setConvenioId("");
+                setConvenioN("");
+              }}>
+                <option value="" disabled selected>Selecciona una institucion</option>
+                {data.map((institucion) => (
+                  <option value={institucion.id}>{institucion.nombre}</option>
+                ))}
+              </select>
+            </div>
 
 
-        {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
-          <label htmlFor="convenios">Convenio</label>
-          <select id="convenios" value={convenioN} onChange={(e) => {
-            const valores = e.target.value.split("/");
-            console.log(valores);
-            setConvenioId(valores[0]);         
-            setConvenioN(valores[1]);
-            console.log("convenio", convenioId, convenioN)
-            }}>
-            <option value="" disabled selected>Selecciona un convenio</option>
-            {convenios.map((convenio) => (
-              <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
-            ))}
-          </select>
-        </div>)}
-          
+            {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
+              <label htmlFor="convenios">Convenio</label>
+              <select id="convenios" value={convenioN} onChange={(e) => {
+                const valores = e.target.value.split("/");
+                console.log(valores);
+                setConvenioId(valores[0]);
+                setConvenioN(valores[1]);
+                console.log("convenio", convenioId, convenioN)
+              }}>
+                <option value="" disabled selected>Selecciona un convenio</option>
+                {convenios.map((convenio) => (
+                  <option key={convenio.id} value={convenio.id + "/" + convenio.nombre}>{convenio.nombre}</option>
+                ))}
+              </select>
+            </div>)}
+
           </>
         )}
 

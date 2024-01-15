@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'; // Importa SweetAlert
 import '../estilos/RegistraUsuario.css';
-
+import { Button } from '@mui/material';
 import firebaseApp from "../firebase-config";
 import {
   getAuth,
@@ -22,7 +22,7 @@ const RegistroUsuario = ({ user }) => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate('/usuarios');
+    navigate('/usuarios/verUsuarios');
   }
 
   const [data, setData] = useState([]);
@@ -153,7 +153,18 @@ const RegistroUsuario = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <h1>Registrar Usuario</h1>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+
+        <div id='titulo' style={{ marginLeft: '32.0em' }}>
+          <h1>Editar Usuario</h1>
+        </div>
       </div>
 
       <form id="form_rusuario" onSubmit={handleSubmit}>

@@ -3,6 +3,7 @@ import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { Button } from '@mui/material';
 import '../estilos/EditarInstitucion.css';
 
 const EditarInstitucion = ({ user }) => {
@@ -31,6 +32,10 @@ const EditarInstitucion = ({ user }) => {
 
     obtenerDatosInstitucion();
   }, [institucionId]);
+
+  const goBack = () => {
+    navigate('/verInstitucion');
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,9 +68,20 @@ const EditarInstitucion = ({ user }) => {
 
   return (
     <div>
-      <Cabecera user={user} />
       <div className="centered-container">
-        <h1>Editar Institución</h1>
+        <Cabecera user={user} />
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+
+        <div id='titulo' style={{ marginLeft: '30.5em' }}>
+          <h1>Editar Institución</h1>
+        </div>
       </div>
 
       <form id="form_einstitucion" onSubmit={handleSubmit}>

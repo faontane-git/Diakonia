@@ -93,6 +93,14 @@ const AñadirConvenio = ({ user }) => {
         icon: 'error',
       });
       return;
+    } else if (!pdfBase64) {
+      // Si no se ha subido el archivo PDF
+      Swal.fire({
+        title: 'Error',
+        text: '¡Por favor, suba un archivo PDF!',
+        icon: 'error',
+      });
+      return;
     } else {
       const firestore = getFirestore()
       const ConvenioCollection = collection(firestore, 'convenios');
@@ -212,7 +220,7 @@ const AñadirConvenio = ({ user }) => {
         </div>
 
         <div id="inputArchivo">
-          <label htmlFor="archivo"><b>Archivo</b></label>
+          <label htmlFor="archivo"><b>Certificado</b></label>
           <input
             type="file"
             id="archivo"

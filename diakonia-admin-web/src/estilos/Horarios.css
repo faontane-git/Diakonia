@@ -7,7 +7,7 @@
     background-color: #f9f9f9;
 }
 
-#horaAlmuerzo{
+#horaAlmuerzo {
     margin-bottom: 10%;
 }
 
@@ -18,8 +18,8 @@
 }
 
 input[type="time"] {
-    width: 95%;
-    padding: 8px;
+    width: 30%;
+    padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;

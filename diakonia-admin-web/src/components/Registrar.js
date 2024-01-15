@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import '../estilos/Registrar.css';
-
+import { Button } from '@mui/material';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 const RegistroInstitucion = ({ user }) => {
@@ -83,7 +83,18 @@ const RegistroInstitucion = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <h1>Registrar Institución</h1>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+
+        <div id='titulo' style={{ marginLeft: '30.0em' }}>
+          <h1>Registrar Institución</h1>
+        </div>
       </div>
 
       <form id="form_eregistrar" onSubmit={handleSubmit}>
@@ -123,7 +134,7 @@ const RegistroInstitucion = ({ user }) => {
             }}
           />
         </div>
-        
+
         <div id="btnRegistrar">
           <button id="buttonRRegistrar" type="submit">
             Registrar

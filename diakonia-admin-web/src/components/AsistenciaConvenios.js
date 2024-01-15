@@ -88,7 +88,7 @@ const AsistenciaConvenios = () => {
       </div>
 
       <TableContainer component={Paper} className="list-container">
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell

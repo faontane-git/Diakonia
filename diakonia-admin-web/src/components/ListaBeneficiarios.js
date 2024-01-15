@@ -164,30 +164,6 @@ const ListaBeneficiarios = ({ user }) => {
       </FormControl>
 
       <div className="search-export-container">
-        <div className="centered-container" hidden={activoFilter != 'activos'}>
-          <Button
-            id="buttonABeneficiarios"
-            style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
-            onClick={goAñadirBenef}
-            variant="contained"
-          >
-            Añadir Beneficiarios
-          </Button>
-        </div>
-
-        <div className="centered-container" hidden={activoFilter != 'activos'}>
-          <Button
-            id="buttonExportarCredenciales"
-            style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
-            onClick={() => generarCredenciales(filteredData)}
-            variant="contained"
-          >
-            Generar Credenciales
-          </Button>
-        </div>
-      </div>
-
-      <div className="search-export-container">
         <div className="search-container">
           <TextField
             type="text"
@@ -208,8 +184,24 @@ const ListaBeneficiarios = ({ user }) => {
             variant="outlined"
           />
         </div>
-      </div>
+        <div className="centered-container" hidden={activoFilter != 'activos'}>
+          <Button
+            style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '250px', height: '40px' }}
+            onClick={goAñadirBenef}
+            variant="contained"
+          >
+            Añadir Beneficiarios
+          </Button>
 
+          <Button
+            style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '250px', height: '40px' }}
+            onClick={() => generarCredenciales(filteredData)}
+            variant="contained"
+          >
+            Generar Credenciales
+          </Button>
+        </div>
+      </div>
 
       {activoFilter === 'activos' && filteredData.some(esActivo) ? (
         <div>
