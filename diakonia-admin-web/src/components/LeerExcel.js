@@ -62,6 +62,10 @@ const LeerExcel = ({ user }) => {
   };
 
   const handleFileUpload = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      console.error('No se seleccionó ningún archivo');
+      return;
+    }
     const file = e.target.files[0];
 
     const reader = new FileReader();
