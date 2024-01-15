@@ -11,9 +11,10 @@ const EditarConvenio = ({ user }) => {
 
   const [nombre, setNombre] = useState('');
   const [direccion, setDireccion] = useState('');
+  const [fechaFin, setFechaFin] = useState('');
 
   useEffect(() => {
-    const obtenerDatosBeneficiario = async () => {
+    const obtenerDatosConvenio = async () => {
       const querydb = getFirestore();
       const docuRef = doc(querydb, 'convenios', convenioId);
       const docSnapshot = await getDoc(docuRef);
@@ -23,10 +24,20 @@ const EditarConvenio = ({ user }) => {
 
         setNombre(convenioData.nombre || '');
         setDireccion(convenioData.direccion || '');
+
+        // Si fecha_final existe en los datos, asignarla al estado
+        if (convenioData.fecha_final) {
+          const fechaFinal = new Date(convenioData.fecha_final.seconds * 1000);
+          // Restar un día para compensar cualquier problema con la zona horaria
+          fechaFinal.setDate(fechaFinal.getDate() - 1);
+          setFechaFin(
+            fechaFinal.toISOString().slice(0, 10)
+          );
+        }
       }
     };
 
-    obtenerDatosBeneficiario();
+    obtenerDatosConvenio();
   }, [convenioId]);
 
   const handleSubmit = async (event) => {
@@ -34,9 +45,26 @@ const EditarConvenio = ({ user }) => {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'convenios', convenioId);
 
+    const fechaFinal = new Date(fechaFin); // Convertir la cadena de fecha a un objeto Date
+
+    // Agregar un día a la fecha
+    fechaFinal.setDate(fechaFinal.getDate() + 1);
+
+    // Obtener la fecha de inicio del convenio
+    const docSnapshot = await getDoc(docuRef);
+    const fechaInicioConvenio = docSnapshot.data().fecha_inicial.toDate();
+
+    // Verificar que la fecha de fin sea mayor que la fecha de inicio
+    if (fechaFinal <= fechaInicioConvenio) {
+      // Mostrar notificación de error
+      Swal.fire('Error', 'La fecha de fin debe ser mayor que la fecha de inicio', 'error');
+      return;
+    }
+
     const convenio = {
       nombre,
       direccion,
+      fecha_final: fechaFinal,
     };
 
     try {
@@ -48,6 +76,8 @@ const EditarConvenio = ({ user }) => {
       Swal.fire('¡Error!', `Error al modificar convenio: ${error.message}`, 'error');
     }
   };
+
+
 
   return (
     <div>
@@ -74,6 +104,16 @@ const EditarConvenio = ({ user }) => {
             id="l_eConvenio"
             value={direccion}
             onChange={(e) => setDireccion(e.target.value)}
+          />
+        </div>
+
+        <div id="txtFechaFin">
+          <label htmlFor="fechaFin"><b>Fecha de Fin</b></label>
+          <input
+            type="date"
+            id="l_eConvenio"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
           />
         </div>
 
