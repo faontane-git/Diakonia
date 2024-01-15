@@ -76,6 +76,17 @@ const RegistroUsuario = ({ user }) => {
 
       const usuariosCollection = collection(firestore, 'usuarios')
 
+      const correoQuery = query(usuariosCollection, where('correo', '==', email));
+    const correoSnapshot = await getDocs(correoQuery);
+
+    if (!correoSnapshot.empty) {
+      // El correo ya existe, mostrar mensaje de error
+      Swal.fire('Error', 'El correo ya está registrado. Por favor, elige otro correo.', 'error');
+      return;
+    }
+
+      
+
       console.log(convenioN)
 
       const usuario = {

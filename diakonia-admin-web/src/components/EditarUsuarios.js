@@ -10,26 +10,29 @@ const EditarInstitucion = ({ user }) => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
-  const [nombre, setNombre] = useState('')
-  const [rol, setRol] = useState('Administrador');
-  const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
-  const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
+  const [nombre, setNombre]= useState('')
+  const [rol, setRol] = useState('');
+  const [institucionId, setInstitucionId] = useState('');
+  const [institucionN, setInstitucionN] = useState('');
   const [correo, setCorreo] = useState('');
-  const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
+  const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(rol==="Registrador");
   const [roloriginal, setRoloriginal] = useState('');
   //const [institucionIdoriginal, setInstitucionIdoriginal]= useState('');
   const [institucionNoriginal, setInstitucionNoriginal] = useState('');
 
-  const [convenios, setConvenios] = useState('')
-  const [convenioN, setConvenioN] = useState('DiakoníaWeb')
-  const [convenioId, setConvenioId] = useState('DiakoníaWeb')
+  const [convenios, setConvenios] = useState([])
+  const [convenioN, setConvenioN] = useState('')
+  const [convenioId, setConvenioId] = useState('')
 
   const [data, setData] = useState([]);
+
+  function esActivo(convenio) {
+    return convenio.activo === true;
+  }
 
   useEffect(() => {
     const querydb = getFirestore();
     const queryCollection = collection(querydb, 'instituciones');
-
     getDocs(queryCollection).then((res) =>
       setData(res.docs.map((institucion) => ({ id: institucion.id, ...institucion.data() })))
     );
@@ -52,9 +55,13 @@ const EditarInstitucion = ({ user }) => {
         setNombre(beneficiarioData.nombre || '')
         setCorreo(beneficiarioData.correo || '');
         setRoloriginal(beneficiarioData.rol || '');
-        //setInstitucionId(beneficiarioData.institucionId || '');
-        //setInstitucionN(beneficiarioData.institucionN || '');
         setInstitucionNoriginal(beneficiarioData.institucionN || '');
+        setRol(beneficiarioData.rol || '');
+
+        setInstitucionId(beneficiarioData.institucionId || '');
+        setInstitucionN(beneficiarioData.institucionN || '');
+        setConvenioId(beneficiarioData.convenioId || '');
+        setConvenioN(beneficiarioData.convenioN || '');
       }
     };
 
@@ -117,7 +124,8 @@ const EditarInstitucion = ({ user }) => {
         }
       }
       );
-
+      setMostrarBarraAdicional(rol==="Registrador");
+      
     }
   }, [institucionId]);
 
@@ -156,7 +164,7 @@ const EditarInstitucion = ({ user }) => {
         </div>
         <div id="txtUrol">
           <label htmlFor="rol">Nuevo Rol</label>
-          <select id="rol" onChange={(e) => {
+          <select id="rol" value={rol} onChange={(e) => {
             setRol(e.target.value);
             setMostrarBarraAdicional(e.target.value === "Registrador");
             if (e.target.value !== "Registrador") {
@@ -174,39 +182,39 @@ const EditarInstitucion = ({ user }) => {
 
         {mostrarBarraAdicional && (
           <>
-            <div id="txtUrol">
-              <label htmlFor="rol">Institución a la que pertenece:</label>
-              <select id="rol" onChange={(e) => {
-                setInstitucionId(e.target.value);
-                const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-                setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
-                setConvenioId("");
-                setConvenioN("");
-              }}>
-                <option value="" disabled selected>Selecciona una institucion</option>
-                {data.map((institucion) => (
-                  <option value={institucion.id}>{institucion.nombre}</option>
-                ))}
-              </select>
-            </div>
+          <div id="txtUrol">
+            <label htmlFor="rol">Institución a la que pertenece:</label>
+            <select id="rol" value={institucionId} onChange={(e) => {
+              setInstitucionId(e.target.value);
+              const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+              setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+              setConvenioId("");
+              setConvenioN("");
+            }}>
+              <option value="" disabled selected>Selecciona una institucion</option>
+              {data.map((institucion) => (
+                <option value={institucion.id}>{institucion.nombre}</option>
+              ))}
+            </select>
+          </div>
 
 
-            {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
-              <label htmlFor="convenios">Convenio</label>
-              <select id="convenios" value={convenioN} onChange={(e) => {
-                const valores = e.target.value.split("/");
-                console.log(valores);
-                setConvenioId(valores[0]);
-                setConvenioN(valores[1]);
-                console.log("convenio", convenioId, convenioN)
-              }}>
-                <option value="" disabled selected>Selecciona un convenio</option>
-                {convenios.map((convenio) => (
-                  <option key={convenio.id} value={convenio.id + "/" + convenio.nombre}>{convenio.nombre}</option>
-                ))}
-              </select>
-            </div>)}
-
+        {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
+          <label htmlFor="convenios">Convenio</label>
+          <select id="convenios" value={convenioN} onChange={(e) => {
+            const valores = e.target.value.split("/");
+            console.log(valores);
+            setConvenioId(valores[0]);         
+            setConvenioN(valores[1]);
+            console.log("convenio", convenioId, convenioN)
+            }}>
+            <option value="" disabled selected>Selecciona un convenio</option>
+            {convenios.filter(esActivo).map((convenio) => (
+              <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
+            ))}
+          </select>
+        </div>)}
+          
           </>
         )}
 
