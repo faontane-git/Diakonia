@@ -91,11 +91,27 @@ const AñadirNutricion = ({user}) => {
     for (const beneficiario of Nbeneficiarios) {
       const update = data.find((doc) => doc.cedula === beneficiario.cedula);
       if (update != undefined) {
-        update.fecha_seguimiento.push(beneficiario.fecha_seguimiento);
-        update.pesos.push(beneficiario.pesos);
-        update.talla.push(beneficiario.talla);
-        update.hgb.push(beneficiario.hgb);
+        console.log("update: ", update.fecha_seguimiento);
+        console.log("fecha: ", beneficiario.fecha_seguimiento);
+        
+        const lista_Fechas = update.fecha_seguimiento.map(timestamp => new Date(timestamp.seconds * 1000));
+        const index = lista_Fechas.findIndex(fecha => fecha.getTime() === beneficiario.fecha_seguimiento.getTime());
 
+        if (index !== -1) {
+          // Si la fecha_seguimiento existe, actualiza los valores en el índice correspondiente
+
+          console.log("Se repite")
+          update.pesos[index] = beneficiario.pesos;
+          update.talla[index] = beneficiario.talla;
+          update.hgb[index] = beneficiario.hgb;
+        } else {
+          // Si la fecha_seguimiento no existe, agrégala al final de los arrays
+          console.log("No se repite")
+          update.fecha_seguimiento.push(beneficiario.fecha_seguimiento);
+          update.pesos.push(beneficiario.pesos);
+          update.talla.push(beneficiario.talla);
+          update.hgb.push(beneficiario.hgb);
+        }
         const docuCifrada = doc(beneficiarioCollection, update.id);
 
         const modificar = updateDoc(docuCifrada, update)

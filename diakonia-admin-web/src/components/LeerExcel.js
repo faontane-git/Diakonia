@@ -116,7 +116,7 @@ const LeerExcel = ({ user }) => {
           hgb: [],
           activo: true,
           observacion: '',
-          qr_url: codigoQR,
+          //qr_url: codigoQR,
         };
       });
 
@@ -152,10 +152,10 @@ const LeerExcel = ({ user }) => {
             }
             for (const date of beneficiario.dias) {
               if (doc.data().desayuno === true) {
-                beneficiario.desayuno.push("-");
+                beneficiario.desayuno.push(0);
               }
               if (doc.data().almuerzo === true) {
-                beneficiario.almuerzo.push("-");
+                beneficiario.almuerzo.push(0);
               }
             }
             addDoc(beneficiarioCollection, beneficiario).catch((error) => {
