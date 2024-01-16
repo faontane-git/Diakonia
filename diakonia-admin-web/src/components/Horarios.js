@@ -19,20 +19,20 @@ const Horarios = ({ user }) => {
       const querydb = getFirestore();
       const docuRef = doc(querydb, 'horarios', 'QkbgLVC4va77hSdDT9DL');
       const docSnapshot = await getDoc(docuRef);
-  
+
       if (docSnapshot.exists()) {
         const horarioData = docSnapshot.data();
-  
+
         setHoraDesayunoInicial(horarioData.horaDesayuno.inicial || '');
         setHoraDesayunoFinal(horarioData.horaDesayuno.final || '');
         setHoraAlmuerzoInicial(horarioData.horaAlmuerzo.inicial || '');
         setHoraAlmuerzoFinal(horarioData.horaAlmuerzo.final || '');
       }
     };
-  
+
     obtenerDatosHorario();
   }, []); // El segundo argumento es un array de dependencias que está vacío
-  
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -72,8 +72,8 @@ const Horarios = ({ user }) => {
 
   return (
     <div>
-      <Cabecera user={user} />
       <div className="centered-container">
+        <Cabecera user={user} />
         <h1>Editar Horario</h1>
       </div>
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../estilos/ListaAsistencias.css';
 import Cabecera from './Cabecera';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 import {
   Table,
   TableHead,
@@ -16,18 +17,25 @@ import {
   Select,
   MenuItem,
   Button,
-  FormControl,
-  InputLabel,
+  Typography,
 } from '@mui/material';
 
 const ListaAsistencias = ({ user }) => {
-  const { institucionId } = useParams();
-  const [data, setData] = useState([]);
+  const { institucionId, convenioId } = useParams();
+  const [fechas, setFechas] = useState([]);
+  const [datos, setData] = useState([]);
+
+  const [desayuno, setDesayuno] = useState(false);
+  const [almuerzo, setAlmuerzo] = useState(false);
+
+  const [fechasFiltradas, setFechasFiltradas] = useState([]);
+  const [asistenciaDesayuno, setAsistenciaDesayuno] = useState([]);
+  const [asistenciaAlmuerzo, setAsistenciaAlmuerzo] = useState([]);
+
   const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
   const [filtroServicio, setFiltroServicio] = useState('todos');
   const [filtroFechaInicial, setFiltroFechaInicial] = useState(null);
   const [filtroFechaFinal, setFiltroFechaFinal] = useState(null);
-  const [datosFiltrados, setDatosFiltrados] = useState([]);
 
   const handleFiltroServicioChange = (e) => {
     setFiltroServicio(e.target.value);
@@ -52,44 +60,155 @@ const ListaAsistencias = ({ user }) => {
   };
 
   const consulta = async () => {
-    const querydb = getFirestore();
-    const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+    // Validar que ambas fechas estén seleccionadas
+    if (!filtroFechaInicial || !filtroFechaFinal) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Por favor, selecciona ambas fechas.',
+      });
+      return;
+    }
 
+    const querydb = getFirestore();
+    const conveniosCollection = collection(querydb, 'convenios');
+    try {
+      // Obtener el documento de convenios con el ID específico (convenioId)
+      const convenioDoc = await getDoc(doc(conveniosCollection, convenioId));
+      // Obtener los datos del documento de convenios
+      const convenioDias = convenioDoc.data().dias.map((fecha) => convertirTimestampAFecha(fecha));
+      setDesayuno(convenioDoc.data().desayuno);
+      setAlmuerzo(convenioDoc.data().almuerzo);
+      setFechas(convenioDias);
+    } catch (error) {
+      console.error('Error al obtener el documento de convenios:', error);
+    }
+
+    //Datos Asistencias
+    const beneficiariosCollection = collection(querydb, 'beneficiarios');
+    const beneficiariosQuery = query(beneficiariosCollection, where('convenioId', '==', convenioId));
     try {
       const querySnapshot = await getDocs(beneficiariosQuery);
-      const datos = querySnapshot.docs.map((benf) => ({
+      const arregloBeneficiarios = querySnapshot.docs.map((benf) => ({
         nombre: benf.data().nombre || '',
         desayuno: benf.data().desayuno || [],
         almuerzo: benf.data().almuerzo || [],
-        dias: benf.data().dias || [],
       }));
+      setData(arregloBeneficiarios);
 
-      // Filtrar por rango de fechas
-      const datosFiltradosPorFechas = datos.filter(filtrarPorServicioYFechas);
-      console.log(datosFiltradosPorFechas);
-
-      setData(datosFiltradosPorFechas);
-      setArregloNombresFechas(datosFiltradosPorFechas);
     } catch (error) {
       console.error('Error al obtener documentos:', error);
     }
+    const indices = indicesFechasFiltradas(filtroFechaInicial, filtroFechaFinal);
+    setFechasFiltradas(filtrarFechas(filtroFechaInicial, filtroFechaFinal));
+    setAsistenciaDesayuno(desayunoBeneficiario(datos, indices));
+    setAsistenciaAlmuerzo(almuerzoBeneficiario(datos, indices));
+    console.log("SEXOOOOO");
+    console.log(asistenciaDesayuno);
+    console.log(asistenciaAlmuerzo);
   };
 
+  const indicesFechasFiltradas = (fechaInicial, fechaFinal) => {
+    const fechasFiltradas = fechas.filter((fecha, index) => {
+      return fecha >= convertirFecha(fechaInicial) && fecha <= convertirFecha(fechaFinal);
+    });
+    const indices = fechas.map((fecha, index) => {
+      return fechasFiltradas.includes(fecha) ? index : null;
+    }).filter(index => index !== null);
+    return indices;
+  };
 
+  const filtrarFechas = (fechaInicial, fechaFinal) => {
+    const fechasFiltradas = fechas.filter(fecha => {
+      return fecha >= convertirFecha(fechaInicial) && fecha <= convertirFecha(fechaFinal);
+    });
+    return (fechasFiltradas);
+  };
 
-  const filtrarPorServicioYFechas = (item) => {
-    // Filtra por fechas
-    if (filtroFechaInicial && filtroFechaFinal) {
-      const fechaInicialFormateada = convertirFecha(filtroFechaInicial);
-      const fechaFinalFormateada = convertirFecha(filtroFechaFinal);
-      return item.dias.some(dia => {
-        const fechaDia = convertirTimestampAFecha(dia);
-        return fechaDia >= fechaInicialFormateada && fechaDia <= fechaFinalFormateada;
-      });
-    }
+  const desayunoBeneficiario = (datos, indices) => {
+    const desayuno = datos.map(dato => {
+      const fechasFiltradas = dato.desayuno.slice(indices[0], indices[indices.length - 1] + 1);
+      return {
+        nombre: dato.nombre,
+        asistencia_desayuno: fechasFiltradas
+      };
+    });
+    return desayuno;
+  };
 
-    return true; // Si no hay fechas seleccionadas, retorna true para todos los elementos
+  const almuerzoBeneficiario = (datos, indices) => {
+    const almuerzo = datos.map(dato => {
+      const fechasFiltradas = dato.almuerzo.slice(indices[0], indices[indices.length - 1] + 1);
+      return {
+        nombre: dato.nombre,
+        asistencia_almuerzo: fechasFiltradas
+      };
+    });
+    return almuerzo;
+  };
+
+  const renderTablaDesayuno = () => {
+    return (
+      <div>
+        <Typography variant="h6" gutterBottom>
+          Desayuno
+        </Typography>
+        <Paper style={{ overflowX: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>Nombre</TableCell>
+                {fechasFiltradas.map((dia, index) => (
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }} key={index}>{dia}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {asistenciaDesayuno.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.nombre}</TableCell>
+                  {item.asistencia_desayuno.map((dia, index) => (
+                    <TableCell key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
+    );
+  };
+
+  const renderTablaAlmuerzo = () => {
+    return (
+      <div>
+        <Typography variant="h6" gutterBottom>
+          Almuerzo
+        </Typography>
+        <Paper style={{ overflowX: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>Nombre</TableCell>
+                {fechasFiltradas.map((dia, index) => (
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }} key={index}>{dia}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {asistenciaAlmuerzo.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.nombre}</TableCell>
+                  {item.asistencia_almuerzo.map((dia, index) => (
+                    <TableCell key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
+    );
   };
 
   const exportarExcel = () => {
@@ -111,35 +230,10 @@ const ListaAsistencias = ({ user }) => {
     XLSX.writeFile(wb, 'asistencias.xlsx');
   };
 
-  const exportarAsistenciasCompleto = () => {
-    // Verifica si hay datos para exportar
-    if (arregloNombresFechas.length === 0) {
-      alert('No hay datos para exportar.');
-      return;
-    }
-
-    const ws = XLSX.utils.json_to_sheet([
-      // Primera fila con los nombres de las columnas
-      { Nombre: 'Nombre', ...arregloNombresFechas[0].dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: '' }), {}) },
-      // Filas de datos
-      ...arregloNombresFechas.map((item) => ({
-        Nombre: item.nombre,
-        ...item.dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: dia ? 'A' : '0' }), {}),
-      })),
-    ]);
-
-    // Elimina la segunda fila con números
-    delete ws['A2'];
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Asistencias');
-    XLSX.writeFile(wb, 'asistencias_completo.xlsx');
-  };
-
   return (
     <div>
-      <Cabecera user={user} />
       <div className="centered-container">
+        <Cabecera user={user} />
         <h1>Asistencias</h1>
       </div>
       <div className="filter-asistencia">
@@ -147,7 +241,7 @@ const ListaAsistencias = ({ user }) => {
         <div className="filter-servicio">
           <label htmlFor="filtroServicio">Servicio: </label>
           <select id="filtroServicio" value={filtroServicio} onChange={handleFiltroServicioChange} className="custom-select">
-            <option value="">Todos</option>
+            <option value="todos">Todos</option>
             <option value="desayuno">Desayuno</option>
             <option value="almuerzo">Almuerzo</option>
           </select>
@@ -170,31 +264,12 @@ const ListaAsistencias = ({ user }) => {
         </div>
       </div>
 
-      {/* Mostrar la tabla si hay datos */}
-      {arregloNombresFechas.length > 0 && (
-        <Paper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>Nombre</TableCell>
-                {arregloNombresFechas[0].dias.map((dia, index) => (
-                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }} key={index}>{convertirTimestampAFecha(dia)}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {arregloNombresFechas.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.nombre}</TableCell>
-                  {item.desayuno.map((dia, index) => (
-                    <TableCell key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
-      )}
+      {filtroServicio === 'todos' && desayuno && renderTablaDesayuno()}
+      {filtroServicio === 'todos' && almuerzo && renderTablaAlmuerzo()}
+
+      {filtroServicio === 'desayuno' && desayuno && renderTablaDesayuno()}
+
+      {filtroServicio === 'almuerzo' && almuerzo && renderTablaAlmuerzo()}
 
       <div className="centered-container">
         <div id='btnEAsistencia'>
@@ -205,7 +280,6 @@ const ListaAsistencias = ({ user }) => {
       </div>
     </div>
   );
-
 };
 
 export default ListaAsistencias;

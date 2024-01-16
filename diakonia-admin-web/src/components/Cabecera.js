@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from '../imagenes/logo-banco-alimentos.png';
 import '../estilos/Cabecera.css';
 import { useState } from 'react';
@@ -14,16 +14,16 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
-
 function Cabecera() {
-
   const { logout, user } = useAuthContext();
-
   const auth = getAuth(firebaseApp);
   const navigate = useNavigate();
+  const location = useLocation();
+
   const goBack = () => {
     navigate('/');
   }
+
   const goContraseña = () => {
     navigate('/cambiarContra');
   }
@@ -41,8 +41,11 @@ function Cabecera() {
   const handleLogout = () => {
     goBack();
     logout();
-    //signOut(auth);
     handleClose();
+  };
+
+  const isTabActive = (path) => {
+    return location.pathname === path;
   };
 
   return (
@@ -54,41 +57,37 @@ function Cabecera() {
 
         <div id='elementos'>
           <ul id="listaOpciones">
-
-            <li id="opcion">
+            <li className={isTabActive('/') ? 'opcion active' : 'opcion'}>
               <Link to="/">Inicio</Link>
             </li>
 
-            {user.rol !== "Registrador" ?
-              <li id="opcion">
+            {user.rol !== "Registrador" &&
+              <li className={isTabActive('/verInstitucion') ? 'opcion active' : 'opcion'}>
                 <Link to="/verInstitucion">Instituciones y Convenios</Link>
-              </li> : <li></li>}
+              </li>
+            }
 
-            {/*
-            {user.rol !== "Registrador"? 
-            <li id="opcion">
-              <Link to="/beneficiarios">Beneficiarios</Link>
-              </li> : <li></li>}
-            */}
-
-            {user.rol !== "Registrador" ?
-              <li id="opcion">
+            {user.rol !== "Registrador" &&
+              <li className={isTabActive('/nutricion') ? 'opcion active' : 'opcion'}>
                 <Link to="/nutricion">Seguimiento</Link>
-              </li> : <li></li>}
+              </li>
+            }
 
-            {user.rol === "Administrador" ? <li id="opcion">
-              <Link to="/horarios">Horarios</Link>
-            </li> : <li></li>}
+            {user.rol === "Administrador" &&
+              <li className={isTabActive('/horarios') ? 'opcion active' : 'opcion'}>
+                <Link to="/horarios">Horarios</Link>
+              </li>
+            }
 
-            {user.rol === "Administrador" ? <li id="opcion">
-              <Link to="/usuarios/verUsuarios">Usuarios</Link>
-            </li> : <li></li>}
-
-
+            {user.rol === "Administrador" &&
+              <li className={isTabActive('/usuarios/verUsuarios') ? 'opcion active' : 'opcion'}>
+                <Link to="/usuarios/verUsuarios">Usuarios</Link>
+              </li>
+            }
           </ul>
         </div>
 
-        <div >
+        <div>
           <IconButton
             id="buttonCCerrarSesion"
             onClick={handleClick}
@@ -106,10 +105,7 @@ function Cabecera() {
             <MenuItem onClick={goContraseña}>Cambiar contraseña</MenuItem>
             <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
           </Menu>
-
-          {/*<button id="buttonCCerrarSesion" onClick={() => {goBack(); signOut(auth);}}> Cerrar sesión</button>*/}
         </div>
-
       </div>
     </nav>
   );

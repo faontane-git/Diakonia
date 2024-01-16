@@ -47,11 +47,6 @@ const ListaUsuarios = ({ usuarios }) => {
 
         // Eliminar el documento del usuario en Firestore
         await deleteDoc(docRef);
-
-        // Actualizar el estado de los usuarios (si es necesario)
-        // ...
-
-        // Mostrar mensaje de éxito o recargar la página si es necesario
         Swal.fire('Eliminado', `El usuario ha sido eliminado.`, 'success').then(() => {
           window.location.reload();
         });
@@ -108,13 +103,13 @@ const ListaUsuarios = ({ usuarios }) => {
           className="custom-select"
         >
           <option value="">Todos</option>
-          {Array.from(new Set(usuarios.map((usuario) => usuario.institucionN))).map(
-            (institucion, index) => (
+          {Array.from(new Set(usuarios.map((usuario) => usuario.institucionN)))
+            .sort() // Ordena las instituciones alfabéticamente
+            .map((institucion, index) => (
               <option key={index} value={institucion}>
                 {institucion}
               </option>
-            )
-          )}
+            ))}
         </select>
       </div>
 

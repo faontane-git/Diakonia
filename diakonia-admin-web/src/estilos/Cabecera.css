@@ -1,66 +1,46 @@
 nav {
-    background-color: 'white';
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #logoBarra {
-    width: 150px;
-    height: auto;
-}
-
-#elementos {
-    margin: 0 auto; /* Centra el div 'elementos' horizontalmente */
-}
-
-
-#contenedorCabecera {
-    display: flex;
-    align-items: center; /* Centra verticalmente los elementos en el contenedor */
-  }
-  
-  #logoCabecera {
-    margin-right: 10px; /* Ajusta el margen entre el logo y las opciones de menú */
-  }
-  
-  #listaOpciones {
-    list-style: none;
-    padding: 0;
-    display: flex;
-  }
-  
-  #listaOpciones li {
-    margin-right: 10px; /* Ajusta el margen entre elementos de la lista */
-  }
-  
-  #listaOpciones li:last-child {
-    margin-right: 0; /* Elimina el margen derecho del último elemento de la lista */
-  }
-  
-  
-#opcion a {
-    display: block;
-    color: #890202;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-#buttonCerrar {
   width: 150px;
   height: auto;
 }
 
-#buttonCerrar button {
+#contenedorCabecera {
+  display: flex;
+  align-items: center;
+}
+
+#logoCabecera {
+  margin-right: 10px;
+}
+
+#elementos {
+  margin: 0 auto;
+}
+
+#listaOpciones {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.opcion {
+  margin-right: 10px;
+}
+
+.opcion a {
   display: block;
   padding: 14px 16px;
   text-decoration: none;
   font-weight: bold;
+  color: green; /* Color por defecto para enlaces inactivos */
 }
 
- #opcion::after {
-    content: "";
-    display: table;
-    clear: both;
+.opcion.active a {
+  color: #007bff; /* Color para enlaces activos */
 }
 
 #buttonCCerrarSesion {
@@ -76,5 +56,4 @@ nav {
 
 button:hover {
   background-color: #6b0101;
-  /* Cambia el color al pasar el ratón sobre el botón */
 }
