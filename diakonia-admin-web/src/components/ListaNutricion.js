@@ -34,6 +34,10 @@ const ListaBeneficiarios = ({ user }) => {
   const [data, setData] = useState([]);
   const [activoFilter, setActivoFilter] = useState('activos');
 
+  const goBack = () => {
+    navigate(`/nutricion/${institucionId}/${institucionN}`);
+  };
+
   const filteredData = data
     .filter((beneficiario) => {
       const nombreMatches = beneficiario.nombre.toLowerCase().includes(searchTerm.toLowerCase());
@@ -235,6 +239,14 @@ const ListaBeneficiarios = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Lista de Nutrición de {institucionN}</h1>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
+     
       <h3>Convenio: {convenioN}</h3>
 
       <FormControl component="fieldset">
