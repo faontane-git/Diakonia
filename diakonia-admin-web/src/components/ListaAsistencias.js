@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../estilos/ListaAsistencias.css';
 import Cabecera from './Cabecera';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as XLSX from 'xlsx';
@@ -21,13 +21,18 @@ import {
 } from '@mui/material';
 
 const ListaAsistencias = ({ user }) => {
-  const { institucionId } = useParams();
+  const { institucionId, institucionN } = useParams();
   const [data, setData] = useState([]);
   const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
   const [filtroServicio, setFiltroServicio] = useState('todos');
   const [filtroFechaInicial, setFiltroFechaInicial] = useState(null);
   const [filtroFechaFinal, setFiltroFechaFinal] = useState(null);
   const [datosFiltrados, setDatosFiltrados] = useState([]);
+
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(`/asistencias/${institucionId}/${institucionN}`);
+  }
 
   const handleFiltroServicioChange = (e) => {
     setFiltroServicio(e.target.value);
@@ -142,6 +147,14 @@ const ListaAsistencias = ({ user }) => {
       <div className="centered-container">
         <h1>Asistencias</h1>
       </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
+
       <div className="filter-asistencia">
         {/* Filtro por Servicio */}
         <div className="filter-servicio">

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import LinesChart from './Linechart';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, collection, getDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import '../estilos/Vergrafica.css';
 
 const VerGrafica = ({ user }) => {
-  const { beneficiarioid } = useParams();
+  const { beneficiarioid, institucionId, institucionN, convenioId, convenioN } = useParams();
   const [data, setData] = useState({});
   const [stringFechas, setStringFechas] = useState([]);
 
@@ -19,6 +19,11 @@ const VerGrafica = ({ user }) => {
     }
     return fecha.toLocaleDateString('es-ES');
   };
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(`/nutricion/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
+  }
+
 
   useEffect(() => {
     async function extraer() {
@@ -57,6 +62,14 @@ const VerGrafica = ({ user }) => {
     <div className="centered-container">
       <Cabecera user={user} />
       <h1>Nutricion gráfica de {data.nombre}</h1>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
 
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>

@@ -29,7 +29,7 @@ const NutricionConvenios = () => {
   const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
   const goBack = () => {
-    navigate('/beneficiarios');
+    navigate('/nutricion');
   };
 
   const convertirTimestampAFecha = (timestamp) => {
@@ -71,6 +71,14 @@ const NutricionConvenios = () => {
     <div className="centered-container">
       <Cabecera />
       <h1>Nutrición</h1>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
+
       <h3>Seleccione un Convenio de {institucionN}</h3>
 
       <div className="search-container">

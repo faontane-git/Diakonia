@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
 import { getFirestore, doc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
+import { Button } from '@mui/material';
 
 const AñadirNutricion = ({user}) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
@@ -12,7 +13,7 @@ const AñadirNutricion = ({user}) => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate(`/nutricion/${institucionId}/${institucionN}`);
+    navigate(`/nutricion/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
   }
 
   const convertirTimestampAFecha = (timestamp) => {
@@ -115,6 +116,13 @@ const AñadirNutricion = ({user}) => {
       <div className="centered-container">
         <Cabecera user={user}/>
         <h1>Añadir Seguimiento en {institucionN}</h1>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
         <h2>Convenio: {convenioN}</h2>
         <h3>¡Porfavor suba el excel con la información solicitada!</h3>
         <input type="file" onChange={handleFileUpload} />
