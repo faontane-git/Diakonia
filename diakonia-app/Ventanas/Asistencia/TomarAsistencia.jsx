@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, Alert, TextInput, TouchableOpacity } fro
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import { Timestamp } from 'firebase/firestore';
-import { getFirestore, collection, doc, query, where, getDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, doc, query, where, getDoc, getDocs,updateDoc } from 'firebase/firestore';
 import { onSnapshot } from 'firebase/firestore';
 
 const TomarAsistencia = () => {
@@ -70,23 +70,48 @@ const TomarAsistencia = () => {
         try {
             const firestore = getFirestore();
             const beneficiarioCollection = collection(firestore, 'beneficiarios');
-            const beneficiarioDocRef = doc(beneficiarioCollection, beneficiarioId);
-    
-            const beneficiarioDoc = await getDoc(beneficiarioDocRef);
-    
-            if (beneficiarioDoc.exists()) {
+
+            // Realiza una consulta para obtener el beneficiario por su cédula
+            const querySnapshot = await getDocs(query(beneficiarioCollection, where('cedula', '==', cedula)));
+
+            if (querySnapshot.docs) {
+                const beneficiarioDoc = querySnapshot.docs[0];
                 const nombreBeneficiario = beneficiarioDoc.data().nombre;
-                console.log(`Asistencia registrada para: ${nombreBeneficiario}`);
-                // Aquí puedes realizar las acciones adicionales para registrar la asistencia
-            } else {
-                console.log('No se encontró el beneficiario con el ID proporcionado');
+                if (servicio === "Almuerzo") {
+                    const fechaHoy = currentDate;
+                    const arregloDias = beneficiarioDoc.data().dias;
+                    const arregloFechas = arregloDias.map((timestamp) => {
+                        return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
+                    });
+                    const arregloAlmuerzo = beneficiarioDoc.data().almuerzo;
+                    console.log(arregloFechas);
+                    console.log(beneficiarioDoc.data().almuerzo);
+
+                    // Encuentra el índice de la fechaHoy en el arregloFechas
+                    const indiceFechaHoy = arregloFechas.findIndex((fecha) => fecha === fechaHoy);
+
+                    // Si se encuentra la fecha en el arreglo, actualiza el valor en arregloAlmuerzo
+                    if (indiceFechaHoy !== -1) {
+                        arregloAlmuerzo[indiceFechaHoy] = 1;
+
+                        // Ahora puedes actualizar el documento en la base de datos si es necesario
+                        await updateDoc(doc(beneficiarioCollection, beneficiarioDoc.id), {
+                            almuerzo: arregloAlmuerzo
+                        });
+                    } else {
+                        console.log('La fecha de hoy no se encontró en el arreglo de fechas.');
+                    }
+                    if (servicio == "Desayuno") {
+
+                    }
+                } else {
+                    console.log('No se encontró un beneficiario con la cédula proporcionada');
+                }
             }
         } catch (error) {
-            console.error('Error al registrar asistencia:', error);
+            console.error('Error al registrar asistencia por cédula:', error);
         }
     };
-    
-
 
     const isDateAlreadyRegistered = (datesArray, newDate) => {
         return (
@@ -105,8 +130,8 @@ const TomarAsistencia = () => {
 
     const getCurrentDate = () => {
         const date = new Date();
-        const day = addLeadingZero(date.getDate());
-        const month = addLeadingZero(date.getMonth() + 1);
+        const day = (date.getDate());
+        const month = (date.getMonth() + 1);
         const year = date.getFullYear();
         const formattedDate = `${day}/${month}/${year}`;
         setCurrentDate(formattedDate);
@@ -152,7 +177,7 @@ const TomarAsistencia = () => {
             if (desayuno_hora) {
                 setServicio('Desayuno');
             } else {
-                setServicio('Almuerzo'); 
+                setServicio('Almuerzo');
             }
         }
     };
