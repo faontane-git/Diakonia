@@ -47,7 +47,7 @@ const ListaInstituciones = ({ instituciones }) => {
   }
 
   async function eliminarInstitucion(institucion) {
-    Swal.fire({
+    const confirmResult = await Swal.fire({
       title: 'Advertencia',
       text: `¿Está seguro que desea inactivar ${institucion.nombre}?`,
       icon: 'error',
@@ -55,19 +55,23 @@ const ListaInstituciones = ({ instituciones }) => {
       denyButtonText: 'No',
       confirmButtonText: 'Sí',
       confirmButtonColor: '#000000',
-    }).then(async (response) => {
-      if (response.isConfirmed) {
-        const querydb = getFirestore();
-        const docuRef = doc(querydb, 'instituciones', institucion.id);
-        try {
-          await updateDoc(docuRef, { activo: false });
-          window.location.reload();
-        } catch (error) {
-          console.error('Error al eliminar institución:', error);
-          alert(error.message);
-        }
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      input: 'text',
+      inputPlaceholder: 'Agrega una observación',
+    })
+    if (confirmResult.isConfirmed) {
+      const querydb = getFirestore();
+      const docuRef = doc(querydb, 'instituciones', institucion.id);
+      const observacion = confirmResult.value;
+      try {
+        await updateDoc(docuRef, { observacion: observacion, activo: false });
+        window.location.reload();
+      } catch (error) {
+        console.error('Error al eliminar institución:', error);
+        alert(error.message);
       }
-    });
+    }
   }
 
   async function activarInstitucion(institucion) {
@@ -160,11 +164,11 @@ const ListaInstituciones = ({ instituciones }) => {
             />
           </div>
 
-          <div className="centered-container" hidden={ activoFilter !== 'activos' }> 
-              <Button className="button-exportar" onClick={goRegistrar} style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}>
-                Crear Institución
-              </Button>
-             <Button className="button-exportar" onClick={exportToXLSX} style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '150px', height: '40px' }}>
+          <div className="centered-container" hidden={activoFilter !== 'activos'}>
+            <Button className="button-exportar" onClick={goRegistrar} style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}>
+              Crear Institución
+            </Button>
+            <Button className="button-exportar" onClick={exportToXLSX} style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '150px', height: '40px' }}>
               Exportar Tabla
             </Button>
           </div>
@@ -180,6 +184,9 @@ const ListaInstituciones = ({ instituciones }) => {
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Institución</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Teléfono</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">RUC</TableCell>
+                {activoFilter !== 'activos' && (
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Observaciones</TableCell>
+                )}
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -189,6 +196,9 @@ const ListaInstituciones = ({ instituciones }) => {
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.nombre}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.telefono}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.ruc}</TableCell>
+                  {activoFilter !== 'activos' && (
+                    <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{institucion.observacion}</TableCell>
+                  )}
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
                     {activoFilter === 'activos' && (
                       <>
@@ -206,9 +216,14 @@ const ListaInstituciones = ({ instituciones }) => {
                       </>
                     )}
                     {activoFilter === 'inactivos' && (
-                      <Button onClick={() => activarInstitucion(institucion)} variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
-                        Activar
-                      </Button>
+                      <>
+                        <Button onClick={() => goConvenios(institucion)} variant="contained" style={{ backgroundColor: '#4cb8c4', color: 'white', margin: '5px', fontSize: '14px' }}>
+                          Convenios
+                        </Button>
+                        <Button onClick={() => activarInstitucion(institucion)} variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                          Activar
+                        </Button>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>

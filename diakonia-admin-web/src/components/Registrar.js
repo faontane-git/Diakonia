@@ -49,6 +49,7 @@ const RegistroInstitucion = ({ user }) => {
       telefono: telefono,
       ruc: ruc,
       activo: true,
+      observacion:'',
     };
 
     // Aquí puedes manejar el archivo como sea necesario, por ejemplo, subirlo a un servicio de almacenamiento.

@@ -80,37 +80,37 @@ const ListaUsuarios = ({ usuarios }) => {
       <h1>Lista de Usuarios</h1>
 
       <div className="search-export-container">
+
+        <div className="filter-container">
+          <label htmlFor="institucionFilter">Filtrar por Institución:</label>
+          <select
+            id="institucionFilter"
+            value={selectedInstitucion}
+            onChange={handleInstitucionChange}
+            className="custom-select"
+          >
+            <option value="">Todos</option>
+            {Array.from(new Set(usuarios.map((usuario) => usuario.institucionN)))
+              .sort() // Ordena las instituciones alfabéticamente
+              .map((institucion, index) => (
+                <option key={index} value={institucion}>
+                  {institucion}
+                </option>
+              ))}
+          </select>
+        </div>
+
         <div className="centered-container">
           <Link to="/usuarios/registrarUsuario">
-            <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }}>
+            <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', fontSize: '14px', width: '200px', height: '40px' }}>
               Crear Usuario
             </Button>
           </Link>
-        </div>
-        <div className="centered-container">
-          <Button onClick={exportToXLSX} variant="contained" style={{ backgroundColor: '#890202', color: 'white' }}>
+
+          <Button onClick={exportToXLSX} variant="contained" style={{ backgroundColor: '#890202', color: 'white', fontSize: '14px', width: '180px', height: '40px' }}>
             Exportar Tabla
           </Button>
         </div>
-      </div>
-
-      <div className="filter-container">
-        <label htmlFor="institucionFilter">Filtrar por Institución:</label>
-        <select
-          id="institucionFilter"
-          value={selectedInstitucion}
-          onChange={handleInstitucionChange}
-          className="custom-select"
-        >
-          <option value="">Todos</option>
-          {Array.from(new Set(usuarios.map((usuario) => usuario.institucionN)))
-            .sort() // Ordena las instituciones alfabéticamente
-            .map((institucion, index) => (
-              <option key={index} value={institucion}>
-                {institucion}
-              </option>
-            ))}
-        </select>
       </div>
 
       <TableContainer component={Paper}>

@@ -89,7 +89,7 @@ const ListaBeneficiarios = ({ user }) => {
   async function eliminarBeneficiario(beneficiario) {
     const confirmResult = await Swal.fire({
       title: 'Advertencia',
-      text: `¿Está seguro que desea eliminar ${beneficiario.nombre}?`,
+      text: `¿Está seguro que desea inactivar a ${beneficiario.nombre}?`,
       icon: 'error',
       showDenyButton: true,
       denyButtonText: 'No',

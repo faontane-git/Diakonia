@@ -260,7 +260,7 @@ const Convenios = () => {
 
 
   async function eliminarConvenio(convenio) {
-    Swal.fire({
+    const confirmResult = await Swal.fire({
       title: 'Advertencia',
       text: `¿Está seguro que desea finalizar el convenio ${convenio.nombre}?`,
       icon: 'error',
@@ -268,23 +268,28 @@ const Convenios = () => {
       denyButtonText: 'No',
       confirmButtonText: 'Si',
       confirmButtonColor: '#000000',
-    }).then(async (response) => {
-      if (response.isConfirmed) {
-        setIsLoading(true); // Activar pantalla de carga
-
-        const querydb = getFirestore();
-        const docuRef = doc(querydb, 'convenios', convenio.id);
-
-        try {
-          await updateDoc(docuRef, { activo: false });
-          setReloading(true); // Activar pantalla de carga antes de recargar
-          window.location.reload();
-        } catch (error) {
-          alert(error.message);
-          setIsLoading(false); // Desactivar pantalla de carga en caso de error
-        }
-      }
+      howCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      input: 'text',
+      inputPlaceholder: 'Agrega una observación',
     });
+    if (confirmResult.isConfirmed) {
+      const observacion = confirmResult.value;
+      setIsLoading(true); // Activar pantalla de carga
+
+      const querydb = getFirestore();
+      const docuRef = doc(querydb, 'convenios', convenio.id);
+
+      try {
+        await updateDoc(docuRef, {observacion: observacion, activo: false });
+        setReloading(true); // Activar pantalla de carga antes de recargar
+        window.location.reload();
+      } catch (error) {
+        alert(error.message);
+        setIsLoading(false); // Desactivar pantalla de carga en caso de error
+      }
+    }
+
   }
 
   return (
@@ -368,6 +373,9 @@ const Convenios = () => {
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Servicios</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Inicio</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Fecha Fin</TableCell>
+                {activoFilter !== 'activos' && (
+                  <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Observaciones</TableCell>
+                )}
                 <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }} align="center">Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -392,6 +400,9 @@ const Convenios = () => {
                       </TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_inicial)}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
+                      {activoFilter !== 'activos' && (
+                        <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">{convenio.observacion}</TableCell>
+                      )}
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }} align="center">
                         {activoFilter === 'activos' ? (
                           <>

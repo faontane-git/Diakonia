@@ -154,12 +154,12 @@ const ListaAsistencias = ({ user }) => {
           Desayuno
         </Typography>
         <Paper style={{ overflowX: 'auto' }}>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>Nombre</TableCell>
+                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px' }}>Nombre</TableCell>
                 {fechasFiltradas.map((dia, index) => (
-                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }} key={index}>{dia}</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px' }} key={index}>{dia}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -168,7 +168,7 @@ const ListaAsistencias = ({ user }) => {
                 <TableRow key={index}>
                   <TableCell>{item.nombre}</TableCell>
                   {item.asistencia_desayuno.map((dia, index) => (
-                    <TableCell key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
+                    <TableCell key={index} style={{ whiteSpace: 'nowrap', fontSize: '12px' }}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
                   ))}
                 </TableRow>
               ))}
@@ -181,26 +181,26 @@ const ListaAsistencias = ({ user }) => {
 
   const renderTablaAlmuerzo = () => {
     return (
-      <div>
+      <div className="centered-container">
         <Typography variant="h6" gutterBottom>
           Almuerzo
         </Typography>
-        <Paper style={{ overflowX: 'auto' }}>
-          <Table>
+        <Paper>
+          <Table size="small" style={{ tableLayout: 'fixed' }}>
             <TableHead>
               <TableRow>
-                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>Nombre</TableCell>
+                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Nombre</TableCell>
                 {fechasFiltradas.map((dia, index) => (
-                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }} key={index}>{dia}</TableCell>
+                  <TableCell className="fecha-cell" key={index} style={{  backgroundColor: '#890202',color: 'white', maxWidth: '20px', fontSize: '12px' }}>{dia}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {asistenciaAlmuerzo.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>{item.nombre}</TableCell>
+                  <TableCell style={{ maxWidth: '80px', fontSize: '12px' }}>{item.nombre}</TableCell>
                   {item.asistencia_almuerzo.map((dia, index) => (
-                    <TableCell key={index}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
+                    <TableCell key={index} style={{ maxWidth: '20px', whiteSpace: 'nowrap', fontSize: '12px' }}>{dia === 1 || dia === '1' ? 'A' : 'F'}</TableCell>
                   ))}
                 </TableRow>
               ))}
@@ -210,6 +210,7 @@ const ListaAsistencias = ({ user }) => {
       </div>
     );
   };
+
 
   const exportarExcel = () => {
 
