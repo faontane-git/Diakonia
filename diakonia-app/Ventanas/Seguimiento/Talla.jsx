@@ -22,7 +22,7 @@ const Talla = () => {
     labels: datosLimpios.fechas,
     datasets: [
       {
-        data: datosLimpios.tallas ,
+        data: datosLimpios.tallas,
       },
     ],
   };
@@ -42,6 +42,12 @@ const Talla = () => {
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPress('Seguimiento')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
@@ -155,6 +161,14 @@ const styles = StyleSheet.create({
   tableRowBorder: {
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+  }, buttonContainer: {
+    backgroundColor: '#890202',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  }, buttonText: {
+    color: 'white',
   },
 });
 

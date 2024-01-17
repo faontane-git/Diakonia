@@ -25,11 +25,12 @@ const TomarHuella = () => {
     setScanned(true);
     const parsedData = JSON.parse(data);
     updateScannedData({
-      nombre: parsedData.Nombre || '',
-      institucion: parsedData.Institución || '',
-      iDinstitucion: parsedData.Institución_ID || '',
-      convenio: parsedData.ConvenioNombre || '',
-      convenioId: parsedData.ConvenioID || '',
+      nombre: parsedData.nombre || '',
+      institucion: parsedData.institucionN || '',
+      iDinstitucion: parsedData.Institucion_ID || '',
+      convenio: parsedData.convenioN || '',
+      convenioId: parsedData.convenioId || '',
+      cedula: parsedData.cedula || '',
     });
     Alert.alert(
       '¡Notificación!',
@@ -104,8 +105,8 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   barCodeScanner: {
-    width: 600,
-    height: 600,
+    width: 500,
+    height: 500,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 50,

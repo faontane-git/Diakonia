@@ -70,7 +70,7 @@ const Login = () => {
             setErrorMessage('¡No tienes permisos para iniciar sesión en esta aplicación!');
             setErrorModalVisible(true);
           } else {
-            Alert.alert('Bienvenido ' + institucionN, '¡Has iniciado sesión exitosamente!');
+            Alert.alert('Bienvenido ' + userData.nombre, '¡Has iniciado sesión exitosamente!');
             navigation.navigate('Home');
           }
         } else {

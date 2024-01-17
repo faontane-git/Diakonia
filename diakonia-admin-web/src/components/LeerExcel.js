@@ -124,7 +124,7 @@ const LeerExcel = ({ user }) => {
           numero_de_personas_menores_en_el_hogar: n_menores[index],
           numero_de_personas_mayores_en_el_hogar: n_mayores[index],
           dias: [],
-          fechas_seguimiento:[],
+          fechas_seguimiento: [],
           desayuno: [],
           almuerzo: [],
           pesos: [],
@@ -167,17 +167,13 @@ const LeerExcel = ({ user }) => {
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
               const fechaActual = new Date(inicio + i);
               beneficiario.dias.push(fechaActual);
-              beneficiario.desayuno.push(0); // Agregar 0 al campo desayuno
+              beneficiario.desayuno.push(0);
               beneficiario.almuerzo.push(0); // Agregar 0 al campo almuerzo
             }
             await addDoc(beneficiarioCollection, beneficiario);
             for (const date of beneficiario.dias) {
-              if (doc.data().desayuno === true) {
-                beneficiario.desayuno.push(0);
-              }
-              if (doc.data().almuerzo === true) {
-                beneficiario.almuerzo.push(0);
-              }
+              beneficiario.desayuno.push(0);
+              beneficiario.almuerzo.push(0);
             }
             addDoc(beneficiarioCollection, beneficiario).catch((error) => {
               const errorCode = error.code;

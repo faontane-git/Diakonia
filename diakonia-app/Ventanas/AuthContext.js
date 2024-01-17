@@ -14,7 +14,8 @@ export const AuthProvider = ({ children }) => {
     iDinstitucion: '',
     idBeneficiario: '',
     convenio:'',
-    convenioId:''
+    convenioId:'',
+    cedula:''
   });
 
   const updateScannedData = (newData) => {

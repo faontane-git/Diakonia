@@ -19,24 +19,32 @@ const OpcionesSeguimiento = () => {
     const obtenerDatos = async () => {
       const querydb = getFirestore();
       const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiariosQuery = query(beneficiariosCollection, where('id', '==', idBeneficiario));
+      const beneficiariosQuery = query(beneficiariosCollection, where('cedula', '==', idBeneficiario));
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
         const beneficiarioData = querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() }))[0];
         // Obtener fechas de seguimiento y pesos del beneficiario
-        const fechasSeguimiento = beneficiarioData.fecha_seguimiento.map((timestamp) => {
-          return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
-        });
+        if (beneficiarioData.fechasSeguimiento) {
+          const fechasSeguimiento = beneficiarioData.fecha_seguimiento.map((timestamp) => {
+            return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
+          });
 
-        const peso = beneficiarioData.pesos;
-        const hgb = beneficiarioData.hgb;
-        const talla = beneficiarioData.talla;
+          const peso = beneficiarioData.pesos;
+          const hgb = beneficiarioData.hgb;
+          const talla = beneficiarioData.talla;
 
 
-        setFecha(fechasSeguimiento);
-        setPeso(peso);
-        setHGB(hgb);
-        setTalla(talla);
+          setFecha(fechasSeguimiento);
+          setPeso(peso);
+          setHGB(hgb);
+          setTalla(talla);
+        }else{
+          setFecha([0]);
+          setPeso([0]);
+          setHGB([0]);
+          setTalla([0]);
+        }
+
       } catch (error) {
         console.error('Error al obtener documentos:', error);
       }

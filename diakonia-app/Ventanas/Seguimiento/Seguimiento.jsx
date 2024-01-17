@@ -76,7 +76,7 @@ const Seguimiento = () => {
       <FlatList
         data={filtrarNutrientes(busqueda)}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.option} onPress={() => navegar(item.nombre, item.id)}>
+          <TouchableOpacity style={styles.option} onPress={() => navegar(item.nombre, item.cedula)}>
             <Text style={[styles.text, { color: 'white' }]}>{item.nombre}</Text>
           </TouchableOpacity>
         )}

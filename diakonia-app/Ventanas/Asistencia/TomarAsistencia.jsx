@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, Alert, TextInput, TouchableOpacity } fro
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import { Timestamp } from 'firebase/firestore';
-import { getFirestore, collection, doc, query, where, getDoc, updateDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, doc, query, where, getDoc, getDocs } from 'firebase/firestore';
 import { onSnapshot } from 'firebase/firestore';
 
 const TomarAsistencia = () => {
@@ -13,8 +13,8 @@ const TomarAsistencia = () => {
     const navigation = useNavigation();
     const handleOptionPress = (option) => {
         navigation.navigate(option);
-      };
-    
+    };
+
     const [currentDate, setCurrentDate] = useState('');
     const [currentHour, setCurrentHour] = useState('');
 
@@ -26,8 +26,9 @@ const TomarAsistencia = () => {
     const institucion = scannedData?.institucion || '';
     const convenio = scannedData?.convenio || '';
     const iDinstitucion = scannedData?.iDinstitucion || '';
-    const idBeneficiario = scannedData?.iDinstitucion || '';
-   
+    const idBeneficiario = scannedData?.idBeneficiario || '';
+    const cedula = scannedData?.cedula || '';
+
     const establecerHorarios = () => {
         try {
             const db = getFirestore();
@@ -66,37 +67,26 @@ const TomarAsistencia = () => {
     };
 
     const registrarAsistencia = async () => {
-        const querydb = getFirestore();
-        const beneficiariosCollection = collection(querydb, 'beneficiarios');
-        const beneficiarioDoc = doc(beneficiariosCollection, '5vsGEsza5kLXwWAdyOQu');
-
         try {
-            // Obtén el documento actual del beneficiario
-            const beneficiarioSnapshot = await getDoc(beneficiarioDoc);
-
-            if (beneficiarioSnapshot.exists()) {
-                const beneficiarioData = beneficiarioSnapshot.data();
-                const desayunoArray = beneficiarioData.desayuno || [];
-                const timestamp = Timestamp.fromDate(new Date());
-
-                if (isDateAlreadyRegistered(beneficiarioData.dias, timestamp)) {
-                    Alert.alert('¡Asistencia Duplicada!', 'La asistencia ya está registrada para hoy.');
-                }
-                else {
-                    await updateDoc(beneficiarioDoc, {
-                        desayuno: [...desayunoArray, 1],
-                        dias: [...(beneficiarioData.dias || []), timestamp],
-                    });
-                    Alert.alert('Asistencia Registrada', 'La asistencia ha sido registrada con éxito.');
-                }
-
+            const firestore = getFirestore();
+            const beneficiarioCollection = collection(firestore, 'beneficiarios');
+            const beneficiarioDocRef = doc(beneficiarioCollection, beneficiarioId);
+    
+            const beneficiarioDoc = await getDoc(beneficiarioDocRef);
+    
+            if (beneficiarioDoc.exists()) {
+                const nombreBeneficiario = beneficiarioDoc.data().nombre;
+                console.log(`Asistencia registrada para: ${nombreBeneficiario}`);
+                // Aquí puedes realizar las acciones adicionales para registrar la asistencia
             } else {
-                console.error('El documento del beneficiario no existe.');
+                console.log('No se encontró el beneficiario con el ID proporcionado');
             }
         } catch (error) {
-            console.error('Error al registrar la asistencia:', error);
+            console.error('Error al registrar asistencia:', error);
         }
     };
+    
+
 
     const isDateAlreadyRegistered = (datesArray, newDate) => {
         return (
@@ -110,6 +100,7 @@ const TomarAsistencia = () => {
     useEffect(() => {
         establecerHorarios();
         getCurrentDate();
+        console.log(idBeneficiario);
     }, []);
 
     const getCurrentDate = () => {
@@ -125,16 +116,22 @@ const TomarAsistencia = () => {
         return number < 10 ? `0${number}` : number;
     };
 
+    const convertirHoraStringToDate = (horaString) => {
+        const [hours, minutes] = horaString.split(':').map(Number);
+        const currentDate = new Date();
+        currentDate.setHours(hours);
+        currentDate.setMinutes(minutes);
+        return currentDate;
+    };
+
     const getCurrentHour = (inicioDesayuno, finalDesayuno, inicioAlmuerzo, finalAlmuerzo) => {
         consultarDatosPorConvenio();
         const currentDateTime = new Date();
         const currentHour = currentDateTime.getHours();
         const currentMinute = currentDateTime.getMinutes();
         const currentFormattedTime = `${currentHour}:${currentMinute < 10 ? '0' : ''}${currentMinute}`;
-        const desayuno_hora = currentFormattedTime >= inicioDesayuno && currentFormattedTime <= finalDesayuno;
-        const almuerzo_hora = currentFormattedTime >= inicioAlmuerzo && currentFormattedTime <= finalAlmuerzo;
-
-
+        const desayuno_hora = convertirHoraStringToDate(currentFormattedTime) >= convertirHoraStringToDate(inicioDesayuno) && convertirHoraStringToDate(currentFormattedTime) <= convertirHoraStringToDate(finalDesayuno);
+        const almuerzo_hora = convertirHoraStringToDate(currentFormattedTime) >= convertirHoraStringToDate(inicioAlmuerzo) && convertirHoraStringToDate(currentFormattedTime) <= convertirHoraStringToDate(finalAlmuerzo);
 
         if (!(desayuno_hora || almuerzo_hora)) {
             Alert.alert(
@@ -144,18 +141,18 @@ const TomarAsistencia = () => {
                     {
                         text: 'OK',
                         onPress: () => {
-                            navigation.navigate('Asistencia');
+                            //navigation.navigate('Asistencia');
                         },
                     },
                 ],
                 { cancelable: false }
             );
+            setServicio('Desayuno');
         } else {
-            if (desayuno) {
+            if (desayuno_hora) {
                 setServicio('Desayuno');
-
             } else {
-                setServicio('Almuerzo');
+                setServicio('Almuerzo'); 
             }
         }
     };
