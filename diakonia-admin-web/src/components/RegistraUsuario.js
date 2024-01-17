@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Cabecera from "./Cabecera";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2'; // Importa SweetAlert
+import Swal from 'sweetalert2';
 import '../estilos/RegistraUsuario.css';
 import { Button } from '@mui/material';
 import firebaseApp from "../firebase-config";
@@ -18,7 +18,6 @@ var bcrypt = require('bcryptjs');
 const auth = getAuth(firebaseApp);
 
 const RegistroUsuario = ({ user }) => {
-
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -26,7 +25,6 @@ const RegistroUsuario = ({ user }) => {
   }
 
   const [data, setData] = useState([]);
-
   const [email, setemail] = useState('');
   const [nombre, setNombre] = useState('')
   const [rol, setRol] = useState('Administrador');
@@ -34,7 +32,6 @@ const RegistroUsuario = ({ user }) => {
   const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(false);
   const [institucionId, setInstitucionId] = useState('DiakoníaWeb');
   const [institucionN, setInstitucionN] = useState('DiakoníaWeb');
-
   const [convenios, setConvenios] = useState('')
   const [convenioN, setConvenioN] = useState('DiakoníaWeb')
   const [convenioId, setConvenioId] = useState('DiakoníaWeb')
@@ -59,12 +56,12 @@ const RegistroUsuario = ({ user }) => {
     }
   };
 
-  async function registrarUsuario(email, contraseña, rol, institucionId, institucionN, nombre, convenioN, convenioId) {
-    if (contraseña.length < 6) {
+  async function registrarUsuario(formData) {
+
+    if (formData.contraseña.length < 6) {
       Swal.fire('Error', 'La contraseña debe tener al menos 6 caracteres.', 'error');
       return;
-    }
-    else if (convenioN === undefined || convenioId === undefined) {
+    } else if (formData.convenioN === undefined || formData.convenioId === undefined) {
       Swal.fire('Error', 'Convenio no seleccionado', 'error');
       return;
     }
@@ -72,32 +69,27 @@ const RegistroUsuario = ({ user }) => {
     const firestore = getFirestore(firebaseApp);
 
     try {
-      const hashedPassword = await hashPassword(contraseña);
+      const hashedPassword = await hashPassword(formData.contraseña);
 
       const usuariosCollection = collection(firestore, 'usuarios')
 
-      const correoQuery = query(usuariosCollection, where('correo', '==', email));
-    const correoSnapshot = await getDocs(correoQuery);
+      const correoQuery = query(usuariosCollection, where('correo', '==', formData.email));
+      const correoSnapshot = await getDocs(correoQuery);
 
-    if (!correoSnapshot.empty) {
-      // El correo ya existe, mostrar mensaje de error
-      Swal.fire('Error', 'El correo ya está registrado. Por favor, elige otro correo.', 'error');
-      return;
-    }
-
-      
-
-      console.log(convenioN)
+      if (!correoSnapshot.empty) {
+        Swal.fire('Error', 'El correo ya está registrado. Por favor, elige otro correo.', 'error');
+        return;
+      }
 
       const usuario = {
-        nombre: nombre,
-        correo: email,
+        nombre: formData.nombre,
+        correo: formData.email,
         contraseña: hashedPassword,
-        rol: rol,
-        institucionId: institucionId,
-        institucionN: institucionN,
-        convenioN: convenioN,
-        convenioId: convenioId,
+        rol: formData.rol,
+        institucionId: formData.institucionId,
+        institucionN: formData.institucionN,
+        convenioN: formData.convenioN,
+        convenioId: formData.convenioId,
       }
 
       const agregar = addDoc(usuariosCollection, usuario);
@@ -116,7 +108,7 @@ const RegistroUsuario = ({ user }) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    // Validar campos en blanco
+
     if (nombre.trim() === '' || email.trim() === '' || contraseña.trim() === '') {
       Swal.fire('Error', 'Nombre, Email y Constraseña son campos obligatorios.', 'error');
       return;
@@ -136,27 +128,32 @@ const RegistroUsuario = ({ user }) => {
         return
       }
     }
-    console.log('institucion:', institucionN)
-    registrarUsuario(email, contraseña, rol, institucionId, institucionN, nombre, convenioN, convenioId);
+
+    const formData = {
+      nombre,
+      email,
+      contraseña,
+      rol,
+      institucionId,
+      institucionN,
+      convenioN,
+      convenioId,
+    };
+
+    registrarUsuario(formData);
   };
 
-
   useEffect(() => {
-    console.log(institucionId)
     if (institucionId) {
-      console.log("entra")
       const querydb = getFirestore();
       const conveniosCollection = collection(querydb, 'convenios');
       const conveniosQuery = query(conveniosCollection, where('institucionId', '==', institucionId));
 
       getDocs(conveniosQuery).then((res) => {
         if (res !== undefined) {
-          console.log("cambio")
           setConvenios(res.docs.map((convenio) => ({ id: convenio.id, ...convenio.data() })))
         }
-      }
-      );
-
+      });
     }
   }, [institucionId]);
 
@@ -174,9 +171,10 @@ const RegistroUsuario = ({ user }) => {
         </div>
 
         <div id='titulo' style={{ marginLeft: '32.0em' }}>
-          <h1>Editar Usuario</h1>
+          <h1>Crear Usuario</h1>
         </div>
       </div>
+
 
       <form id="form_rusuario" onSubmit={handleSubmit}>
 
@@ -251,16 +249,17 @@ const RegistroUsuario = ({ user }) => {
 
             <div id="txtConvenios">
               <label htmlFor="convenios">Convenio</label>
-              <select id="convenios" value={convenioId} onChange={(e) => {
-                const valores = e.target.value.split("/");
-                console.log(valores);
-                setConvenioId(valores[0]);
-                setConvenioN(valores[1]);
-                console.log("convenio", convenioId, convenioN)
-              }}>
+              <select
+                id="convenios"
+                onChange={(e) => {
+                  setConvenioId(e.target.value);
+                  const selectedConvenio = convenios.find((convenio) => convenio.id === e.target.value);
+                  setConvenioN(selectedConvenio?.nombre);
+                }}
+              >
                 <option value="" disabled selected>Selecciona un convenio</option>
                 {convenios.map((convenio) => (
-                  <option key={convenio.id} value={convenio.id + "/" + convenio.nombre}>{convenio.nombre}</option>
+                  <option key={convenio.id} value={convenio.id}>{convenio.nombre}</option>
                 ))}
               </select>
             </div>

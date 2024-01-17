@@ -5,7 +5,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const Info = () => {
   const navigation = useNavigation();
   const route = useRoute();
-
+  const handleOptionPress = (option) => {
+    navigation.navigate(option);
+  };
   const onPressRegresar = () => {
     navigation.navigate('VerRegistro');
   }
@@ -17,6 +19,12 @@ const Info = () => {
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPress('VerRegistro')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
       </View>
       <Text style={styles.title}>Información</Text>
       <KeyboardAvoidingView style={styles.cuadro} behavior="padding" enabled>
@@ -51,9 +59,7 @@ const Info = () => {
             value={route.params.fecha_nacimiento}
             editable={false}
           />
-          <TouchableOpacity style={styles.regresarButton} onPress={onPressRegresar}>
-            <Text style={styles.buttonText}>Regresar</Text>
-          </TouchableOpacity>
+
         </View>
       </KeyboardAvoidingView>
     </ScrollView>
@@ -90,6 +96,12 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     marginBottom: 20,
+  }, buttonContainer: {
+    backgroundColor: '#890202',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
   },
   buttonText: {
     color: 'white',

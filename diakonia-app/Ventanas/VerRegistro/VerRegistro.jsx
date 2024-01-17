@@ -19,6 +19,9 @@ const VerRegistro = () => {
   ]);
   const { institucionId } = useAuth();
   const { convenioId } = useAuth();
+  const handleOptionPress = (option) => {
+    navigation.navigate(option);
+  };
 
   useEffect(() => {
     const obtenerDatos = async () => {
@@ -69,6 +72,12 @@ const VerRegistro = () => {
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPress('Home')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
       </View>
       <Text style={styles.title}>Registro</Text>
       {/*
@@ -156,6 +165,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     width: 345,
+  }, buttonContainer: {
+    backgroundColor: '#890202',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  }, buttonText: {
+    color: 'white',
   },
 
 });

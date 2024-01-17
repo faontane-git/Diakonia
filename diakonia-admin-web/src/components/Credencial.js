@@ -13,6 +13,7 @@ const CredencialesComponent = () => {
     try {
       const decodedData = JSON.parse(decodeURIComponent(arreglo));
       const datos = parseDatosCredencial(decodedData);
+      console.log(datos);
       setDatosCredencial(datos);
     } catch (error) {
       console.error('Error al decodificar los datos:', error);
@@ -20,18 +21,16 @@ const CredencialesComponent = () => {
   }, [arreglo]);
 
   const parseDatosCredencial = (datos) => {
-    return datos.map((item) => {
-      const keyValuePairs = item.qr_url.split(',');
-      const objeto = {};
-
-      keyValuePairs.forEach((pair) => {
-        const [clave, valor] = pair.split(':');
-        objeto[clave.trim()] = valor.trim();
-      });
-
-      return objeto;
-    });
+    return datos.map((item) => ({
+      nombre: item.nombre,
+      convenioN: item.ConvenioNombre,
+      convenioId: item.convenioId,
+      institucionN: item.institucionN,
+      Institucion_ID: item.institucionId,
+      cedula: item.cedula,
+    }));
   };
+
 
   const descargarCredenciales = () => {
     const container = document.getElementById('pdf-container');
@@ -67,10 +66,10 @@ const CredencialesComponent = () => {
             {pagina.map((item, index) => (
               <div key={index} className={`carnet-item ${index > 0 ? 'avoid-this-class' : ''}`}>
                 <div className="info-container">
-                  <h3>{item.Nombre}</h3>
-                  <p><b>Cédula:</b> {item.Cédula} </p>
-                  <p><b>Institución:</b> {item.Institución}</p>
-                  <p><b>Convenio:</b> {item.ConvenioNombre}</p>
+                  <h3>{item.nombre}</h3>
+                  <p><b>Cédula:</b> {item.cedula} </p>
+                  <p><b>Institución:</b> {item.institucionN}</p>
+                  <p><b>Convenio:</b> {item.convenioN}</p>
                 </div>
                 <div className="codigo-qr-container">
                   <QRCode value={JSON.stringify(item)} size={128} />

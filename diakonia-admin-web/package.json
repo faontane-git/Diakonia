@@ -30,6 +30,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.25.0",
     "react-dom": "^18.2.0",
+    "react-native-bcrypt": "^2.4.0",
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
     "react-slick": "^0.29.0",

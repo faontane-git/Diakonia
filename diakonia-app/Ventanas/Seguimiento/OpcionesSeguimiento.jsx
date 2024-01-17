@@ -32,7 +32,7 @@ const OpcionesSeguimiento = () => {
         const hgb = beneficiarioData.hgb;
         const talla = beneficiarioData.talla;
 
- 
+
         setFecha(fechasSeguimiento);
         setPeso(peso);
         setHGB(hgb);
@@ -46,6 +46,10 @@ const OpcionesSeguimiento = () => {
 
 
   const screenWidth = Dimensions.get('window').width;
+  const handleOptionPressH = (option) => {
+    navigation.navigate(option);
+  };
+
   const handleOptionPress = (option) => {
     if (option === 'Peso') {
       navigation.navigate(option, { nombreBeneficiario, fechas, pesos });
@@ -63,6 +67,12 @@ const OpcionesSeguimiento = () => {
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPressH('Seguimiento')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Seguimiento Nutricional</Text>
@@ -120,6 +130,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: '#333',
+  }, buttonContainer: {
+    backgroundColor: '#890202',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  }, buttonText: {
+    color: 'white',
   },
 });
 

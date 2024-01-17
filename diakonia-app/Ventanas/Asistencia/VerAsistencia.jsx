@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -12,6 +13,10 @@ const VerAsistencia = () => {
     const [busqueda, setBusqueda] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
+    const navigation = useNavigation();
+    const handleOptionPress = (option) => {
+        navigation.navigate(option);
+    };
 
     const onChange = (event, selectedDate) => {
         setShowDatePicker(false);
@@ -92,6 +97,12 @@ const VerAsistencia = () => {
                     style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
                     source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
                 />
+                <TouchableOpacity
+                    style={[styles.buttonCont, { marginTop: 0, marginLeft: 140 }]}
+                    onPress={() => handleOptionPress('Asistencia')}
+                >
+                    <Text style={styles.buttonText}>Regresar</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>Asistencia</Text>
@@ -250,6 +261,16 @@ const styles = StyleSheet.create({
         marginTop: 5,
         borderWidth: 1,
         borderColor: 'black',
+    }, buttonCont: {
+        backgroundColor: '#890202',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center',
     },
 });
 

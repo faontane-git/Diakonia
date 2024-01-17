@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import { StyleSheet, View, Text, Image, Button, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 
 const Opciones = () => {
     const navigation = useNavigation();
     const { institucionN } = useAuth();
+    const handleOptionPress = (option) => {
+        navigation.navigate(option);
+      };
 
     const onPressCerrarSesion = () => {
         navigation.navigate('Login');
@@ -22,6 +25,12 @@ const Opciones = () => {
                     style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
                     source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
                 />
+                <TouchableOpacity
+                    style={[styles.buttonCont, { marginTop: 0, marginLeft: 140 }]}
+                    onPress={() => handleOptionPress('Home')}
+                >
+                    <Text style={styles.buttonText}>Regresar</Text>
+                </TouchableOpacity>
             </View>
             <Text style={styles.title}>Opciones</Text>
             <Text style={styles.company}><Text>{institucionN}</Text></Text>
@@ -71,7 +80,18 @@ const styles = StyleSheet.create({
     },
     buttonSesion: {
         marginHorizontal: 20
-    }
+    },
+    buttonCont: {
+        backgroundColor: '#890202',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center',
+    },
 });
 
 export default Opciones;

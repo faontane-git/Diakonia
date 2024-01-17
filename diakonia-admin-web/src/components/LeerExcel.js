@@ -29,6 +29,8 @@ const LeerExcel = ({ user }) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
   const [Nbeneficiarios, setNBeneficiarios] = useState([]);
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [fechas, setFechas] = useState([]);
 
   const goBack = () => {
     navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
@@ -38,9 +40,29 @@ const LeerExcel = ({ user }) => {
     return timestamp.toLocaleDateString('es-ES');
   };
 
-  const [data, setData] = useState([]);
-
   useEffect(() => {
+    consultarDatosPorConvenio();
+    consultarBeneficiario(institucionId);
+  }, [institucionId]);
+
+
+  const consultarDatosPorConvenio = async () => {
+    try {
+      const db = getFirestore();
+      const datosCollection = collection(db, 'convenios'); // Reemplaza 'tuColeccion' con el nombre real de tu colección
+      const documento = await getDoc(doc(datosCollection, convenioId));
+      if (documento.exists()) {
+        const datos = documento.data();
+        setFechas(datos.dias);
+      } else {
+        console.log('No se encontraron datos para el convenioId:', convenioId);
+      }
+    } catch (error) {
+      console.error('Error al consultar datos:', error);
+    }
+  };
+
+  const consultarBeneficiario = (institucionId) => {
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
     const beneficiariosQuery = query(
@@ -55,11 +77,7 @@ const LeerExcel = ({ user }) => {
         activos: res.docs.map((benf) => benf.data().activo)
       })
     );
-  }, [institucionId]);
-
-  const generateQRCode = (nombre, cedula) => {
-    return `Nombre: ${nombre},ConvenioNombre:${convenioN},ConvenioID:${convenioId},Institución: ${institucionN}, Institución_ID: ${institucionId}, Cédula: ${cedula}`;
-  };
+  }
 
   const handleFileUpload = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -93,7 +111,6 @@ const LeerExcel = ({ user }) => {
 
       const nuevosBeneficiarios = nombres.map((nombre, index) => {
         const fechaNacimiento = new Date((f_nacimiento[index] - 2) * 24 * 60 * 60 * 1000 + new Date(1900, 0, 1).getTime());
-        const codigoQR = generateQRCode(nombre, cedula[index]);
         return {
           institucionId: institucionId,
           institucionN: institucionN,
@@ -107,16 +124,14 @@ const LeerExcel = ({ user }) => {
           numero_de_personas_menores_en_el_hogar: n_menores[index],
           numero_de_personas_mayores_en_el_hogar: n_mayores[index],
           dias: [],
+          fechas_seguimiento:[],
           desayuno: [],
           almuerzo: [],
-          registrado: false,
-          fecha_seguimiento: [],
           pesos: [],
           talla: [],
           hgb: [],
           activo: true,
           observacion: '',
-          qr_url: codigoQR,
         };
       });
 
@@ -127,15 +142,17 @@ const LeerExcel = ({ user }) => {
   };
 
   async function añadir() {
-    const firestore = getFirestore()
+    const firestore = getFirestore();
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     const ConvenioColect = collection(firestore, "convenios");
     const ConvenioRef = doc(ConvenioColect, convenioId);
 
-    getDoc(ConvenioRef).then((doc) => {
-      if (doc.exists) {
-        const final = new Date(doc.data().fecha_final.seconds * 1000)
-        const inicio = new Date(doc.data().fecha_inicial.seconds * 1000)
+    try {
+      const convenioDoc = await getDoc(ConvenioRef);
+
+      if (convenioDoc.exists()) {
+        const inicio = convenioDoc.data().fecha_inicial.seconds * 1000;
+        const final = convenioDoc.data().fecha_final.seconds * 1000;
         const diferenciaEnMilisegundos = final - inicio;
 
         for (const beneficiario of Nbeneficiarios) {
@@ -147,35 +164,30 @@ const LeerExcel = ({ user }) => {
             });
           } else {
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
-              const fechaActual = new Date(inicio.getTime() + i);
+              const fechaActual = new Date(inicio + i);
               beneficiario.dias.push(fechaActual);
+              beneficiario.desayuno.push(0); // Agregar 0 al campo desayuno
+              beneficiario.almuerzo.push(0); // Agregar 0 al campo almuerzo
             }
-            for (const date of beneficiario.dias) {
-              if (doc.data().desayuno === true) {
-                beneficiario.desayuno.push("-");
-              }
-              if (doc.data().almuerzo === true) {
-                beneficiario.almuerzo.push("-");
-              }
-            }
-            addDoc(beneficiarioCollection, beneficiario).catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              alert(errorMessage);
-            })
+            await addDoc(beneficiarioCollection, beneficiario);
           }
-        };
+        }
+
+        Swal.fire({
+          title: 'Beneficiarios Agregados',
+          text: 'Se han agregado los beneficiarios correctamente',
+          icon: 'success',
+        });
+        goBack();
       } else {
-        // La institución no existe
+        console.log('No se encontró el convenio');
       }
-    });
-    Swal.fire({
-      title: 'Beneficiarios Agregados',
-      text: 'Se han agregado los beneficiarios correctamente',
-      icon: 'success',
-    });
-    goBack();
+    } catch (error) {
+      console.error('Error al añadir beneficiarios:', error);
+      alert('Error al añadir beneficiarios');
+    }
   }
+
 
   return (
     <div className="centered-container">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 
@@ -28,6 +28,12 @@ const Asistencia = () => {
                     style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
                     source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
                 />
+                <TouchableOpacity
+                    style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+                    onPress={() => handleOptionPress('Home')}
+                >
+                    <Text style={styles.buttonText}>Regresar</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>Asistencia</Text>
@@ -90,6 +96,15 @@ const styles = StyleSheet.create({
     optionContainer: {
         paddingVertical: 25,
     },
+    buttonContainer: {
+        backgroundColor: '#890202',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+     }, buttonText: {
+        color: 'white',
+     },
     text: {
         fontSize: 16,
         color: '#333',

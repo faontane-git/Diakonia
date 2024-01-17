@@ -29,7 +29,7 @@ const AñadirConvenio = ({ user }) => {
   const [pdfBase64, setPdfBase64] = useState(null);
 
   const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setDate(tomorrow.getDate()+1);
   const tomorrowString = tomorrow.toISOString().split("T")[0];
 
   const handleFileChange = (e) => {
@@ -68,6 +68,17 @@ const AñadirConvenio = ({ user }) => {
     }
   };
 
+  const generateDateRange = (startDate, endDate) => {
+    const dateArray = [];
+    const currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      dateArray.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dateArray;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -106,6 +117,7 @@ const AñadirConvenio = ({ user }) => {
     } else {
       const firestore = getFirestore()
       const ConvenioCollection = collection(firestore, 'convenios');
+      const dateRange = generateDateRange(initialDateObject, finalDateObject);
 
       const convenio = {
         nombre: nombre,
@@ -115,6 +127,7 @@ const AñadirConvenio = ({ user }) => {
         fecha_inicial: initialDateObject,
         fecha_final: finalDateObject,
         institucionId: institucionId,
+        dias:dateRange,
         activo: true,
         pdfBase64: pdfBase64, // Save the base64-encoded PDF data
       }

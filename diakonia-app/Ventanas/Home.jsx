@@ -1,11 +1,14 @@
 import React from 'react';
 import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { useAuth } from './AuthContext';
 
 
 const Home = () => {
   const navigation = useNavigation();
+  const { institucionId } = useAuth();
+  const { institucionN } = useAuth();
+  const { convenioN } = useAuth();
   const screenWidth = Dimensions.get('window').width;
   const handleOptionPress = (option) => {
     navigation.navigate(option);
@@ -21,13 +24,14 @@ const Home = () => {
         />
         <TouchableOpacity onPress={() => handleOptionPress('Opciones')}>
           <Image
-            style={[styles.image, { marginTop: 0, marginLeft: 180 }]}
+            style={[styles.image, { marginTop: 0, marginLeft: 160 }]}
             source={require('../assets/imagenes/usuario-de-perfil.png')}
           />
         </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Beneficiarios</Text>
+        <Text style={styles.title}>{institucionN}</Text>
+        <Text style={styles.title}>{convenioN}</Text>
         <Text style={styles.title}>Seleccione una opción</Text>
       </View>
       <ScrollView>

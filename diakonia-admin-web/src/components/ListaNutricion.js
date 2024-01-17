@@ -86,12 +86,12 @@ const ListaBeneficiarios = ({ user }) => {
   useEffect(() => {
     const querydb = getFirestore();
     const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    const beneficiariosQuery = query(beneficiariosCollection, where('institucionId', '==', institucionId));
+    const beneficiariosQuery = query(beneficiariosCollection, where('convenioId', '==', convenioId));
 
     getDocs(beneficiariosQuery).then((res) =>
       setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
     );
-  }, [institucionId]);
+  }, [convenioId]);
 
   function LeerUltimoValor(valor, fechas) {
     if (fechas.length > 0) {

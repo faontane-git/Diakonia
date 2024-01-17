@@ -81,7 +81,8 @@ const Convenios = () => {
   const currentDate = new Date();
 
   const filteredData = data.filter((convenio) =>
-    convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (activoFilter === 'activos' ? convenio.activo === true : convenio.activo !== true)
   );
 
   const handleVerBeneficiarios = (convenioId, convenioNombre) => {

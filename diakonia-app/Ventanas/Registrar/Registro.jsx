@@ -34,12 +34,18 @@ const Seguimiento = () => {
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPress('Home')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.textContainer}>
         <Text style={styles.title}>Registrar Beneficiario</Text>
       </View>
-      <TextInput   
+      <TextInput
         style={styles.buscador}
         placeholder="Buscar Nombre"
         onChangeText={buscar}
@@ -84,11 +90,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 20,
     marginBottom: 10,
-    borderWidth: 1,  
-    borderColor: 'black',  
+    borderWidth: 1,
+    borderColor: 'black',
   },
-  textContainer:{
-    paddingBottom:10
+  textContainer: {
+    paddingBottom: 10
   },
   option: {
     backgroundColor: '#890202',
@@ -97,6 +103,14 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginBottom: 10,
     marginHorizontal: 20,
+  }, buttonContainer: {
+    backgroundColor: '#890202',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  }, buttonText: {
+    color: 'white',
   },
 });
 

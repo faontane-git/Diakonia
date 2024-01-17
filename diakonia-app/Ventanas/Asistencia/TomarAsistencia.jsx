@@ -3,21 +3,67 @@ import { StyleSheet, View, Text, Image, Alert, TextInput, TouchableOpacity } fro
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import { Timestamp } from 'firebase/firestore';
-import { getFirestore, collection, doc, query, where, getDoc, updateDoc, } from 'firebase/firestore';
-
+import { getFirestore, collection, doc, query, where, getDoc, updateDoc, getDocs } from 'firebase/firestore';
+import { onSnapshot } from 'firebase/firestore';
 
 const TomarAsistencia = () => {
     const { scannedData } = useAuth();
-    const navigation = useNavigation();
+    const { convenioId } = useAuth();
     const route = useRoute();
+    const navigation = useNavigation();
+    const handleOptionPress = (option) => {
+        navigation.navigate(option);
+      };
+    
     const [currentDate, setCurrentDate] = useState('');
     const [currentHour, setCurrentHour] = useState('');
+
+    const [desayuno, setDesayuno] = useState(false);
+    const [almuerzo, setAlmuerzo] = useState(false);
+
     const [servicio, setServicio] = useState('');
     const nombre = scannedData?.nombre || '';
     const institucion = scannedData?.institucion || '';
     const convenio = scannedData?.convenio || '';
     const iDinstitucion = scannedData?.iDinstitucion || '';
     const idBeneficiario = scannedData?.iDinstitucion || '';
+   
+    const establecerHorarios = () => {
+        try {
+            const db = getFirestore();
+            const horariosCollection = collection(db, 'horarios');
+
+            let inicioDesayuno, finalDesayuno, inicioAlmuerzo, finalAlmuerzo;
+
+            const unsubscribe = onSnapshot(horariosCollection, (querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((horarioDoc) => {
+                        if (horarioDoc.exists() && horarioDoc.data().horaDesayuno) {
+                            const { inicial, final } = horarioDoc.data().horaDesayuno;
+                            inicioDesayuno = inicial;
+                            finalDesayuno = final;
+                        }
+                    });
+
+                    querySnapshot.forEach((horarioDoc) => {
+                        if (horarioDoc.exists() && horarioDoc.data().horaAlmuerzo) {
+                            const { inicial, final } = horarioDoc.data().horaAlmuerzo;
+                            inicioAlmuerzo = inicial;
+                            finalAlmuerzo = final;
+                        }
+                    });
+
+                    // Llamar a getCurrentHour con las horas obtenidas
+                    getCurrentHour(inicioDesayuno, finalDesayuno, inicioAlmuerzo, finalAlmuerzo);
+                } else {
+                    console.error('No se encontraron documentos en la colección "horarios"');
+                }
+            });
+
+        } catch (error) {
+            console.error('Error al establecer los horarios:', error);
+        }
+    };
 
     const registrarAsistencia = async () => {
         const querydb = getFirestore();
@@ -30,24 +76,20 @@ const TomarAsistencia = () => {
 
             if (beneficiarioSnapshot.exists()) {
                 const beneficiarioData = beneficiarioSnapshot.data();
-                // Verifica si 'desayuno' existe antes de acceder a él
                 const desayunoArray = beneficiarioData.desayuno || [];
-                // Convierte la fecha actual a un objeto Timestamp
                 const timestamp = Timestamp.fromDate(new Date());
 
-                // Verifica si la fecha actual ya está registrada
                 if (isDateAlreadyRegistered(beneficiarioData.dias, timestamp)) {
                     Alert.alert('¡Asistencia Duplicada!', 'La asistencia ya está registrada para hoy.');
                 }
                 else {
-                    // Actualiza el documento con los nuevos datos
                     await updateDoc(beneficiarioDoc, {
                         desayuno: [...desayunoArray, 1],
                         dias: [...(beneficiarioData.dias || []), timestamp],
                     });
                     Alert.alert('Asistencia Registrada', 'La asistencia ha sido registrada con éxito.');
                 }
-            
+
             } else {
                 console.error('El documento del beneficiario no existe.');
             }
@@ -66,8 +108,8 @@ const TomarAsistencia = () => {
     };
 
     useEffect(() => {
+        establecerHorarios();
         getCurrentDate();
-        getCurrentHour();
     }, []);
 
     const getCurrentDate = () => {
@@ -83,31 +125,62 @@ const TomarAsistencia = () => {
         return number < 10 ? `0${number}` : number;
     };
 
-    const getCurrentHour = () => {
-        const hour = new Date().getHours();
-        setCurrentHour(hour);
+    const getCurrentHour = (inicioDesayuno, finalDesayuno, inicioAlmuerzo, finalAlmuerzo) => {
+        consultarDatosPorConvenio();
+        const currentDateTime = new Date();
+        const currentHour = currentDateTime.getHours();
+        const currentMinute = currentDateTime.getMinutes();
+        const currentFormattedTime = `${currentHour}:${currentMinute < 10 ? '0' : ''}${currentMinute}`;
+        const desayuno_hora = currentFormattedTime >= inicioDesayuno && currentFormattedTime <= finalDesayuno;
+        const almuerzo_hora = currentFormattedTime >= inicioAlmuerzo && currentFormattedTime <= finalAlmuerzo;
 
-        if (hour >= 15) {
+
+
+        if (!(desayuno_hora || almuerzo_hora)) {
             Alert.alert(
                 '¡Notificación!',
-                'No puedes tomar asistencia después de las 3 PM.',
+                '¡No puedes tomar asistencia fuera del horario permitido!',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            navigation.navigate('Asistencia');
+                        },
+                    },
+                ],
+                { cancelable: false }
             );
-        }
-    };
-
-    const determineServicio = () => {
-        if (currentHour >= 6 && currentHour <= 10) {
-            setServicio('Desayuno');
-        } else if (currentHour >= 11 && currentHour <= 23) {
-            setServicio('Desayuno');
         } else {
-            setServicio('');
+            if (desayuno) {
+                setServicio('Desayuno');
+
+            } else {
+                setServicio('Almuerzo');
+            }
         }
     };
 
-    useEffect(() => {
-        determineServicio();
-    }, [currentHour, scannedData]);
+
+    const consultarDatosPorConvenio = async () => {
+        try {
+            const db = getFirestore();
+            const datosCollection = collection(db, 'convenios'); // Reemplaza 'tuColeccion' con el nombre real de tu colección
+
+            // Consulta para obtener documentos que tengan el ID igual al valor de useAuth
+            const documento = await getDoc(doc(datosCollection, convenioId));
+
+            if (documento.exists()) {
+                const datos = documento.data();
+                setDesayuno(datos.desayuno);
+                setAlmuerzo(datos.almuerzo);
+            } else {
+                console.log('No se encontraron datos para el convenioId:', convenioId);
+            }
+        } catch (error) {
+            console.error('Error al consultar datos:', error);
+        }
+    };
+
 
     return (
         <View style={styles.container}>
@@ -116,6 +189,12 @@ const TomarAsistencia = () => {
                     style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
                     source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
                 />
+                <TouchableOpacity
+                    style={[styles.buttonCont, { marginTop: 0, marginLeft: 140 }]}
+                    onPress={() => handleOptionPress('Asistencia')}
+                >
+                    <Text style={styles.buttonText}>Regresar</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>Asistencia</Text>
@@ -237,6 +316,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         width: '70%',
+        padding: 10,
+    },
+    buttonCont: {
+        backgroundColor: '#890202',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
         padding: 10,
     },
     buttonText: {

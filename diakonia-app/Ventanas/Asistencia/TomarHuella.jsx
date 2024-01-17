@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image, TouchableOpacity } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../AuthContext';  
+import { useAuth } from '../AuthContext';
 
 const TomarHuella = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const { updateScannedData } = useAuth();
   const navigation = useNavigation();
+  const handleOptionPress = (option) => {
+    navigation.navigate(option);
+  };
 
   useEffect(() => {
     (async () => {
@@ -26,6 +29,7 @@ const TomarHuella = () => {
       institucion: parsedData.Institución || '',
       iDinstitucion: parsedData.Institución_ID || '',
       convenio: parsedData.ConvenioNombre || '',
+      convenioId: parsedData.ConvenioID || '',
     });
     Alert.alert(
       '¡Notificación!',
@@ -53,6 +57,12 @@ const TomarHuella = () => {
           style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
           source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
         />
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPress('TomarAsistencia')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>¡Escanea el código QR!</Text>
@@ -84,6 +94,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+  }, buttonContainer: {
+    backgroundColor: '#890202',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  }, buttonText: {
+    color: 'white',
   },
   barCodeScanner: {
     width: 600,

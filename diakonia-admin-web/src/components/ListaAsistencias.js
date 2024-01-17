@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 
 const ListaAsistencias = ({ user }) => {
-  const { institucionId, convenioId, institucionN} = useParams();
+  const { institucionId, convenioId, institucionN } = useParams();
   const [fechas, setFechas] = useState([]);
   const [datos, setData] = useState([]);
 
@@ -33,7 +33,6 @@ const ListaAsistencias = ({ user }) => {
   const [asistenciaDesayuno, setAsistenciaDesayuno] = useState([]);
   const [asistenciaAlmuerzo, setAsistenciaAlmuerzo] = useState([]);
 
-  const [arregloNombresFechas, setArregloNombresFechas] = useState([]);
   const [filtroServicio, setFiltroServicio] = useState('todos');
   const [filtroFechaInicial, setFiltroFechaInicial] = useState(null);
   const [filtroFechaFinal, setFiltroFechaFinal] = useState(null);
@@ -79,9 +78,7 @@ const ListaAsistencias = ({ user }) => {
     const querydb = getFirestore();
     const conveniosCollection = collection(querydb, 'convenios');
     try {
-      // Obtener el documento de convenios con el ID específico (convenioId)
       const convenioDoc = await getDoc(doc(conveniosCollection, convenioId));
-      // Obtener los datos del documento de convenios
       const convenioDias = convenioDoc.data().dias.map((fecha) => convertirTimestampAFecha(fecha));
       setDesayuno(convenioDoc.data().desayuno);
       setAlmuerzo(convenioDoc.data().almuerzo);
@@ -109,9 +106,6 @@ const ListaAsistencias = ({ user }) => {
     setFechasFiltradas(filtrarFechas(filtroFechaInicial, filtroFechaFinal));
     setAsistenciaDesayuno(desayunoBeneficiario(datos, indices));
     setAsistenciaAlmuerzo(almuerzoBeneficiario(datos, indices));
-    console.log("SEXOOOOO");
-    console.log(asistenciaDesayuno);
-    console.log(asistenciaAlmuerzo);
   };
 
   const indicesFechasFiltradas = (fechaInicial, fechaFinal) => {
@@ -218,22 +212,7 @@ const ListaAsistencias = ({ user }) => {
   };
 
   const exportarExcel = () => {
-    const ws = XLSX.utils.json_to_sheet([
-      // Primera fila con los nombres de las columnas
-      { Nombre: 'Nombre', ...arregloNombresFechas[0].dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: '' }), {}) },
-      // Filas de datos
-      ...arregloNombresFechas.map((item) => ({
-        Nombre: item.nombre,
-        ...item.dias.reduce((acc, dia, index) => ({ ...acc, [convertirTimestampAFecha(dia)]: dia ? 'A' : '0' }), {}),
-      })),
-    ]);
 
-    // Elimina la segunda fila con números
-    delete ws['A2'];
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Asistencias');
-    XLSX.writeFile(wb, 'asistencias.xlsx');
   };
 
   return (
@@ -273,9 +252,17 @@ const ListaAsistencias = ({ user }) => {
           <DatePicker id="filtroFecha" selected={filtroFechaFinal} onChange={handleFiltroFechaFinalChange} dateFormat="dd/MM/yyyy" />
         </div>
 
-        <div id="btn_consultar">
-          <button onClick={consulta}>Consultar</button>
+
+        <div className="centered-container">
+          <Button onClick={consulta}  style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>
+            Consultar
+          </Button>
+
+          <Button variant="contained" onClick={exportarExcel} style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>
+            Exportar Tabla
+          </Button>
         </div>
+
       </div>
 
       {filtroServicio === 'todos' && desayuno && renderTablaDesayuno()}
@@ -285,13 +272,7 @@ const ListaAsistencias = ({ user }) => {
 
       {filtroServicio === 'almuerzo' && almuerzo && renderTablaAlmuerzo()}
 
-      <div className="centered-container">
-        <div id='btnEAsistencia'>
-          <Button variant="contained" onClick={exportarExcel} style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>
-            Exportar Tabla
-          </Button>
-        </div>
-      </div>
+
     </div>
   );
 };
