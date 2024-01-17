@@ -132,6 +132,7 @@ const LeerExcel = ({ user }) => {
           hgb: [],
           activo: true,
           observacion: '',
+          //qr_url: codigoQR,
         };
       });
 
@@ -170,6 +171,19 @@ const LeerExcel = ({ user }) => {
               beneficiario.almuerzo.push(0); // Agregar 0 al campo almuerzo
             }
             await addDoc(beneficiarioCollection, beneficiario);
+            for (const date of beneficiario.dias) {
+              if (doc.data().desayuno === true) {
+                beneficiario.desayuno.push(0);
+              }
+              if (doc.data().almuerzo === true) {
+                beneficiario.almuerzo.push(0);
+              }
+            }
+            addDoc(beneficiarioCollection, beneficiario).catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert(errorMessage);
+            })
           }
         }
 

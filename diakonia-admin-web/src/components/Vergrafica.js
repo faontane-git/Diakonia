@@ -58,6 +58,32 @@ const VerGrafica = ({ user }) => {
     XLSX.writeFile(wb, fileName);
   };
 
+  function ordenarFechas(fechas) {
+    if(fechas===undefined){
+      return [];
+    }
+    const fechas_copia = [...fechas];
+    fechas_copia.sort();
+    return fechas_copia;
+  }
+
+  function ordenarFechasYDatosPorFecha(fechas, datos) {
+    // Crear un array de objetos con propiedades para la fecha y los datos de HGB
+    if(fechas===undefined){
+      return [];
+    }
+    const datos_ordenados=[];
+    
+    const fechas_copia = [...fechas];
+    const fechas_ordenadas= fechas_copia.sort();
+    
+    fechas_ordenadas.map((fecha) => {
+      const index= fechas.findIndex(fechaElement => fechaElement === fecha);
+      datos_ordenados.push(datos[index]);
+    })
+    return  datos_ordenados;
+  }
+
   return (
     <div className="centered-container">
       <Cabecera user={user} />
@@ -74,24 +100,24 @@ const VerGrafica = ({ user }) => {
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
-            fechas={data.fecha_seguimiento?.map((timestamp) => convertirTimestampAFecha(timestamp))}
-            datos={data.pesos}
+            fechas={ordenarFechas(data.fecha_seguimiento).map((timestamp) => convertirTimestampAFecha(timestamp))}
+            datos={ordenarFechasYDatosPorFecha(data.fecha_seguimiento,data.pesos)}
             dato="Peso"
           />
         </div>
 
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
-            fechas={data.fecha_seguimiento?.map((timestamp) => convertirTimestampAFecha(timestamp))}
-            datos={data.talla}
+            fechas={ordenarFechas(data.fecha_seguimiento).map((timestamp) => convertirTimestampAFecha(timestamp))}
+            datos={ordenarFechasYDatosPorFecha(data.fecha_seguimiento,data.talla)}
             dato="Talla"
           />
         </div>
 
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
-            fechas={data.fecha_seguimiento?.map((timestamp) => convertirTimestampAFecha(timestamp))}
-            datos={data.hgb}
+            fechas={ordenarFechas(data.fecha_seguimiento).map((timestamp) => convertirTimestampAFecha(timestamp))}
+            datos={ordenarFechasYDatosPorFecha(data.fecha_seguimiento,data.hgb)}
             dato="HGB"
           />
         </div>
@@ -108,12 +134,12 @@ const VerGrafica = ({ user }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.fecha_seguimiento?.map((mes, index) => (
+            {ordenarFechas(data.fecha_seguimiento).map((mes, index) => (
               <TableRow key={index}>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(mes)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{data.pesos[index]}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{data.talla[index]}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{data.hgb[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fecha_seguimiento,data.pesos)[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fecha_seguimiento,data.talla)[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fecha_seguimiento,data.hgb)[index]}</TableCell>
               </TableRow>
             ))}
           </TableBody>

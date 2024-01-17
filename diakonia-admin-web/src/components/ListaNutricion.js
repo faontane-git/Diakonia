@@ -94,7 +94,7 @@ const ListaBeneficiarios = ({ user }) => {
   }, [convenioId]);
 
   function LeerUltimoValor(valor, fechas) {
-    if (fechas.length > 0) {
+    if (fechas !== undefined && fechas.length > 0) {
       const fechaMayor = fechas.reduce((fechaMayorActual, fecha) => {
         const fechaActual = new Date(fecha.seconds * 1000);
         const fechaMayor = new Date(fechaMayorActual.seconds * 1000);
