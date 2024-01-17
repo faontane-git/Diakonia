@@ -201,14 +201,14 @@ const EditarInstitucion = ({ user }) => {
 
         {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
           <label htmlFor="convenios">Convenio</label>
-          <select id="convenios" value={convenioN} onChange={(e) => {
+          <select id="convenios" value={convenioId+"/"+convenioN} onChange={(e) => {
             const valores = e.target.value.split("/");
             console.log(valores);
             setConvenioId(valores[0]);         
             setConvenioN(valores[1]);
             console.log("convenio", convenioId, convenioN)
             }}>
-            <option value="" disabled selected>Selecciona un convenio</option>
+            <option value="" /*disabled selected*/>Selecciona un convenio</option>
             {convenios.filter(esActivo).map((convenio) => (
               <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
             ))}
