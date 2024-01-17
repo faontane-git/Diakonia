@@ -70,36 +70,43 @@ const NutricionConvenios = () => {
   return (
     <div className="centered-container">
       <Cabecera />
-      <h1>Nutrición</h1>
+
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div id='volver'>
           <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
+
+        <div id='titulo' style={{ marginLeft: '32em' }}>
+          <h1>Nutrición</h1>
+        </div>
       </div>
 
+      <h1>Lista de convenios de {institucionN}</h1>
       <h3>Seleccione un Convenio de {institucionN}</h3>
 
-      <div className="search-container">
-        <TextField
-          type="text"
-          placeholder="Buscar por Convenio"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
-          }}
-          fullWidth
-          variant="outlined"
-        />
+      <div className="search-export-container">
+        <div className="search-container">
+          <TextField
+            type="text"
+            placeholder="Buscar por Institución"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+            }}
+            fullWidth
+            variant="outlined"
+          />
+        </div>
       </div>
 
       <div className="list-container">

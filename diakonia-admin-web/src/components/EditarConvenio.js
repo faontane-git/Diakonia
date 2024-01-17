@@ -14,10 +14,11 @@ const EditarConvenio = ({ user }) => {
     navigate(`/instituciones/${institucionId}/${institucionN}`);
   };
 
-
   const [nombre, setNombre] = useState('');
   const [direccion, setDireccion] = useState('');
   const [fechaFin, setFechaFin] = useState('');
+  const [archivo, setArchivo] = useState(null);
+  const [pdfBase64, setPdfBase64] = useState(null);
 
   useEffect(() => {
     const obtenerDatosConvenio = async () => {
@@ -36,15 +37,49 @@ const EditarConvenio = ({ user }) => {
           const fechaFinal = new Date(convenioData.fecha_final.seconds * 1000);
           // Restar un día para compensar cualquier problema con la zona horaria
           fechaFinal.setDate(fechaFinal.getDate() - 1);
-          setFechaFin(
-            fechaFinal.toISOString().slice(0, 10)
-          );
+          setFechaFin(fechaFinal.toISOString().slice(0, 10));
         }
       }
     };
 
     obtenerDatosConvenio();
   }, [convenioId]);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    console.log("Tipo de Archivo:", selectedFile.type);
+
+    if (selectedFile && selectedFile.type === "application/pdf") {
+      setArchivo(selectedFile);
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const base64String = e.target.result.split(",")[1]; // Extraer datos base64
+        console.log("Base64 String:", base64String);
+        setPdfBase64(base64String);
+      };
+
+      reader.onerror = (error) => {
+        console.error('Error al leer el archivo:', error);
+        // Trata el error según tus necesidades
+      };
+
+      reader.readAsDataURL(selectedFile);
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'Por favor, seleccione un archivo PDF.',
+        icon: 'error',
+      });
+
+      // Limpiar la entrada de archivo
+      e.target.value = null;
+      setArchivo(null);
+      setPdfBase64(null);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -71,6 +106,7 @@ const EditarConvenio = ({ user }) => {
       nombre,
       direccion,
       fecha_final: fechaFinal,
+      pdfBase64: pdfBase64, // Agrega el contenido base64 del archivo PDF
     };
 
     try {
@@ -82,8 +118,6 @@ const EditarConvenio = ({ user }) => {
       Swal.fire('¡Error!', `Error al modificar convenio: ${error.message}`, 'error');
     }
   };
-
-
 
   return (
     <div>
@@ -128,6 +162,16 @@ const EditarConvenio = ({ user }) => {
             id="l_eConvenio"
             value={fechaFin}
             onChange={(e) => setFechaFin(e.target.value)}
+          />
+        </div>
+
+        <div id="txtArchivo">
+          <label htmlFor="archivo"><b>Subir Archivo</b></label>
+          <input
+            type="file"
+            id="l_eConvenio"
+            accept=".pdf,.doc,.docx"
+            onChange={handleFileChange}
           />
         </div>
 

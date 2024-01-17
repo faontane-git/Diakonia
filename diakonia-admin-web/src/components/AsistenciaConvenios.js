@@ -61,14 +61,19 @@ const AsistenciaConvenios = () => {
   return (
     <div className="centered-container">
       <Cabecera />
-      <h1>Asistencias</h1>
+
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div id='volver'>
           <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
+
+        <div id='titulo' style={{ marginLeft: '32em' }}>
+          <h1>Asistencias</h1>
+        </div>
       </div>
+
       <h3>Seleccione un Convenio de {institucionN}</h3>
 
       <div className="search-export-container">

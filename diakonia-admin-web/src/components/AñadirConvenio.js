@@ -29,7 +29,7 @@ const AñadirConvenio = ({ user }) => {
   const [pdfBase64, setPdfBase64] = useState(null);
 
   const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate()+1);
+  tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowString = tomorrow.toISOString().split("T")[0];
 
   const handleFileChange = (e) => {
@@ -127,7 +127,7 @@ const AñadirConvenio = ({ user }) => {
         fecha_inicial: initialDateObject,
         fecha_final: finalDateObject,
         institucionId: institucionId,
-        dias:dateRange,
+        dias: dateRange,
         activo: true,
         pdfBase64: pdfBase64, // Save the base64-encoded PDF data
       }
@@ -156,18 +156,20 @@ const AñadirConvenio = ({ user }) => {
 
   return (
     <div>
-      <Cabecera />
       <div className="centered-container">
-        <h1>Registrar Convenio</h1>
-        <h1>{institucionN}</h1>
-      </div>
+        <Cabecera />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div id='volver'>
+            <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+              Volver
+            </Button>
+          </div>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
+          <div id='titulo' style={{ marginLeft: '29.0em' }}>
+            <h1>Registrar Convenio</h1>
+          </div>
         </div>
+        <h1>{institucionN}</h1>
       </div>
 
       <form id="form_eañadirconvenio" onSubmit={handleSubmit}>

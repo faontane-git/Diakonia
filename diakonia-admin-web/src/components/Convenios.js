@@ -289,16 +289,16 @@ const Convenios = () => {
 
   return (
     <div className="centered-container">
-      <div>
-        <Cabecera />
-        <h1>Lista de convenios de {institucionN}</h1>
-      </div>
-
+      <Cabecera />
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div id='volver'>
           <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
+        </div>
+
+        <div id='titulo' style={{ marginLeft: '25em' }}>
+          <h1>Lista de convenios de {institucionN}</h1>
         </div>
       </div>
 

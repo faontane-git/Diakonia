@@ -219,13 +219,17 @@ const ListaAsistencias = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <h1>Asistencias</h1>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div id='volver'>
+            <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+              Volver
+            </Button>
+          </div>
+
+          <div id='titulo' style={{ marginLeft: '32em' }}>
+            <h1>Asistencias</h1>
+          </div>
         </div>
       </div>
 
@@ -254,7 +258,7 @@ const ListaAsistencias = ({ user }) => {
 
 
         <div className="centered-container">
-          <Button onClick={consulta}  style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>
+          <Button onClick={consulta} style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '14px' }}>
             Consultar
           </Button>
 
