@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import { Link } from 'react-router-dom';
-import { getFirestore, collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, orderBy, where } from 'firebase/firestore';
 import {
   Table,
   TableBody,
@@ -14,6 +14,10 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import '../estilos/Nutricion.css';
@@ -21,6 +25,7 @@ import '../estilos/Nutricion.css';
 const Nutricion = ({ user }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activoFilter, setActivoFilter] = useState('activos'); // Estado para el filtro de activos
 
   useEffect(() => {
     const querydb = getFirestore();
@@ -32,9 +37,13 @@ const Nutricion = ({ user }) => {
     );
   }, []);
 
-  const filteredData = data.filter((institucion) =>
-    institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredInstituciones = data
+    .filter((institucion) =>
+      institucion.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((institucion) =>
+      activoFilter === 'activos' ? institucion.activo === true : institucion.activo === false
+    );
 
   return (
     <div className="centered-container">
@@ -42,6 +51,19 @@ const Nutricion = ({ user }) => {
       <h1>Seguimiento</h1>
       <div className="list-container-nutricion">
         <h3>Seleccione una institución</h3>
+
+        <FormControl component="fieldset">
+          <RadioGroup
+            row
+            aria-label="filtroActivo"
+            name="filtroActivo"
+            value={activoFilter}
+            onChange={(e) => setActivoFilter(e.target.value)}
+          >
+            <FormControlLabel value="activos" control={<Radio />} label="Activos" />
+            <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
+          </RadioGroup>
+        </FormControl>
 
         <div className="search-export-container">
           <div className="search-container">
@@ -58,7 +80,7 @@ const Nutricion = ({ user }) => {
                     </IconButton>
                   </InputAdornment>
                 ),
-                style: { fontSize: '14px' }, // Ajusta el tamaño del texto de búsqueda
+                style: { fontSize: '14px' },
               }}
               fullWidth
               variant="outlined"
@@ -66,7 +88,7 @@ const Nutricion = ({ user }) => {
           </div>
         </div>
 
-        {filteredData.length > 0 ? (
+        {filteredInstituciones.length > 0 ? (
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -76,7 +98,7 @@ const Nutricion = ({ user }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredData.map((institucion) => (
+                {filteredInstituciones.map((institucion) => (
                   <TableRow key={institucion.id}>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{institucion.nombre}</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>

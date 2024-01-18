@@ -33,6 +33,7 @@ const Convenios = () => {
   const [activoFilter, setActivoFilter] = useState('activos');
   const [isLoading, setIsLoading] = useState(false);
   const [reloading, setReloading] = useState(false);
+  const [institucionActiva, setInstitucionActiva] = useState(true);
 
   const goAñadirBenef = () => {
     navigate('añadirConvenio');
@@ -78,6 +79,28 @@ const Convenios = () => {
     };
   }, []);
 
+
+  useEffect(() => {
+    const checkInstitucionActiva = async () => {
+      try {
+        const querydb = getFirestore();
+        const institucionDocRef = doc(querydb, 'instituciones', institucionId); // Ajusta el nombre de tu colección
+        const institucionDocSnapshot = await getDoc(institucionDocRef);
+
+        if (institucionDocSnapshot.exists()) {
+          const institucionData = institucionDocSnapshot.data();
+          setInstitucionActiva(institucionData.activo);
+        }
+      } catch (error) {
+        console.error('Error al verificar el estado de la institución:', error);
+        // Mostrar mensaje de error o manejar el error
+      }
+    };
+
+    checkInstitucionActiva();
+  }, [institucionId])
+
+
   const currentDate = new Date();
 
   const filteredData = data.filter((convenio) =>
@@ -86,7 +109,7 @@ const Convenios = () => {
   );
 
   const handleVerBeneficiarios = (convenioId, convenioNombre) => {
-    navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioNombre}`);
+       navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioNombre}`);
   };
 
   const descargarPDF = async (convenioId, convenioNombre) => {
@@ -140,9 +163,9 @@ const Convenios = () => {
   };
 
   const exportToXLSX = () => {
-      const wsData = filteredData
+    const wsData = filteredData
       .filter(esActivo)
-      .map(({ nombre, direccion, desayuno, almuerzo, observacion,fecha_inicial, fecha_final }) => ({
+      .map(({ nombre, direccion, desayuno, almuerzo, observacion, fecha_inicial, fecha_final }) => ({
         Nombre: nombre,
         Dirección: direccion,
         Servicios: `${desayuno ? 'Desayuno ' : ''}${almuerzo ? 'Almuerzo' : ''}`,
@@ -308,18 +331,39 @@ const Convenios = () => {
         </div>
       </div>
 
+      <h3>Estado: {institucionActiva ? 'Activo' : 'Finalizado'}</h3>
+
       <FormControl component="fieldset">
-        <RadioGroup
-          row
-          aria-label="activoFilter"
-          name="activoFilter"
-          value={activoFilter}
-          onChange={(e) => setActivoFilter(e.target.value)}
-        >
-          <FormControlLabel value="activos" control={<Radio />} label="Activos" />
-          <FormControlLabel value="inactivos" control={<Radio />} label="Finalizados" />
-        </RadioGroup>
+        {(institucionActiva) && (
+          <>
+            <RadioGroup
+              row
+              aria-label="activoFilter"
+              name="activoFilter"
+              value={activoFilter}
+              onChange={(e) => setActivoFilter(e.target.value)}
+            >
+              <FormControlLabel value="activos" control={<Radio />} label="Activos" />
+              <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
+            </RadioGroup>
+          </>
+        )}
+        {(institucionActiva)==false && (
+          <>
+            <RadioGroup
+              row
+              aria-label="activoFilter"
+              name="activoFilter"
+              value={"inactivos"}
+              onChange={(e) => setActivoFilter(e.target.value)}
+            >
+              <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
+            </RadioGroup>
+          </>
+        )}
+
       </FormControl>
+
 
       <div className="search-export-container">
         <div className="search-container">
@@ -439,9 +483,11 @@ const Convenios = () => {
                             >
                               Certificado
                             </Button>
-                            <Button variant="contained" onClick={() => activarConvenio(convenio)} style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
-                              Activar
-                            </Button>
+                            {institucionActiva && (
+                              <Button variant="contained" onClick={() => activarConvenio(convenio)} style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                                Activar
+                              </Button>
+                            )}
                             <Button variant="contained" onClick={() => eliminarRegistro(convenio)} style={{ backgroundColor: '#f44336', color: 'white', margin: '5px', fontSize: '14px' }}>
                               Eliminar
                             </Button>

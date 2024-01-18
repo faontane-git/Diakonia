@@ -65,7 +65,6 @@ const ListaInstituciones = ({ instituciones }) => {
       const docuRef = doc(querydb, 'instituciones', institucion.id);
       const observacion = confirmResult.value;
       try {
-        console.log(institucion.id)
         // Inactivar la institución
         await updateDoc(docuRef, { observacion: observacion, activo: false });
         // Obtener los convenios asociados a la institución

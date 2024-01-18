@@ -4,7 +4,7 @@ import Cabecera from './Cabecera';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
-import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, doc, updateDoc, getDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import QRCode from 'qrcode.react';
@@ -41,7 +41,9 @@ const ListaBeneficiarios = ({ user }) => {
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activoFilter, setActivoFilter] = useState('activos');
+  const [activoFilter, setActivoFilter] = useState('');
+  const [institucionActiva, setInstitucionActiva] = useState(true);
+  const [conveniosActiva, setConveniosActiva] = useState(true);
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -61,6 +63,41 @@ const ListaBeneficiarios = ({ user }) => {
       setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
     );
   }, [institucionId]);
+
+  useEffect(() => {
+    const checkInstitucionActiva = async () => {
+      try {
+        const querydb = getFirestore();
+        const institucionDocRef = doc(querydb, 'instituciones', institucionId); // Ajusta el nombre de tu colección
+        const institucionDocSnapshot = await getDoc(institucionDocRef);
+
+        if (institucionDocSnapshot.exists()) {
+          const institucionData = institucionDocSnapshot.data();
+          setInstitucionActiva(institucionData.activo);
+        }
+      } catch (error) {
+        console.error('Error al verificar el estado de la institución:', error);
+      }
+    };
+
+    const checkConvenioActiva = async () => {
+      try {
+        const querydb = getFirestore();
+        const institucionDocRef = doc(querydb, 'convenios', convenioId); // Ajusta el nombre de tu colección
+        const institucionDocSnapshot = await getDoc(institucionDocRef);
+
+        if (institucionDocSnapshot.exists()) {
+          const institucionData = institucionDocSnapshot.data();
+          setConveniosActiva(institucionData.activo);
+        }
+      } catch (error) {
+        console.error('Error al verificar el estado de la institución:', error);
+      }
+    };
+
+    checkInstitucionActiva();
+    checkConvenioActiva();
+  }, [institucionId, convenioId])
 
   const filteredData = data
     .filter((beneficiario) =>
@@ -170,31 +207,51 @@ const ListaBeneficiarios = ({ user }) => {
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-
-      <h1>Lista de Beneficiarios de {institucionN}</h1>
-      <h3>Convenio: {convenioN}</h3>
-      <h3>Servicios: {data[0]?.desayuno.length !== 0 ? 'Desayuno ' : ''}{data[0]?.almuerzo.length !== 0 ? 'Almuerzo' : ''}</h3>
-
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div id='volver'>
           <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
+
+        <div id='titulo' style={{ marginLeft: '24em' }}>
+          <h1>Lista de Beneficiarios de {institucionN}</h1>
+        </div>
       </div>
+
+      <h3>Convenio: {convenioN} Estado: {conveniosActiva ? 'Activo' : 'Finalizado'}</h3>
+      <h3>Servicios: {data[0]?.desayuno.length !== 0 ? 'Desayuno ' : ''}{data[0]?.almuerzo.length !== 0 ? 'Almuerzo' : ''}</h3>
 
 
       <FormControl component="fieldset">
-        <RadioGroup
-          row
-          aria-label="activoFilter"
-          name="activoFilter"
-          value={activoFilter}
-          onChange={(e) => setActivoFilter(e.target.value)}
-        >
-          <FormControlLabel value="activos" control={<Radio />} label="Activos" />
-          <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
-        </RadioGroup>
+        {(institucionActiva || conveniosActiva) && (
+          <>
+            <RadioGroup
+              row
+              aria-label="activoFilter"
+              name="activoFilter"
+              value={activoFilter}
+              onChange={(e) => setActivoFilter(e.target.value)}
+            >
+              <FormControlLabel value="activos" control={<Radio />} label="Activos" />
+              <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
+            </RadioGroup>
+          </>
+        )}
+        {(institucionActiva || conveniosActiva)==false && (
+          <>
+            <RadioGroup
+              row
+              aria-label="activoFilter"
+              name="activoFilter"
+              value={"inactivos"}
+              onChange={(e) => setActivoFilter(e.target.value)}
+            >
+              <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
+            </RadioGroup>
+          </>
+        )}
+
       </FormControl>
 
       <div className="search-export-container">
@@ -316,7 +373,9 @@ const ListaBeneficiarios = ({ user }) => {
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Observaciones</TableCell>
-                    <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acción</TableCell>
+                    {(institucionActiva || conveniosActiva) && (
+                      <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acción</TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -325,15 +384,17 @@ const ListaBeneficiarios = ({ user }) => {
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.observacion}</TableCell>
-                      <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
-                        <Button
-                          onClick={() => activarBeneficiario(beneficiario)}
-                          variant="contained"
-                          style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}
-                        >
-                          Activar
-                        </Button>
-                      </TableCell>
+                      {(institucionActiva || conveniosActiva) && (
+                        <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
+                          <Button
+                            onClick={() => activarBeneficiario(beneficiario)}
+                            variant="contained"
+                            style={{ backgroundColor: '#4caf50', color: 'white', marginBottom: '4px', width: '100%' }}
+                          >
+                            Activar
+                          </Button>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>

@@ -16,9 +16,12 @@ const EditarConvenio = ({ user }) => {
 
   const [nombre, setNombre] = useState('');
   const [direccion, setDireccion] = useState('');
+  const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
   const [archivo, setArchivo] = useState(null);
   const [pdfBase64, setPdfBase64] = useState(null);
+  const [nuevoArchivo, setNuevoArchivo] = useState(false);
+  const fechaActual = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
     const obtenerDatosConvenio = async () => {
@@ -32,10 +35,13 @@ const EditarConvenio = ({ user }) => {
         setNombre(convenioData.nombre || '');
         setDireccion(convenioData.direccion || '');
 
-        // Si fecha_final existe en los datos, asignarla al estado
+        if (convenioData.fecha_inicial) {
+          const fechaInicio = new Date(convenioData.fecha_inicial.seconds * 1000);
+          setFechaInicio(fechaInicio.toISOString().slice(0, 10));
+        }
+
         if (convenioData.fecha_final) {
           const fechaFinal = new Date(convenioData.fecha_final.seconds * 1000);
-          // Restar un día para compensar cualquier problema con la zona horaria
           fechaFinal.setDate(fechaFinal.getDate() - 1);
           setFechaFin(fechaFinal.toISOString().slice(0, 10));
         }
@@ -52,18 +58,18 @@ const EditarConvenio = ({ user }) => {
 
     if (selectedFile && selectedFile.type === "application/pdf") {
       setArchivo(selectedFile);
+      setNuevoArchivo(true);
 
       const reader = new FileReader();
 
       reader.onload = (e) => {
-        const base64String = e.target.result.split(",")[1]; // Extraer datos base64
+        const base64String = e.target.result.split(",")[1];
         console.log("Base64 String:", base64String);
         setPdfBase64(base64String);
       };
 
       reader.onerror = (error) => {
         console.error('Error al leer el archivo:', error);
-        // Trata el error según tus necesidades
       };
 
       reader.readAsDataURL(selectedFile);
@@ -74,7 +80,6 @@ const EditarConvenio = ({ user }) => {
         icon: 'error',
       });
 
-      // Limpiar la entrada de archivo
       e.target.value = null;
       setArchivo(null);
       setPdfBase64(null);
@@ -86,18 +91,14 @@ const EditarConvenio = ({ user }) => {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'convenios', convenioId);
 
-    const fechaFinal = new Date(fechaFin); // Convertir la cadena de fecha a un objeto Date
-
-    // Agregar un día a la fecha
+    const fechaInicioObj = new Date(fechaInicio);
+    const fechaFinal = new Date(fechaFin);
     fechaFinal.setDate(fechaFinal.getDate() + 1);
 
-    // Obtener la fecha de inicio del convenio
     const docSnapshot = await getDoc(docuRef);
     const fechaInicioConvenio = docSnapshot.data().fecha_inicial.toDate();
 
-    // Verificar que la fecha de fin sea mayor que la fecha de inicio
     if (fechaFinal <= fechaInicioConvenio) {
-      // Mostrar notificación de error
       Swal.fire('Error', 'La fecha de fin debe ser mayor que la fecha de inicio', 'error');
       return;
     }
@@ -105,9 +106,13 @@ const EditarConvenio = ({ user }) => {
     const convenio = {
       nombre,
       direccion,
+      fecha_inicial: fechaInicioObj,
       fecha_final: fechaFinal,
-      pdfBase64: pdfBase64, // Agrega el contenido base64 del archivo PDF
     };
+
+    if (nuevoArchivo) {
+      convenio.pdfBase64 = pdfBase64;
+    }
 
     try {
       await updateDoc(docuRef, convenio);
@@ -121,16 +126,18 @@ const EditarConvenio = ({ user }) => {
 
   return (
     <div>
-      <Cabecera user={user} />
       <div className="centered-container">
-        <h1>Editar Convenio</h1>
-      </div>
+        <Cabecera user={user} />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div id='volver'>
+            <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+              Volver
+            </Button>
+          </div>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
+          <div id='titulo' style={{ marginLeft: '29.5em' }}>
+            <h1>Editar Convenio</h1>
+          </div>
         </div>
       </div>
 
@@ -152,6 +159,18 @@ const EditarConvenio = ({ user }) => {
             id="l_eConvenio"
             value={direccion}
             onChange={(e) => setDireccion(e.target.value)}
+          />
+        </div>
+
+        <div id="txtFechaInicio">
+          <label htmlFor="fechaInicio"><b>Fecha de Inicio</b></label>
+          <input
+            type="date"
+            id="l_eConvenio"
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
+            disabled={fechaInicio <= fechaActual} // Deshabilitar si fecha de inicio es mayor o igual a la fecha actual
+            min={fechaActual}
           />
         </div>
 
