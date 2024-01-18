@@ -140,12 +140,13 @@ const Convenios = () => {
   };
 
   const exportToXLSX = () => {
-    const wsData = filteredData
+      const wsData = filteredData
       .filter(esActivo)
-      .map(({ nombre, direccion, desayuno, almuerzo, fecha_inicial, fecha_final }) => ({
+      .map(({ nombre, direccion, desayuno, almuerzo, observacion,fecha_inicial, fecha_final }) => ({
         Nombre: nombre,
         Dirección: direccion,
         Servicios: `${desayuno ? 'Desayuno ' : ''}${almuerzo ? 'Almuerzo' : ''}`,
+        Observaciones: observacion,
         'Fecha Inicio': convertirTimestampAFecha(fecha_inicial),
         'Fecha Fin': convertirTimestampAFecha(fecha_final),
       }));
@@ -281,7 +282,7 @@ const Convenios = () => {
       const docuRef = doc(querydb, 'convenios', convenio.id);
 
       try {
-        await updateDoc(docuRef, {observacion: observacion, activo: false });
+        await updateDoc(docuRef, { observacion: observacion, activo: false });
         setReloading(true); // Activar pantalla de carga antes de recargar
         window.location.reload();
       } catch (error) {
@@ -342,15 +343,16 @@ const Convenios = () => {
           />
         </div>
 
-        <div className="centered-container" hidden={activoFilter !== 'activos'}>
-          <Button
-            variant="contained"
-            onClick={goAñadirBenef}
-            style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}
-          >
-            Añadir Convenio
-          </Button>
-
+        <div className="centered-container">
+          {activoFilter === 'activos' && (
+            <Button
+              variant="contained"
+              onClick={goAñadirBenef}
+              style={{ backgroundColor: '#890202', color: 'white', marginRight: '10px', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}
+            >
+              Añadir Convenio
+            </Button>
+          )}
           <Button
             variant="contained"
             style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px', fontSize: '14px', width: '200px', height: '40px' }}
@@ -427,6 +429,9 @@ const Convenios = () => {
                           </>
                         ) : (
                           <>
+                            <Button variant="contained" onClick={() => handleVerBeneficiarios(convenio.id, convenio.nombre)} style={{ backgroundColor: '#7366bd', color: 'white' }}>
+                              Beneficiarios
+                            </Button>
                             <Button
                               variant="contained"
                               onClick={() => descargarPDF(convenio.id, convenio.nombre)}

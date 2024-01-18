@@ -19,7 +19,7 @@ import {
   FormLabel,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import '../estilos/ListaInstituciones.css';
@@ -59,18 +59,35 @@ const ListaInstituciones = ({ instituciones }) => {
       cancelButtonText: 'Cancelar',
       input: 'text',
       inputPlaceholder: 'Agrega una observación',
-    })
+    });
     if (confirmResult.isConfirmed) {
       const querydb = getFirestore();
       const docuRef = doc(querydb, 'instituciones', institucion.id);
       const observacion = confirmResult.value;
       try {
+        console.log(institucion.id)
+        // Inactivar la institución
         await updateDoc(docuRef, { observacion: observacion, activo: false });
-        window.location.reload();
+        // Obtener los convenios asociados a la institución
+        const conveniosQuery = query(collection(querydb, 'convenios'), where('institucionId', '==', institucion.id));
+        const conveniosSnapshot = await getDocs(conveniosQuery);
+        // Inactivar cada convenio asociado
+        conveniosSnapshot.forEach(async (convenioDoc) => {
+          const convenioRef = doc(querydb, 'convenios', convenioDoc.id);
+          await updateDoc(convenioRef, { observacion: "¡Institución Inactivada!", activo: false });
+          const conveniosQuery = query(collection(querydb, 'beneficiarios'), where('convenioId', '==', convenioDoc.id));
+          const conveniosSnapshot = await getDocs(conveniosQuery);
+          // Inactivar cada beneficiario asociado
+          conveniosSnapshot.forEach(async (beneficiarioDoc) => {
+            const convenioRef = doc(querydb, 'beneficiarios', beneficiarioDoc.id);
+            await updateDoc(convenioRef, { observacion: "¡Institución Inactivada!", activo: false });
+          });
+        });
       } catch (error) {
-        console.error('Error al eliminar institución:', error);
+        console.error('Error al inactivar institución, convenios y beneficiarios:', error);
         alert(error.message);
       }
+      window.location.reload();
     }
   }
 
