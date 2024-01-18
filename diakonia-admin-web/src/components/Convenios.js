@@ -30,7 +30,7 @@ import '../estilos/ListaBeneficiarios.css';
 const Convenios = () => {
   const navigate = useNavigate();
   const { institucionId, institucionN } = useParams();
-  const [activoFilter, setActivoFilter] = useState('activos');
+  const [activoFilter, setActivoFilter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [reloading, setReloading] = useState(false);
   const [institucionActiva, setInstitucionActiva] = useState(true);
@@ -90,6 +90,11 @@ const Convenios = () => {
         if (institucionDocSnapshot.exists()) {
           const institucionData = institucionDocSnapshot.data();
           setInstitucionActiva(institucionData.activo);
+          if (institucionData.activo) {
+            setActivoFilter("activos");
+          } else {
+            setActivoFilter("inactivos");
+          }
         }
       } catch (error) {
         console.error('Error al verificar el estado de la institución:', error);
@@ -109,7 +114,7 @@ const Convenios = () => {
   );
 
   const handleVerBeneficiarios = (convenioId, convenioNombre) => {
-       navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioNombre}`);
+    navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioNombre}`);
   };
 
   const descargarPDF = async (convenioId, convenioNombre) => {
@@ -217,11 +222,16 @@ const Convenios = () => {
       }).then(async (response) => {
         if (response.isConfirmed) {
           setIsLoading(true); // Activar pantalla de carga
-
           const querydb = getFirestore();
           const docuRef = doc(querydb, 'convenios', convenio.id);
-
           try {
+            const conveniosQuery = query(collection(querydb, 'beneficiarios'), where('convenioId', '==', convenio.id));
+            const conveniosSnapshot = await getDocs(conveniosQuery);
+            // ELIMINAR cada beneficiario asociado
+            conveniosSnapshot.forEach(async (beneficiarioDoc) => {
+              const convenioRef = doc(querydb, 'beneficiarios', beneficiarioDoc.id);
+              await deleteDoc(convenioRef);
+            });
             await deleteDoc(docuRef);
             setReloading(true); // Activar pantalla de carga antes de recargar
             window.location.reload();
@@ -292,11 +302,11 @@ const Convenios = () => {
       denyButtonText: 'No',
       confirmButtonText: 'Si',
       confirmButtonColor: '#000000',
-      howCancelButton: true,
       cancelButtonText: 'Cancelar',
       input: 'text',
       inputPlaceholder: 'Agrega una observación',
     });
+
     if (confirmResult.isConfirmed) {
       const observacion = confirmResult.value;
       setIsLoading(true); // Activar pantalla de carga
@@ -306,14 +316,26 @@ const Convenios = () => {
 
       try {
         await updateDoc(docuRef, { observacion: observacion, activo: false });
-        setReloading(true); // Activar pantalla de carga antes de recargar
+
+        const conveniosQuery = query(collection(querydb, 'beneficiarios'), where('convenioId', '==', convenio.id));
+        const conveniosSnapshot = await getDocs(conveniosQuery);
+
+        // Use Promise.all to wait for all beneficiary updates to complete
+        await Promise.all(conveniosSnapshot.docs.map(async (beneficiarioDoc) => {
+          const convenioRef = doc(querydb, 'beneficiarios', beneficiarioDoc.id);
+          await updateDoc(convenioRef, { observacion: '¡Institución Inactivada!', activo: false });
+        }));
+
+        // Set reloading after all updates are completed
+        setReloading(true);
         window.location.reload();
       } catch (error) {
         alert(error.message);
         setIsLoading(false); // Desactivar pantalla de carga en caso de error
       }
     }
-
+    // Don't reload here, as it might interrupt the async operations
+    // window.location.reload();
   }
 
   return (
@@ -331,7 +353,7 @@ const Convenios = () => {
         </div>
       </div>
 
-      <h3>Estado: {institucionActiva ? 'Activo' : 'Finalizado'}</h3>
+      <h3>Estado: {institucionActiva ? 'Activo' : 'Inactivo'}</h3>
 
       <FormControl component="fieldset">
         {(institucionActiva) && (
@@ -348,13 +370,13 @@ const Convenios = () => {
             </RadioGroup>
           </>
         )}
-        {(institucionActiva)==false && (
+        {(institucionActiva) == false && (
           <>
             <RadioGroup
               row
               aria-label="activoFilter"
               name="activoFilter"
-              value={"inactivos"}
+              value={activoFilter}
               onChange={(e) => setActivoFilter(e.target.value)}
             >
               <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />

@@ -43,7 +43,7 @@ const ListaBeneficiarios = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activoFilter, setActivoFilter] = useState('');
   const [institucionActiva, setInstitucionActiva] = useState(true);
-  const [conveniosActiva, setConveniosActiva] = useState(true);
+  const [conveniosActiva, setConveniosActiva] = useState('');
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -62,24 +62,7 @@ const ListaBeneficiarios = ({ user }) => {
     getDocs(beneficiariosQuery).then((res) =>
       setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
     );
-  }, [institucionId]);
-
-  useEffect(() => {
-    const checkInstitucionActiva = async () => {
-      try {
-        const querydb = getFirestore();
-        const institucionDocRef = doc(querydb, 'instituciones', institucionId); // Ajusta el nombre de tu colección
-        const institucionDocSnapshot = await getDoc(institucionDocRef);
-
-        if (institucionDocSnapshot.exists()) {
-          const institucionData = institucionDocSnapshot.data();
-          setInstitucionActiva(institucionData.activo);
-        }
-      } catch (error) {
-        console.error('Error al verificar el estado de la institución:', error);
-      }
-    };
-
+    
     const checkConvenioActiva = async () => {
       try {
         const querydb = getFirestore();
@@ -89,14 +72,20 @@ const ListaBeneficiarios = ({ user }) => {
         if (institucionDocSnapshot.exists()) {
           const institucionData = institucionDocSnapshot.data();
           setConveniosActiva(institucionData.activo);
+          const convenioA = (institucionData.activo);
+          if (convenioA) {
+            setActivoFilter("activos");
+          } else {
+            setActivoFilter("inactivos");
+          }
         }
       } catch (error) {
         console.error('Error al verificar el estado de la institución:', error);
       }
     };
 
-    checkInstitucionActiva();
     checkConvenioActiva();
+
   }, [institucionId, convenioId])
 
   const filteredData = data
@@ -224,7 +213,7 @@ const ListaBeneficiarios = ({ user }) => {
 
 
       <FormControl component="fieldset">
-        {(institucionActiva || conveniosActiva) && (
+        {(conveniosActiva) && (
           <>
             <RadioGroup
               row
@@ -238,13 +227,13 @@ const ListaBeneficiarios = ({ user }) => {
             </RadioGroup>
           </>
         )}
-        {(institucionActiva || conveniosActiva)==false && (
+        {(conveniosActiva) == false && (
           <>
             <RadioGroup
               row
               aria-label="activoFilter"
               name="activoFilter"
-              value={"inactivos"}
+              value={activoFilter}
               onChange={(e) => setActivoFilter(e.target.value)}
             >
               <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
@@ -304,15 +293,13 @@ const ListaBeneficiarios = ({ user }) => {
         </div>
       </div>
 
-      {
-        activoFilter === 'activos' && filteredData.some(esActivo) ? (
+      {activoFilter === 'activos' && filteredData.some(esActivo) ? (
           <div>
             <TableContainer component={Paper}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
-                    {/* <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202, color: 'white', fontSize: '16px' }}>País de Origen</TableCell> */}
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fecha de nacimiento</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Género</TableCell>
@@ -325,7 +312,6 @@ const ListaBeneficiarios = ({ user }) => {
                   {filteredData.map((beneficiario) => (
                     <TableRow key={beneficiario.id}>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
-                      {/* <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.pais_de_origen}</TableCell> */}
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(beneficiario.fecha_nacimiento)}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.genero}</TableCell>
@@ -373,7 +359,7 @@ const ListaBeneficiarios = ({ user }) => {
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Cédula</TableCell>
                     <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Observaciones</TableCell>
-                    {(institucionActiva || conveniosActiva) && (
+                    {(conveniosActiva) && (
                       <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Acción</TableCell>
                     )}
                   </TableRow>
@@ -384,7 +370,7 @@ const ListaBeneficiarios = ({ user }) => {
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.cedula}</TableCell>
                       <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.observacion}</TableCell>
-                      {(institucionActiva || conveniosActiva) && (
+                      {(conveniosActiva) && (
                         <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                           <Button
                             onClick={() => activarBeneficiario(beneficiario)}

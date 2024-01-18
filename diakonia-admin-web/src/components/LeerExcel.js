@@ -147,15 +147,15 @@ const LeerExcel = ({ user }) => {
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     const ConvenioColect = collection(firestore, "convenios");
     const ConvenioRef = doc(ConvenioColect, convenioId);
-
+  
     try {
       const convenioDoc = await getDoc(ConvenioRef);
-
+  
       if (convenioDoc.exists()) {
         const inicio = convenioDoc.data().fecha_inicial.seconds * 1000;
         const final = convenioDoc.data().fecha_final.seconds * 1000;
         const diferenciaEnMilisegundos = final - inicio;
-
+  
         for (const beneficiario of Nbeneficiarios) {
           if (data.cedulas.includes(beneficiario.cedula)) {
             Swal.fire({
@@ -170,19 +170,15 @@ const LeerExcel = ({ user }) => {
               beneficiario.desayuno.push(0);
               beneficiario.almuerzo.push(0); // Agregar 0 al campo almuerzo
             }
-            await addDoc(beneficiarioCollection, beneficiario);
-            for (const date of beneficiario.dias) {
-              beneficiario.desayuno.push(0);
-              beneficiario.almuerzo.push(0);
-            }
-            addDoc(beneficiarioCollection, beneficiario).catch((error) => {
+  
+            await addDoc(beneficiarioCollection, beneficiario).catch((error) => {
               const errorCode = error.code;
               const errorMessage = error.message;
               alert(errorMessage);
-            })
+            });
           }
         }
-
+  
         Swal.fire({
           title: 'Beneficiarios Agregados',
           text: 'Se han agregado los beneficiarios correctamente',
@@ -197,6 +193,7 @@ const LeerExcel = ({ user }) => {
       alert('Error al añadir beneficiarios');
     }
   }
+  
 
 
   return (
