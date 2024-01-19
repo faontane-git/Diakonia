@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc, addDoc, collection } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import { Button } from '@mui/material';
 import '../estilos/EditarInstitucion.css';
+import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
 
-const EditarInstitucion = ({ user }) => {
+const EditarInstitucion = ({  }) => {
   const { institucionId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthContext();
+
 
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -49,12 +52,26 @@ const EditarInstitucion = ({ user }) => {
     };
 
     try {
+
+      // Guardar información en el histórico
+      const historicoDatos = {
+        usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+        correo: user.email,  // Reemplaza con el nombre del usuario real
+        accion: 'Institución Editada: ' + institucion.nombre,  // Mensaje personalizado
+        fecha: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString(),  // Hora actual
+      };
+      const firestore = getFirestore();
+      const hitoricoCollection = collection(firestore, 'historico');
+      addDoc(hitoricoCollection, historicoDatos);
+
       await updateDoc(docuRef, institucion);
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
         text: '¡Institución editada con éxito!',
       });
+
       navigate(`/verInstitucion`);
     } catch (error) {
       console.error('Error al modificar beneficiario:', error);
@@ -69,7 +86,7 @@ const EditarInstitucion = ({ user }) => {
   return (
     <div>
       <div className="centered-container">
-        <Cabecera user={user} />
+        <Cabecera />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center' }}>

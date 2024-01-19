@@ -238,15 +238,18 @@ const ListaBeneficiarios = ({ user }) => {
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-      <h1>Lista de Nutrición de {institucionN}</h1>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div id='volver'>
           <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
+
+        <div id='titulo' style={{ marginLeft: '25.5em' }}>
+          <h1>Lista de Nutrición de {institucionN}</h1>
+        </div>
       </div>
-     
+
       <h3>Convenio: {convenioN}</h3>
 
       <FormControl component="fieldset">
@@ -258,29 +261,33 @@ const ListaBeneficiarios = ({ user }) => {
           onChange={(e) => setActivoFilter(e.target.value)}
         >
           <FormControlLabel value="activos" control={<Radio />} label="Activos" />
-          <FormControlLabel value="inactivos" control={<Radio />} label="No Activos" />
+          <FormControlLabel value="inactivos" control={<Radio />} label="Inactivos" />
         </RadioGroup>
       </FormControl>
 
-      <div className="button-container" disabled={true}>
-        <Button
-          id="buttonABeneficiarios"
-          className="custom-button"
-          onClick={goAñadirNutri}
-          variant="contained"
-          style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
-        >
-          Añadir Seguimiento
-        </Button>
+      <div className="button-container">
+        {(activoFilter == 'activos') && (
+          <>
+            <Button
+              id="buttonABeneficiarios"
+              className="custom-button"
+              onClick={goAñadirNutri}
+              variant="contained"
+              style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
+            >
+              Añadir Seguimiento
+            </Button>
 
-        <Button
-          className="custom-button"
-          onClick={handleModifyExcel}
-          variant="contained"
-          style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
-        >
-          Modificar Excel
-        </Button>
+            <Button
+              className="custom-button"
+              onClick={handleModifyExcel}
+              variant="contained"
+              style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
+            >
+              Modificar Excel
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="search-export-container">
@@ -307,7 +314,7 @@ const ListaBeneficiarios = ({ user }) => {
       </div>
 
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Nombre</TableCell>

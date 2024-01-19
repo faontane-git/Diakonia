@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import Cabecera from "./Cabecera";
 import { useNavigate, useParams } from 'react-router-dom';
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc } from 'firebase/firestore';
 import { getDatabase, ref, set } from "firebase/database";
 import firebaseApp from "../firebase-config";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import '../estilos/AñadirConvenio.css';
 import { Button } from '@mui/material';
+import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
 
 
-const AñadirConvenio = ({ user }) => {
+const AñadirConvenio = () => {
   const { institucionId, institucionN } = useParams();
   const today = new Date().toISOString().split("T")[0];
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const goBack = () => {
     navigate(`/instituciones/${institucionId}/${institucionN}`);
@@ -141,6 +143,17 @@ const AñadirConvenio = ({ user }) => {
             text: '¡Nueva institución añadida!',
             icon: 'success',
           });
+          // Guardar información en el histórico
+          const historicoDatos = {
+            usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+            correo: user.email,  // Reemplaza con el nombre del usuario real
+            accion: 'Convenio Creado: ' + nombre + " Institución: "+institucionN,  // Mensaje personalizado
+            fecha: new Date().toLocaleDateString(),
+            hora: new Date().toLocaleTimeString(),  // Hora actual
+          };
+          const firestore = getFirestore();
+          const hitoricoCollection = collection(firestore, 'historico');
+          addDoc(hitoricoCollection, historicoDatos);
           goBack();
         }).catch((error) => {
           const errorCode = error.code;

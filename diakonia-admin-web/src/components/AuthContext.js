@@ -8,6 +8,7 @@ export const AuthContext = createContext();
 export default function AuthContextProvider({ children }) {
   const [user, setUser] = useState(() => JSON.parse(window.localStorage.getItem(MY_AUTH_APP)));
   const [isAuthenticated,SetisAuthenticated]= useState(Boolean(user));
+  const [nombre, setNombre] = useState('');
 
   const login = useCallback(
     function (userData) {
@@ -22,7 +23,8 @@ export default function AuthContextProvider({ children }) {
   const logout = useCallback(function () {
     window.localStorage.removeItem(MY_AUTH_APP);
     setUser(null);
-    SetisAuthenticated(Boolean(user))
+    SetisAuthenticated(Boolean(user));
+    setNombre('');
   }, []);
 
   const value = useMemo(
@@ -31,8 +33,9 @@ export default function AuthContextProvider({ children }) {
       logout,
       isAuthenticated: Boolean(user),
       user,
+      nombre,
     }),
-    [user, login, logout, isAuthenticated]
+    [nombre,user, login, logout, isAuthenticated]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

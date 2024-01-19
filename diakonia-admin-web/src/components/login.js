@@ -73,6 +73,7 @@ function Login({ user }) {
             id: userDocument.id,
             email: correo,
             rol: rol,
+            nombre: userData.nombre
           };
           login(usuario);
 

@@ -40,6 +40,8 @@ import RegistroUsuario from "./components/RegistraUsuario.js"
 import VerUsuarios from "./components/VerUsuarios.js"
 import EditarUsuarios from "./components/EditarUsuarios.js"
 import Horarios from "./components/Horarios.js"
+import Historico from "./components/Historico.js"
+
 
 
 import CambiarContra from "./components/CambiarContra.js"
@@ -150,6 +152,8 @@ function Aplicacion() {
             <Route path="asistencias/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaAsistencias />} />
             <Route path="nutricion" element={<Nutricion />} />
             <Route path="horarios" element={<Horarios />} />
+            <Route path="historico" element={<Historico />} />
+
             <Route path="nutricion/:institucionId/:institucionN" element={<NutricionConvenios />} />
             <Route path="nutricion/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaNutricion />} />
             <Route path="verGrafica/:institucionId/:institucionN/:convenioId/:convenioN/:beneficiarioid" element={<VerGrafica />} />

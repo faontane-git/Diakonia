@@ -22,6 +22,10 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
@@ -39,6 +43,7 @@ const NutricionConvenios = () => {
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filtro, setFiltro] = useState('activos');
 
   useEffect(() => {
     const querydb = getFirestore();
@@ -63,9 +68,12 @@ const NutricionConvenios = () => {
     });
   }, [institucionId]);
 
-  const filteredData = data.filter((convenio) =>
-    convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data.filter(
+    (convenio) =>
+      convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (filtro === 'todos' || convenio.activo === (filtro === 'activos'))
   );
+
 
   return (
     <div className="centered-container">
@@ -85,6 +93,27 @@ const NutricionConvenios = () => {
 
       <h1>Lista de convenios de {institucionN}</h1>
       <h3>Seleccione un Convenio de {institucionN}</h3>
+
+      <FormControl component="fieldset">
+        <RadioGroup
+          row
+          aria-label="filtro-convenios"
+          name="filtro-convenios"
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+        >
+          <FormControlLabel
+            value="activos"
+            control={<Radio />}
+            label="Activos"
+          />
+          <FormControlLabel
+            value="inactivos"
+            control={<Radio />}
+            label="Inactivos"
+          />
+        </RadioGroup>
+      </FormControl>
 
       <div className="search-export-container">
         <div className="search-container">
@@ -112,7 +141,7 @@ const NutricionConvenios = () => {
       <div className="list-container">
         {filteredData.length > 0 ? (
           <TableContainer component={Paper}>
-            <Table>
+            <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Convenio</TableCell>

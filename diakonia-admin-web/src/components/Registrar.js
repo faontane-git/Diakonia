@@ -5,10 +5,12 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import '../estilos/Registrar.css';
 import { Button } from '@mui/material';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, addDoc } from 'firebase/firestore';
+import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
 
-const RegistroInstitucion = ({ user }) => {
+const RegistroInstitucion = () => {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const goBack = () => {
     navigate('/verInstitucion');
@@ -49,7 +51,7 @@ const RegistroInstitucion = ({ user }) => {
       telefono: telefono,
       ruc: ruc,
       activo: true,
-      observacion:'',
+      observacion: '',
     };
 
     // Aquí puedes manejar el archivo como sea necesario, por ejemplo, subirlo a un servicio de almacenamiento.
@@ -64,6 +66,17 @@ const RegistroInstitucion = ({ user }) => {
           icon: 'success',
         });
         goBack();
+        // Guardar información en el histórico
+        const historicoDatos = {
+          usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+          correo: user.email,  // Reemplaza con el nombre del usuario real
+          accion: 'Institución Creada: ' + institucion.nombre,  // Mensaje personalizado
+          fecha: new Date().toLocaleDateString(),
+          hora: new Date().toLocaleTimeString(),  // Hora actual
+        };
+        const firestore = getFirestore();
+        const hitoricoCollection = collection(firestore, 'historico');
+        addDoc(hitoricoCollection, historicoDatos);
       })
       .catch((error) => {
         Swal.fire({
@@ -83,7 +96,7 @@ const RegistroInstitucion = ({ user }) => {
   return (
     <div>
       <div className="centered-container">
-        <Cabecera user={user} />
+        <Cabecera />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center' }}>

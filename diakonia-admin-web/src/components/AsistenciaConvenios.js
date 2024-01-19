@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Await, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Cabecera from './Cabecera';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import '../estilos/ListaBeneficiarios.css';
-import { getFirestore, collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
 import {
   Table,
   TableBody,
@@ -17,64 +22,104 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormControl
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import Swal from 'sweetalert2';
-import * as XLSX from 'xlsx';
 
 const AsistenciaConvenios = () => {
   const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
-  const goBack = () => {
-    navigate('/nutricion');
-  };
-
-  const convertirTimestampAFecha = (timestamp) => {
-    const fecha = new Date(timestamp.seconds * 1000);
-    return fecha.toLocaleDateString('es-ES');
-  };
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filtro, setFiltro] = useState('activos');
 
   useEffect(() => {
     const querydb = getFirestore();
     const conveniosCollection = collection(querydb, 'convenios');
-    const conveniosQuery = query(conveniosCollection, where('institucionId', '==', institucionId));
+    const conveniosQuery = query(
+      conveniosCollection,
+      where('institucionId', '==', institucionId)
+    );
 
     getDocs(conveniosQuery).then((res) =>
       setData(res.docs.map((benf) => ({ id: benf.id, ...benf.data() })))
     );
   }, [institucionId]);
 
-  const filteredData = data.filter((convenio) =>
-    convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-
-  function esActivo(convenio) {
-    console.log(convenio.activo)
-    return convenio.activo === true;
+  function convertirTimestampAFecha(timestamp) {
+    const fecha = new Date(timestamp.seconds * 1000);
+    return fecha.toLocaleDateString('es-ES');
   }
 
+  function esActivo(convenio) {
+    if (filtro === 'activos') {
+      return convenio.activo === true;
+    } else if (filtro === 'inactivos') {
+      return convenio.activo === false;
+    }
+   }
+
+  const filteredData = data.filter(
+    (convenio) =>
+      convenio.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      esActivo(convenio)
+  );
+
+  const goBack = () => {
+    navigate('/nutricion');
+  };
 
   return (
     <div className="centered-container">
       <Cabecera />
 
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+        <div id="volver">
+          <Button
+            variant="contained"
+            style={{
+              marginLeft: '60%',
+              backgroundColor: '#890202',
+              color: 'white',
+            }}
+            onClick={goBack}
+          >
             Volver
           </Button>
         </div>
 
-        <div id='titulo' style={{ marginLeft: '32em' }}>
+        <div id="titulo" style={{ marginLeft: '32em' }}>
           <h1>Asistencias</h1>
         </div>
       </div>
 
       <h3>Seleccione un Convenio de {institucionN}</h3>
+
+      <FormControl component="fieldset">
+        <RadioGroup
+          row
+          aria-label="filtro-convenios"
+          name="filtro-convenios"
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+        >
+          <FormControlLabel
+            value="activos"
+            control={<Radio />}
+            label="Activos"
+          />
+          <FormControlLabel
+            value="inactivos"
+            control={<Radio />}
+            label="Inactivos"
+          />
+        </RadioGroup>
+      </FormControl>
+
 
       <div className="search-export-container">
         <div className="search-container">
@@ -145,7 +190,6 @@ const AsistenciaConvenios = () => {
                         Ver Asistencia
                       </Button>
                     </Link>
-
                   </TableCell>
                 </TableRow>
               ))
@@ -162,6 +206,5 @@ const AsistenciaConvenios = () => {
     </div>
   );
 };
-
 
 export default AsistenciaConvenios;

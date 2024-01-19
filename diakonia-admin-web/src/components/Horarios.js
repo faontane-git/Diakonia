@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFirestore, doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc } from 'firebase/firestore';
 import '../estilos/Horarios.css';
+import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
 
-const Horarios = ({ user }) => {
+
+const Horarios = () => {
   const { institucionId, institucionN } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const [horaDesayunoInicial, setHoraDesayunoInicial] = useState('');
   const [horaDesayunoFinal, setHoraDesayunoFinal] = useState('');
@@ -61,6 +64,18 @@ const Horarios = ({ user }) => {
         // Si no existe, crear un nuevo documento
         await setDoc(docuRef, horario);
       }
+
+      // Guardar información en el histórico
+      const historicoDatos = {
+        usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+        correo: user.email,  // Reemplaza con el nombre del usuario real
+        accion: 'Horario Cambiado',  // Mensaje personalizado
+        fecha: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString(),  // Hora actual
+      };
+      const firestore = getFirestore();
+      const hitoricoCollection = collection(firestore, 'historico');
+      addDoc(hitoricoCollection, historicoDatos);
 
       Swal.fire('¡Éxito!', 'Horario editado con éxito', 'success');
       navigate('/horarios');

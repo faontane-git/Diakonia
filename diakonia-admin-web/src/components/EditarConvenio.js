@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc } from 'firebase/firestore';
 import '../estilos/EditarConvenio.css';
 import { Button } from '@mui/material';
+import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
 
-const EditarConvenio = ({ user }) => {
+const EditarConvenio = () => {
   const { institucionId, institucionN, convenioId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const goBack = () => {
     navigate(`/instituciones/${institucionId}/${institucionN}`);
   };
 
   const [nombre, setNombre] = useState('');
+  const [nombreAnterior, setNombreAnterior] = useState('');
   const [direccion, setDireccion] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
@@ -33,6 +36,7 @@ const EditarConvenio = ({ user }) => {
         const convenioData = docSnapshot.data();
 
         setNombre(convenioData.nombre || '');
+        setNombreAnterior(convenioData.nombre || '');
         setDireccion(convenioData.direccion || '');
 
         if (convenioData.fecha_inicial) {
@@ -116,6 +120,18 @@ const EditarConvenio = ({ user }) => {
 
     try {
       await updateDoc(docuRef, convenio);
+      // Guardar información en el histórico
+      const historicoDatos = {
+        usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+        correo: user.email,  // Reemplaza con el nombre del usuario real
+        accion: 'Convenio Editado: ' + nombreAnterior,  // Mensaje personalizado
+        fecha: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString(),  // Hora actual
+      };
+      const firestore = getFirestore();
+      const hitoricoCollection = collection(firestore, 'historico');
+      addDoc(hitoricoCollection, historicoDatos);
+
       Swal.fire('¡Éxito!', 'Convenio editado con éxito', 'success');
       navigate(`/instituciones/${institucionId}/${institucionN}`);
     } catch (error) {

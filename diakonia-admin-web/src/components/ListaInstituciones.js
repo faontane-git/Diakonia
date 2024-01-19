@@ -19,13 +19,16 @@ import {
   FormLabel,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import { getFirestore, doc, updateDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, getDoc, addDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import '../estilos/ListaInstituciones.css';
+import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
+
 
 const ListaInstituciones = ({ instituciones }) => {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const goConvenios = (institucion) => {
     navigate(`/instituciones/${institucion.id}/${institucion.nombre}`);
@@ -46,6 +49,7 @@ const ListaInstituciones = ({ instituciones }) => {
     return institucion.activo === true;
   }
 
+
   async function eliminarInstitucion(institucion) {
     const confirmResult = await Swal.fire({
       title: 'Advertencia',
@@ -65,29 +69,65 @@ const ListaInstituciones = ({ instituciones }) => {
       const docuRef = doc(querydb, 'instituciones', institucion.id);
       const observacion = confirmResult.value;
       try {
+
         // Inactivar la institución
         await updateDoc(docuRef, { observacion: observacion, activo: false });
+
         // Obtener los convenios asociados a la institución
         const conveniosQuery = query(collection(querydb, 'convenios'), where('institucionId', '==', institucion.id));
         const conveniosSnapshot = await getDocs(conveniosQuery);
+
         // Inactivar cada convenio asociado
-        conveniosSnapshot.forEach(async (convenioDoc) => {
+        await Promise.all(conveniosSnapshot.docs.map(async (convenioDoc) => {
           const convenioRef = doc(querydb, 'convenios', convenioDoc.id);
+
+          // Obtener datos del convenio
+          const convenioSnap = await getDoc(convenioRef);
+          const convenioData = convenioSnap.data();
+          const nombreConvenio = convenioData.nombre; // Asegúrate de que el campo 'nombre' exista en tu documento de convenio
+
+          // Guardar información en el histórico
+          const historicoDatos = {
+            usuario: user.nombre,
+            correo: user.email,
+            accion: `Convenio Inactivado: ${nombreConvenio} Institución: ${institucion.nombre}`,  // Mensaje personalizado
+            fecha: new Date().toLocaleDateString(),
+            hora: new Date().toLocaleTimeString(),
+          };
+          const firestore = getFirestore();
+          const historicoCollection = collection(firestore, 'historico');
+          await addDoc(historicoCollection, historicoDatos);
+
           await updateDoc(convenioRef, { observacion: "¡Institución Inactivada!", activo: false });
+
           const conveniosQuery = query(collection(querydb, 'beneficiarios'), where('convenioId', '==', convenioDoc.id));
           const conveniosSnapshot = await getDocs(conveniosQuery);
-          // Inactivar cada beneficiario asociado
-          conveniosSnapshot.forEach(async (beneficiarioDoc) => {
+
+          // Use Promise.all to wait for all beneficiary updates to complete
+          await Promise.all(conveniosSnapshot.docs.map(async (beneficiarioDoc) => {
             const convenioRef = doc(querydb, 'beneficiarios', beneficiarioDoc.id);
-            await updateDoc(convenioRef, { observacion: "¡Institución Inactivada!", activo: false });
-          });
-        });
+            await updateDoc(convenioRef, { observacion: '¡Institución Inactivada!', activo: false });
+          }));
+        }));
+
+        // Guardar información en el histórico
+        const historicoDatos = {
+          usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+          correo: user.email,  // Reemplaza con el nombre del usuario real
+          accion: 'Institución Inactivada: ' + institucion.nombre,  // Mensaje personalizado
+          fecha: new Date().toLocaleDateString(),
+          hora: new Date().toLocaleTimeString(),  // Hora actual
+        };
+        const firestore = getFirestore();
+        const hitoricoCollection = collection(firestore, 'historico');
+        addDoc(hitoricoCollection, historicoDatos);
+
       } catch (error) {
         console.error('Error al inactivar institución, convenios y beneficiarios:', error);
         alert(error.message);
       }
-      window.location.reload();
     }
+    window.location.reload();
   }
 
   async function activarInstitucion(institucion) {
@@ -108,6 +148,17 @@ const ListaInstituciones = ({ instituciones }) => {
         try {
           await updateDoc(docuRef, { activo: true });
           Swal.fire('Activado', `${institucion.nombre} ha sido activado.`, 'success');
+          // Guardar información en el histórico
+          const historicoDatos = {
+            usuario: user.nombre,  // Reemplaza con el nombre del usuario real
+            correo: user.email,  // Reemplaza con el nombre del usuario real
+            accion: 'Institución Activada: ' + institucion.nombre,  // Mensaje personalizado
+            fecha: new Date().toLocaleDateString(),
+            hora: new Date().toLocaleTimeString(),  // Hora actual
+          };
+          const firestore = getFirestore();
+          const hitoricoCollection = collection(firestore, 'historico');
+          addDoc(hitoricoCollection, historicoDatos);
           window.location.reload();
         } catch (error) {
           console.error('Error al activar institución:', error);
