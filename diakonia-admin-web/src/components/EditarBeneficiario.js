@@ -23,6 +23,9 @@ const EditarBeneficiario = ({ user }) => {
   const [paisOrigen, setPaisOrigen] = useState('');
   const [paises, setPaises] = useState([]);
 
+  const [desayuno, setDesayuno] =useState([]);
+  const [almuerzo, setAlmuerzo] =useState([]);
+
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
     return fecha.toLocaleDateString('es-ES');
@@ -46,6 +49,8 @@ const EditarBeneficiario = ({ user }) => {
         setNMenores(beneficiarioData.numero_de_personas_menores_en_el_hogar || '');
         setNMayores(beneficiarioData.numero_de_personas_mayores_en_el_hogar || '');
         setPaisOrigen(beneficiarioData.pais_de_origen || '');
+        setDesayuno(beneficiarioData.desayuno || []);
+        setAlmuerzo(beneficiarioData.almuerzo || []);
       }
     };
 
@@ -113,7 +118,7 @@ const EditarBeneficiario = ({ user }) => {
           </Button>
         </div>
       </div>
-        <h3>Convenio: {convenioN}</h3>
+        <h3>Convenio: {convenioN} || Asistencias {"->"} {desayuno.length > 0 && `Desayuno: ${desayuno.filter(item => item === 1).length} `} {almuerzo.length > 0 && `Almuerzo: ${almuerzo.filter(item => item === 1).length} `}</h3>
         <h3>Editar Beneficiario</h3>
       </div>
 
