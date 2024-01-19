@@ -26,6 +26,13 @@ const EditarConvenio = () => {
   const [nuevoArchivo, setNuevoArchivo] = useState(false);
   const fechaActual = new Date().toISOString().slice(0, 10);
 
+  const [fechaInicialOriginal, setFechaInicialOriginal] = useState(null);
+  const [fechaFinalOriginal,setFechaFinalOriginal] = useState(null);
+
+  const [OriginalAlmuerzo, setOriginalAlmuerzo]= useState(null);
+  const [OriginalDesayuno, setOriginalDesayuno]= useState(null);
+
+
   useEffect(() => {
     const obtenerDatosConvenio = async () => {
       const querydb = getFirestore();
@@ -38,15 +45,20 @@ const EditarConvenio = () => {
         setNombre(convenioData.nombre || '');
         setNombreAnterior(convenioData.nombre || '');
         setDireccion(convenioData.direccion || '');
+        
+        setOriginalAlmuerzo(convenioData.almuerzo || '');
+        setOriginalDesayuno(convenioData.desayuno || '');
 
         if (convenioData.fecha_inicial) {
           const fechaInicio = new Date(convenioData.fecha_inicial.seconds * 1000);
           setFechaInicio(fechaInicio.toISOString().slice(0, 10));
+          setFechaInicialOriginal(fechaInicio.toISOString().slice(0, 10))
         }
 
         if (convenioData.fecha_final) {
           const fechaFinal = new Date(convenioData.fecha_final.seconds * 1000);
           setFechaFin(fechaFinal.toISOString().slice(0, 10));
+          setFechaFinalOriginal(fechaFinal.toISOString().slice(0, 10));
         }
       }
     };
@@ -96,8 +108,13 @@ const EditarConvenio = () => {
 
     const fechaInicioObj = new Date(fechaInicio + 'T00:00:00');
     const fechaFinal = new Date(fechaFin + 'T00:00:00');
-    //fechaFinal.setDate(fechaFinal.getDate() + 1);
 
+    const fechaInicioOriginalObj = new Date(fechaInicialOriginal + 'T00:00:00');
+    const fechaFinalOriginalObj= new Date(fechaFinalOriginal + 'T00:00:00');
+
+    console.log(fechaInicioObj);
+    console.log(fechaInicioOriginalObj);
+    
     const docSnapshot = await getDoc(docuRef);
     const fechaInicioConvenio = docSnapshot.data().fecha_inicial.toDate();
 
@@ -105,12 +122,23 @@ const EditarConvenio = () => {
       Swal.fire('Error', 'La fecha de fin debe ser mayor que la fecha de inicio', 'error');
       return;
     }
+    const dias=[];
+
+    
+
+    const diferenciaEnMilisegundos = fechaFinal - fechaInicioObj;
+    for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
+      
+      const fechaActual = new Date(fechaInicioObj.getTime() + i);
+      console.log(fechaActual)
+      dias.push(fechaActual);}
 
     const convenio = {
       nombre,
       direccion,
       fecha_inicial: fechaInicioObj,
       fecha_final: fechaFinal,
+      dias: dias,
     };
 
     if (nuevoArchivo) {
@@ -130,6 +158,111 @@ const EditarConvenio = () => {
       const firestore = getFirestore();
       const hitoricoCollection = collection(firestore, 'historico');
       addDoc(hitoricoCollection, historicoDatos);
+
+
+      //Actualiza los beneficiarios
+      if(fechaInicioOriginalObj.getTime()  !== fechaInicioObj.getTime() ){
+        console.log(" se cambia benef")
+        const querydb = getFirestore();
+        const beneficiariosCollection = collection(querydb, 'beneficiarios');
+        const beneficiariosQuery = query(
+          beneficiariosCollection,
+          where('institucionId', '==', institucionId),
+          where('convenioId', '==', convenioId)
+        );
+        //const inicio = fechaInicioObj.seconds * 1000;
+        //const final = fechaFinal * 1000;
+        const diferenciaEnMilisegundos = fechaFinal - fechaInicioObj;
+        console.log("diferencia: ",diferenciaEnMilisegundos)
+        const desayuno=[];
+        const almuerzo=[];
+        const dias=[];
+
+        //const diferenciaEndias= diferenciaEnMilisegundos/(1000 * 60 * 60 * 24);
+        for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
+          
+          const fechaActual = new Date(fechaInicioObj.getTime() + i);
+          console.log(fechaActual)
+          dias.push(fechaActual);
+          if(OriginalDesayuno === true){
+            desayuno.push(0);
+          }
+          if( OriginalAlmuerzo === true){
+            almuerzo.push(0); // Agregar 0 al campo almuerzo
+          }
+        }
+        console.log(dias.length);
+        const documentos = await getDocs(beneficiariosQuery);
+        documentos.forEach(async (doc) => {
+          const docRef = doc.ref;
+          
+          // Realizar la actualización de los campos deseados
+          await updateDoc(docRef, {dias: dias, desayuno: desayuno, almuerzo: almuerzo});
+          // Agrega más campos según sea necesario
+        
+      });
+
+      }else if(fechaFinalOriginalObj.getTime() !== fechaFinal.getTime()){
+        const querydb = getFirestore();
+        const beneficiariosCollection = collection(querydb, 'beneficiarios');
+        const beneficiariosQuery = query(
+          beneficiariosCollection,
+          where('institucionId', '==', institucionId),
+          where('convenioId', '==', convenioId)
+        );
+        const diferenciaEnMilisegundos = fechaFinal - fechaInicioObj;
+
+        if(fechaFinalOriginalObj.getTime() > fechaFinal.getTime()){
+          const documentos = await getDocs(beneficiariosQuery);
+          documentos.forEach(async (doc) => {
+            const docRef = doc.ref;
+            const data = doc.data();
+        
+            // Obtén las listas actuales
+            const diasOriginales = data.dias || [];
+            const desayunoOriginales = data.desayuno || [];
+            const almuerzoOriginales = data.almuerzo || [];
+        
+            // Ajusta las listas según la diferencia de días
+            const diferenciaDias = Math.ceil(diferenciaEnMilisegundos / (24 * 60 * 60 * 1000));
+        
+            const nuevosDias = diasOriginales.slice(0, diferenciaDias+1);
+            const nuevosDesayuno = desayunoOriginales.slice(0, diferenciaDias+1);
+            const nuevosAlmuerzo = almuerzoOriginales.slice(0, diferenciaDias+1);
+
+            // Actualiza el documento en la colección 'beneficiarios'
+            await updateDoc(docRef, { dias: nuevosDias, desayuno: nuevosDesayuno, almuerzo: nuevosAlmuerzo });
+          });
+
+        }else if(fechaFinalOriginalObj.getTime() < fechaFinal.getTime()){
+
+          const documentos = await getDocs(beneficiariosQuery);
+          documentos.forEach(async (doc) => {
+            const docRef = doc.ref;
+            const data = doc.data();
+        
+            const diferenciaDias = Math.ceil(diferenciaEnMilisegundos / (24 * 60 * 60 * 1000));
+
+            const diasAgregar = diferenciaDias - (data.dias || []).length;
+            const ceros = Array(diasAgregar+1).fill(0);
+          
+            // Ajusta las listas agregando ceros al final
+            const nuevosDias =  [];
+            const nuevosDesayuno = (data.desayuno || []).concat(ceros);
+            const nuevosAlmuerzo = (data.almuerzo || []).concat(ceros);
+
+            for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
+          
+              const fechaActual = new Date(fechaInicioObj.getTime() + i);
+              console.log(fechaActual)
+              nuevosDias.push(fechaActual);}
+          
+            // Actualiza el documento en la colección 'beneficiarios'
+            await updateDoc(docRef, { dias: nuevosDias, desayuno: nuevosDesayuno, almuerzo: nuevosAlmuerzo });
+          });
+
+        }
+      }
 
       Swal.fire('¡Éxito!', 'Convenio editado con éxito', 'success');
       navigate(`/instituciones/${institucionId}/${institucionN}`);

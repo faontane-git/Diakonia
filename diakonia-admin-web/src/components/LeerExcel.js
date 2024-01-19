@@ -167,8 +167,10 @@ const LeerExcel = ({ user }) => {
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
               const fechaActual = new Date(inicio + i);
               beneficiario.dias.push(fechaActual);
-              beneficiario.desayuno.push(0);
-              beneficiario.almuerzo.push(0); // Agregar 0 al campo almuerzo
+              if(convenioDoc.data().desayuno=== true){
+              beneficiario.desayuno.push(0);}
+              if(convenioDoc.data().almuerzo=== true){
+              beneficiario.almuerzo.push(0);} // Agregar 0 al campo almuerzo
             }
   
             await addDoc(beneficiarioCollection, beneficiario).catch((error) => {
