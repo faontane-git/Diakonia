@@ -32,8 +32,15 @@ const LeerExcel = ({ user }) => {
   const [data, setData] = useState([]);
   const [fechas, setFechas] = useState([]);
 
+  const [repetidos, setRepetidos] = useState([]);
+
   const goBack = () => {
     navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
+  };
+
+  const validarFormatoFecha = (fecha) => {
+    const regexFecha = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    return regexFecha.test(fecha);
   };
 
   const convertirTimestampAFecha = (timestamp) => {
@@ -78,6 +85,29 @@ const LeerExcel = ({ user }) => {
       })
     );
   }
+
+  const descargarExcelRepetidos = () => {
+    const ws = XLSX.utils.json_to_sheet(repetidos.map(beneficiario => ({
+      'NOMBRES Y APELLIDOS': beneficiario.nombre,
+      'N°CEDULA': beneficiario.cedula,
+      'F.NACIMIENTO': beneficiario.fecha_nacimiento.toLocaleDateString('es-ES'), // Puedes ajustar el formato de fecha según tu necesidad
+      'GÉNERO': beneficiario.genero,
+      'NÚMERO DE CONTACTO': beneficiario.numero_contacto,
+      'NÚMERO DE PERSONAS MENORES DE 18 AÑOS QUE VIVEN CON EL NIÑO EN EL HOGAR': beneficiario.numero_de_personas_menores_en_el_hogar,
+      'NÚMERO DE PERSONAS MAYORES DE 18 AÑOS QUE VIVEN CON EL NIÑO EN EL HOGAR': beneficiario.numero_de_personas_mayores_en_el_hogar,
+    })));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Repetidos');
+
+    const fileName = 'beneficiarios_repetidos.xlsx';
+    XLSX.writeFile(wb, fileName);
+
+    Swal.fire({
+      title: 'Excel Descargado',
+      text: 'Se ha descargado el Excel con beneficiarios repetidos correctamente',
+      icon: 'success',
+    });
+  };
 
   const handleFileUpload = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -157,12 +187,14 @@ const LeerExcel = ({ user }) => {
         const diferenciaEnMilisegundos = final - inicio;
   
         for (const beneficiario of Nbeneficiarios) {
-          if (data.cedulas.includes(beneficiario.cedula)) {
-            Swal.fire({
+          if (beneficiario.cedula.trim() === '' || data.cedulas.includes(beneficiario.cedula) || !validarFormatoFecha(beneficiario.fecha_nacimiento)) {
+            console.log("entra")
+            repetidos.push(beneficiario);
+            /*Swal.fire({
               title: 'Usuario Repetido',
               text: `El usuario ${beneficiario.nombre} ya está registrado`,
               icon: 'error',
-            });
+            });*/
           } else {
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
               const fechaActual = new Date(inicio + i);
@@ -180,12 +212,26 @@ const LeerExcel = ({ user }) => {
             });
           }
         }
+        console.log(repetidos)
+        if (repetidos.length > 0) {
+          
+          const descargarExcel = await Swal.fire({
+            title: 'Beneficiarios Repetidos o con Mal Formato',
+            text: '¿Desea descargar un Excel con estos beneficiarios?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No',
+          });
+          if (descargarExcel.isConfirmed) {
+            descargarExcelRepetidos();
+          }}
   
-        Swal.fire({
+        /*Swal.fire({
           title: 'Beneficiarios Agregados',
           text: 'Se han agregado los beneficiarios correctamente',
           icon: 'success',
-        });
+        });*/
         goBack();
       } else {
         console.log('No se encontró el convenio');
