@@ -68,7 +68,7 @@ const AñadirNutricion = ({user}) => {
         return {
           nombre,
           cedula: cedula[index],
-          fecha_seguimiento: fechaSegui,
+          fechas_seguimiento: fechaSegui,
           pesos: peso[index],
           talla: talla[index],
           hgb: hgb[index],
@@ -86,28 +86,26 @@ const AñadirNutricion = ({user}) => {
     const firestore = getFirestore()
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     
-
-
     for (const beneficiario of Nbeneficiarios) {
       const update = data.find((doc) => doc.cedula === beneficiario.cedula);
       if (update != undefined) {
-        console.log("update: ", update.fecha_seguimiento);
-        console.log("fecha: ", beneficiario.fecha_seguimiento);
+        console.log("update: ", update.fechas_seguimiento);
+        console.log("fecha: ", beneficiario.fechas_seguimiento);
         
-        const lista_Fechas = update.fecha_seguimiento.map(timestamp => new Date(timestamp.seconds * 1000));
-        const index = lista_Fechas.findIndex(fecha => fecha.getTime() === beneficiario.fecha_seguimiento.getTime());
+        const lista_Fechas = update.fechas_seguimiento.map(timestamp => new Date(timestamp.seconds * 1000));
+        const index = lista_Fechas.findIndex(fecha => fecha.getTime() === beneficiario.fechas_seguimiento.getTime());
 
         if (index !== -1) {
-          // Si la fecha_seguimiento existe, actualiza los valores en el índice correspondiente
+          // Si la fechas_seguimiento existe, actualiza los valores en el índice correspondiente
 
           console.log("Se repite")
           update.pesos[index] = beneficiario.pesos;
           update.talla[index] = beneficiario.talla;
           update.hgb[index] = beneficiario.hgb;
         } else {
-          // Si la fecha_seguimiento no existe, agrégala al final de los arrays
+          // Si la fechas_seguimiento no existe, agrégala al final de los arrays
           console.log("No se repite")
-          update.fecha_seguimiento.push(beneficiario.fecha_seguimiento);
+          update.fechas_seguimiento.push(beneficiario.fechas_seguimiento);
           update.pesos.push(beneficiario.pesos);
           update.talla.push(beneficiario.talla);
           update.hgb.push(beneficiario.hgb);
@@ -159,7 +157,7 @@ const AñadirNutricion = ({user}) => {
                 <tr key={index}>
                   <td>{Nbeneficiario.nombre}</td>
                   <td>{Nbeneficiario.cedula}</td>
-                  <td>{convertirTimestampAFecha(Nbeneficiario.fecha_seguimiento)}</td>
+                  <td>{convertirTimestampAFecha(Nbeneficiario.fechas_seguimiento)}</td>
                   <td>{Nbeneficiario.pesos}</td>
                   <td>{Nbeneficiario.talla}</td>
                   <td>{Nbeneficiario.hgb}</td>

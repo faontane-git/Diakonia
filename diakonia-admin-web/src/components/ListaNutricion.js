@@ -149,7 +149,7 @@ const ListaBeneficiarios = ({ user }) => {
             firstSheet[nameCellAddress] = { v: value.nombre };
 
             const SeguimientoCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 1 }); // Columna "A" es el índice 0
-            firstSheet[SeguimientoCellAddress] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento, value.fecha_seguimiento)) };
+            firstSheet[SeguimientoCellAddress] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fechas_seguimiento, value.fechas_seguimiento)) };
 
             const NacimientoCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 5 }); // Columna "A" es el índice 0
             firstSheet[NacimientoCellAddress] = { v: convertirTimestampAFecha(value.fecha_nacimiento) };
@@ -158,7 +158,7 @@ const ListaBeneficiarios = ({ user }) => {
             firstSheet[EdadCellAddress] = { v: calcularEdad(value.fecha_nacimiento) };
 
             const hgbCellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "J" es el índice 9
-            firstSheet[hgbCellAddress] = { v: LeerUltimoValor(value.hgb, value.fecha_seguimiento) };
+            firstSheet[hgbCellAddress] = { v: LeerUltimoValor(value.hgb, value.fechas_seguimiento) };
 
 
 
@@ -166,7 +166,7 @@ const ListaBeneficiarios = ({ user }) => {
             secondSheet[nameCellAddress2] = { v: value.nombre };
 
             const SeguimientoCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "A" es el índice 0
-            secondSheet[SeguimientoCellAddress2] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento, value.fecha_seguimiento)) };
+            secondSheet[SeguimientoCellAddress2] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fechas_seguimiento, value.fechas_seguimiento)) };
 
             const EdadMesesCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 10 }); // Columna "A" es el índice 0
             secondSheet[EdadMesesCellAddress2] = { v: calcularEdadEnMeses(value.fecha_nacimiento) };
@@ -175,10 +175,10 @@ const ListaBeneficiarios = ({ user }) => {
             secondSheet[SexoCellAddress2] = { v: value.genero };
 
             const PesoCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 12 }); // Columna "J" es el índice 9
-            secondSheet[PesoCellAddress2] = { v: LeerUltimoValor(value.pesos, value.fecha_seguimiento) };
+            secondSheet[PesoCellAddress2] = { v: LeerUltimoValor(value.pesos, value.fechas_seguimiento) };
 
             const TallaCellAddress2 = XLSX.utils.encode_cell({ r: rowIndex, c: 13 }); // Columna "J" es el índice 9
-            secondSheet[TallaCellAddress2] = { v: LeerUltimoValor(value.talla, value.fecha_seguimiento) };
+            secondSheet[TallaCellAddress2] = { v: LeerUltimoValor(value.talla, value.fechas_seguimiento) };
 
 
 
@@ -186,7 +186,7 @@ const ListaBeneficiarios = ({ user }) => {
             thirdSheet[nameCellAddress3] = { v: value.nombre };
 
             const SeguimientoCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "A" es el índice 0
-            thirdSheet[SeguimientoCellAddress3] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento, value.fecha_seguimiento)) };
+            thirdSheet[SeguimientoCellAddress3] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fechas_seguimiento, value.fechas_seguimiento)) };
 
             const EdadMesesCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 10 }); // Columna "A" es el índice 0
             thirdSheet[EdadMesesCellAddress3] = { v: calcularEdadEnMeses(value.fecha_nacimiento) };
@@ -195,10 +195,10 @@ const ListaBeneficiarios = ({ user }) => {
             thirdSheet[SexoCellAddress3] = { v: value.genero };
 
             const PesoCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 12 }); // Columna "J" es el índice 9
-            thirdSheet[PesoCellAddress3] = { v: LeerUltimoValor(value.pesos, value.fecha_seguimiento) };
+            thirdSheet[PesoCellAddress3] = { v: LeerUltimoValor(value.pesos, value.fechas_seguimiento) };
 
             const TallaCellAddress3 = XLSX.utils.encode_cell({ r: rowIndex, c: 13 }); // Columna "J" es el índice 9
-            thirdSheet[TallaCellAddress3] = { v: LeerUltimoValor(value.talla, value.fecha_seguimiento) };
+            thirdSheet[TallaCellAddress3] = { v: LeerUltimoValor(value.talla, value.fechas_seguimiento) };
 
 
 
@@ -206,7 +206,7 @@ const ListaBeneficiarios = ({ user }) => {
             fourthSheet[nameCellAddress4] = { v: value.nombre };
 
             const SeguimientoCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 9 }); // Columna "A" es el índice 0
-            fourthSheet[SeguimientoCellAddress4] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fecha_seguimiento, value.fecha_seguimiento)) };
+            fourthSheet[SeguimientoCellAddress4] = { v: convertirTimestampAFecha(LeerUltimoValor(value.fechas_seguimiento, value.fechas_seguimiento)) };
 
             const EdadMesesCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 10 }); // Columna "A" es el índice 0
             fourthSheet[EdadMesesCellAddress4] = { v: calcularEdadEnMeses(value.fecha_nacimiento) };
@@ -215,10 +215,10 @@ const ListaBeneficiarios = ({ user }) => {
             fourthSheet[SexoCellAddress4] = { v: value.genero };
 
             const PesoCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 12 }); // Columna "J" es el índice 9
-            fourthSheet[PesoCellAddress4] = { v: LeerUltimoValor(value.pesos, value.fecha_seguimiento) };
+            fourthSheet[PesoCellAddress4] = { v: LeerUltimoValor(value.pesos, value.fechas_seguimiento) };
 
             const TallaCellAddress4 = XLSX.utils.encode_cell({ r: rowIndex, c: 13 }); // Columna "J" es el índice 9
-            fourthSheet[TallaCellAddress4] = { v: LeerUltimoValor(value.talla, value.fecha_seguimiento) };
+            fourthSheet[TallaCellAddress4] = { v: LeerUltimoValor(value.talla, value.fechas_seguimiento) };
 
           });
 
@@ -331,10 +331,10 @@ const ListaBeneficiarios = ({ user }) => {
               <TableRow key={beneficiario.id}>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{beneficiario.nombre}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{calcularEdad(beneficiario.fecha_nacimiento)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.pesos, beneficiario.fecha_seguimiento)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.talla, beneficiario.fecha_seguimiento)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.hgb, beneficiario.fecha_seguimiento)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(LeerUltimoValor(beneficiario.fecha_seguimiento, beneficiario.fecha_seguimiento))}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.pesos, beneficiario.fechas_seguimiento)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.talla, beneficiario.fechas_seguimiento)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{LeerUltimoValor(beneficiario.hgb, beneficiario.fechas_seguimiento)}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(LeerUltimoValor(beneficiario.fechas_seguimiento, beneficiario.fechas_seguimiento))}</TableCell>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                   <Link to={`/verGrafica/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${beneficiario.id}`}>
                     <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>
