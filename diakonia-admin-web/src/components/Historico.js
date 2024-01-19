@@ -32,8 +32,8 @@ const Historico = () => {
                         const fechaA = new Date(a.fecha);
                         const fechaB = new Date(b.fecha);
 
-                        if (fechaA < fechaB) return -1;
-                        if (fechaA > fechaB) return 1;
+                        if (fechaA > fechaB) return -1; // Invertir el orden si fechaA es mayor
+                        if (fechaA < fechaB) return 1;
 
                         // Si las fechas son iguales, comparar horas, minutos y segundos
                         const horaA = a.hora.split(':');
@@ -54,8 +54,7 @@ const Historico = () => {
 
                         // Si las fechas y horas son iguales
                         return 0;
-                    })
-                    .reverse(); // Invertir el orden
+                    });
 
                 setHistoricoData(datosHistorico);
             } catch (error) {

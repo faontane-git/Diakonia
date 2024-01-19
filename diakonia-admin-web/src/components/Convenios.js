@@ -3,8 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
-
+import { useAuthContext } from './AuthContext';
 import {
   Table,
   TableBody,
@@ -22,9 +21,7 @@ import {
   FormControlLabel,
   FormControl,
 } from '@mui/material';
-
 import { Search } from '@mui/icons-material';
-
 import Cabecera from './Cabecera';
 import '../estilos/ListaBeneficiarios.css';
 
@@ -200,9 +197,30 @@ const Convenios = () => {
   async function eliminarConvenioFecha(convenio) {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'convenios', convenio.id);
-
     try {
-      await updateDoc(docuRef, { activo: false });
+      updateDoc(docuRef, { observacion: "¡Convenio Finalizado!", activo: false });
+
+      // Guardar información en el histórico
+      const historicoDatos = {
+        usuario: "Diakonía WEB",  // Reemplaza con el nombre del usuario real
+        correo: "Diakonía WEB",  // Reemplaza con el nombre del usuario real
+        accion: 'Convenio Finalizado: ' + convenio.nombre + " Institución: " + institucionN,  // Mensaje personalizado
+        fecha: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString(),  // Hora actual
+      };
+      const firestore = getFirestore();
+      const hitoricoCollection = collection(firestore, 'historico');
+      addDoc(hitoricoCollection, historicoDatos);
+
+      const conveniosQuery = query(collection(querydb, 'beneficiarios'), where('convenioId', '==', convenio.id));
+      const conveniosSnapshot = await getDocs(conveniosQuery);
+
+      // Use Promise.all to wait for all beneficiary updates to complete
+      await Promise.all(conveniosSnapshot.docs.map(async (beneficiarioDoc) => {
+        const convenioRef = doc(querydb, 'beneficiarios', beneficiarioDoc.id);
+        await updateDoc(convenioRef, { observacion: '¡Convenio Finalizado!', activo: false });
+      }));
+
     } catch (error) {
       alert(error.message);
     }
@@ -291,7 +309,7 @@ const Convenios = () => {
             const historicoDatos = {
               usuario: user.nombre,  // Reemplaza con el nombre del usuario real
               correo: user.email,  // Reemplaza con el nombre del usuario real
-              accion: 'Convenio Activado: '+convenio.nombre+' Institución: ' + institucionN,  // Mensaje personalizado
+              accion: 'Convenio Activado: ' + convenio.nombre + ' Institución: ' + institucionN,  // Mensaje personalizado
               fecha: new Date().toLocaleDateString(),
               hora: new Date().toLocaleTimeString(),  // Hora actual
             };
@@ -315,8 +333,6 @@ const Convenios = () => {
       });
     }
   }
-
-
 
   async function eliminarConvenio(convenio) {
     const confirmResult = await Swal.fire({

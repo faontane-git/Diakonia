@@ -149,7 +149,7 @@ function Aplicacion() {
 
             <Route path="asistencias" element={<VerAsistencias />} />
             <Route path="asistencias/:institucionId/:institucionN" element={<AsistenciaConvenios />} />
-            <Route path="asistencias/:institucionId/:institucionN/:convenioId/:convenioN" element={<ListaAsistencias />} />
+            <Route path="asistencias/:institucionId/:institucionN/:convenioId/:convenioN/:fechaIncio/:fechaFin" element={<ListaAsistencias />} />
             <Route path="nutricion" element={<Nutricion />} />
             <Route path="horarios" element={<Horarios />} />
             <Route path="historico" element={<Historico />} />

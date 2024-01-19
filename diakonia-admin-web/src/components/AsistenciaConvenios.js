@@ -52,8 +52,15 @@ const AsistenciaConvenios = () => {
 
   function convertirTimestampAFecha(timestamp) {
     const fecha = new Date(timestamp.seconds * 1000);
-    return fecha.toLocaleDateString('es-ES');
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Meses son indexados desde 0
+    const anio = fecha.getFullYear().toString();
+
+    // Formatea la fecha como "DD-MM-YYYY"
+    const fechaFormateada = `${dia}-${mes}-${anio}`;
+    return fechaFormateada;
   }
+
 
   function esActivo(convenio) {
     if (filtro === 'activos') {
@@ -61,7 +68,7 @@ const AsistenciaConvenios = () => {
     } else if (filtro === 'inactivos') {
       return convenio.activo === false;
     }
-   }
+  }
 
   const filteredData = data.filter(
     (convenio) =>
@@ -183,7 +190,7 @@ const AsistenciaConvenios = () => {
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(convenio.fecha_final)}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                     <Link
-                      to={`/asistencias/${institucionId}/${institucionN}/${convenio.id}/${convenio.nombre}`}
+                      to={`/asistencias/${institucionId}/${institucionN}/${convenio.id}/${convenio.nombre}/${convertirTimestampAFecha(convenio.fecha_inicial)}/${convertirTimestampAFecha(convenio.fecha_final)}`}
                       className="centered-link"
                     >
                       <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white' }}>

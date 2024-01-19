@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 
 const ListaAsistencias = ({ user }) => {
-  const { institucionId, convenioId, institucionN } = useParams();
+  const { institucionId, convenioId, institucionN, convenioN, fechaIncio, fechaFin } = useParams();
   const [fechas, setFechas] = useState([]);
   const [datos, setData] = useState([]);
 
@@ -61,7 +61,7 @@ const ListaAsistencias = ({ user }) => {
 
   const convertirFecha = (fecha) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return new Date(fecha ).toLocaleDateString('es-ES', options);
+    return new Date(fecha).toLocaleDateString('es-ES', options);
   };
 
   const consulta = async () => {
@@ -191,7 +191,7 @@ const ListaAsistencias = ({ user }) => {
               <TableRow>
                 <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Nombre</TableCell>
                 {fechasFiltradas.map((dia, index) => (
-                  <TableCell className="fecha-cell" key={index} style={{  backgroundColor: '#890202',color: 'white', maxWidth: '20px', fontSize: '12px' }}>{dia}</TableCell>
+                  <TableCell className="fecha-cell" key={index} style={{ backgroundColor: '#890202', color: 'white', maxWidth: '20px', fontSize: '12px' }}>{dia}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -231,8 +231,13 @@ const ListaAsistencias = ({ user }) => {
           <div id='titulo' style={{ marginLeft: '32em' }}>
             <h1>Asistencias</h1>
           </div>
+
         </div>
+        <h3>{convenioN}</h3>
+        <h3>Fecha de Incio: {fechaIncio} Fecha Final: {fechaFin}</h3>
       </div>
+
+
 
       <div className="filter-asistencia">
         {/* Filtro por Servicio */}
