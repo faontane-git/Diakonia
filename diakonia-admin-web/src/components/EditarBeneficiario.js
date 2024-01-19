@@ -3,10 +3,15 @@ import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../estilos/EditarBeneficiario.css';
+import { Button } from '@mui/material';
 
 const EditarBeneficiario = ({ user }) => {
   const { institucionId, institucionN, convenioId, convenioN, beneficiarioid } = useParams();
+
   const navigate = useNavigate();
+  const goBack = () => {
+    navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
+  };
 
   const [nombre, setNombre] = useState('');
   const [cedula, setCedula] = useState('');
@@ -101,6 +106,13 @@ const EditarBeneficiario = ({ user }) => {
       <div className="centered-container">
         <Cabecera user={user} />
         <h3>Institución: {institucionN}</h3>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
         <h3>Convenio: {convenioN}</h3>
         <h3>Editar Beneficiario</h3>
       </div>

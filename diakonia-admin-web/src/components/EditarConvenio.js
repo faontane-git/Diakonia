@@ -46,7 +46,6 @@ const EditarConvenio = () => {
 
         if (convenioData.fecha_final) {
           const fechaFinal = new Date(convenioData.fecha_final.seconds * 1000);
-          fechaFinal.setDate(fechaFinal.getDate() - 1);
           setFechaFin(fechaFinal.toISOString().slice(0, 10));
         }
       }
@@ -95,9 +94,9 @@ const EditarConvenio = () => {
     const querydb = getFirestore();
     const docuRef = doc(querydb, 'convenios', convenioId);
 
-    const fechaInicioObj = new Date(fechaInicio);
-    const fechaFinal = new Date(fechaFin);
-    fechaFinal.setDate(fechaFinal.getDate() + 1);
+    const fechaInicioObj = new Date(fechaInicio + 'T00:00:00');
+    const fechaFinal = new Date(fechaFin + 'T00:00:00');
+    //fechaFinal.setDate(fechaFinal.getDate() + 1);
 
     const docSnapshot = await getDoc(docuRef);
     const fechaInicioConvenio = docSnapshot.data().fecha_inicial.toDate();

@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode.react';
 import html2pdf from 'html2pdf.js';
 import '../estilos/Credencial.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import Cabecera from './Cabecera';
 
 const CredencialesComponent = () => {
-  const { arreglo } = useParams();
+  const { institucionId, institucionN, convenioId, convenioN, arreglo } = useParams();
   const [datosCredencial, setDatosCredencial] = useState([]);
+
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(`/beneficiarios/${institucionId}/${institucionN}/${convenioId}/${convenioN}`);
+  };
 
   useEffect(() => {
     try {
@@ -85,6 +91,14 @@ const CredencialesComponent = () => {
 
   return (
     <div className="App">
+      <Cabecera/>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div id='volver'>
+          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
+        </div>
+      </div>
       <Carnet datos={datosCredencial} />
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         <Button onClick={descargarCredenciales} variant="contained" color="primary">

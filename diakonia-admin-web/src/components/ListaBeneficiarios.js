@@ -103,14 +103,14 @@ const ListaBeneficiarios = ({ user }) => {
   const generarCredencial = (beneficiario) => {
     // Codifica el objeto como un string para pasarlo como parte de la URL
     const encodedData = encodeURIComponent(JSON.stringify([beneficiario]));
-    navigate(`/credencial/${encodedData}`);
+    navigate(`/credencial/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${encodedData}`);
   };
 
   const generarCredenciales = () => {
     // Codifica el arreglo como un string para pasarlo como parte de la URL
     const encodedData = encodeURIComponent(JSON.stringify(filteredData));
     console.log(filteredData);
-    navigate(`/credencial/${encodedData}`);
+    navigate(`/credencial/${institucionId}/${institucionN}/${convenioId}/${convenioN}/${encodedData}`);
   };
 
   const exportarTabla = (dataToExport) => {

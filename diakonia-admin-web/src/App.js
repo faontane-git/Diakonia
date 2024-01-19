@@ -136,7 +136,7 @@ function Aplicacion() {
             <Route path="instituciones/:institucionId/:institucionN/añadirConvenio" element={<AñadirConvenio />} />
 
             <Route path="beneficiarios" element={<Beneficiarios />} />
-            <Route path="credencial/:arreglo" element={<CredencialesComponent />} />
+            <Route path="credencial/:institucionId/:institucionN/:convenioId/:convenioN/:arreglo" element={<CredencialesComponent />} />
 
             <Route path="seguimiento" element={<Seguimiento />} />
 

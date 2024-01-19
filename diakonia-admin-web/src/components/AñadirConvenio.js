@@ -84,8 +84,8 @@ const AñadirConvenio = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const initialDateObject = new Date(initialDate);
-    const finalDateObject = new Date(finalDate);
+    const initialDateObject = new Date(initialDate + 'T00:00:00');
+    const finalDateObject = new Date(finalDate + 'T00:00:00');
 
     if (nombre === '' || direccion === '') {
       Swal.fire({
@@ -140,7 +140,7 @@ const AñadirConvenio = () => {
         .then(() => {
           Swal.fire({
             title: 'Éxito',
-            text: '¡Nueva institución añadida!',
+            text: '¡Nuevo convenio añadido!',
             icon: 'success',
           });
           // Guardar información en el histórico
@@ -160,7 +160,7 @@ const AñadirConvenio = () => {
           const errorMessage = error.message;
           Swal.fire({
             title: 'Error',
-            text: '¡Error al agregar institución!',
+            text: error.message,
             icon: 'error',
           });
         });
