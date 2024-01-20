@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc,serverTimestamp  } from 'firebase/firestore';
 import '../estilos/EditarConvenio.css';
 import { Button } from '@mui/material';
 import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
@@ -155,6 +155,7 @@ const EditarConvenio = () => {
         accion: 'Convenio Editado: ' + nombreAnterior,  // Mensaje personalizado
         fecha: new Date().toLocaleDateString(),
         hora: new Date().toLocaleTimeString(),  // Hora actual
+        tiempo: serverTimestamp(), // Utiliza serverTimestamp para obtener la marca de tiempo actual del servidor
       };
       const firestore = getFirestore();
       const hitoricoCollection = collection(firestore, 'historico');
