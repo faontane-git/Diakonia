@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "diakonia-app",
+    "name": "Diakonía Asistencia",
     "slug": "diakonia-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/fresas.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.faontane.diakoniaapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ab087444-25fe-4c61-8cd0-57ea688b7cc0"
+      }
     }
   }
 }
