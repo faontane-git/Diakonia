@@ -14,9 +14,12 @@ import {
   Paper,
 } from '@mui/material';
 import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Historico = () => {
   const [historicoData, setHistoricoData] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,11 +52,30 @@ const Historico = () => {
     fetchHistoricoData();
   }, []);
 
+  // Function to handle date selection
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    if (date) {
+      const formattedDate = moment(date).format('DD/MM/YYYY');
+      console.log('Selected Date:', formattedDate);
+    }
+  };
+
   return (
     <div>
       <div className="centered-container">
         <Cabecera />
         <h1>Histórico</h1>
+
+        <div className="filter-fecha-final">
+          <label htmlFor="filtroFechaFinal">Seleccione una Fecha</label>
+          <DatePicker
+            id="filtroFecha"
+            dateFormat="dd/MM/yyyy"
+            selected={selectedDate}
+            onChange={handleDateChange}
+          />
+        </div>
 
         <TableContainer component={Paper} className="historico-table">
           <Table size="small">
@@ -67,15 +89,19 @@ const Historico = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {historicoData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.usuario}</TableCell>
-                  <TableCell>{item.correo}</TableCell>
-                  <TableCell>{item.accion}</TableCell>
-                  <TableCell>{item.fecha}</TableCell>
-                  <TableCell>{item.hora}</TableCell>
-                </TableRow>
-              ))}
+              {historicoData
+                .filter((item) => {
+                  return !selectedDate || moment(item.fecha, 'DD/MM/YYYY').isSame(selectedDate, 'day');
+                })
+                .map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.usuario}</TableCell>
+                    <TableCell>{item.correo}</TableCell>
+                    <TableCell>{item.accion}</TableCell>
+                    <TableCell>{item.fecha}</TableCell>
+                    <TableCell>{item.hora}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -187,7 +187,7 @@ const LeerExcel = ({ user }) => {
         const diferenciaEnMilisegundos = final - inicio;
   
         for (const beneficiario of Nbeneficiarios) {
-          if (beneficiario.cedula.trim() === '' || data.cedulas.includes(beneficiario.cedula) || !validarFormatoFecha(beneficiario.fecha_nacimiento)) {
+          if (beneficiario.cedula=== '' || data.cedulas.includes(beneficiario.cedula)) {
             console.log("entra")
             repetidos.push(beneficiario);
             /*Swal.fire({
@@ -227,11 +227,11 @@ const LeerExcel = ({ user }) => {
             descargarExcelRepetidos();
           }}
   
-        /*Swal.fire({
+        Swal.fire({
           title: 'Beneficiarios Agregados',
           text: 'Se han agregado los beneficiarios correctamente',
           icon: 'success',
-        });*/
+        });
         goBack();
       } else {
         console.log('No se encontró el convenio');
