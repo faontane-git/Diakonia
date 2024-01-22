@@ -20,6 +20,10 @@ import {
   Button,
   Typography,
 } from '@mui/material';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css'; // Estilo por defecto
+import { DataGrid } from '@mui/x-data-grid';
+import { AutoSizer } from 'react-virtualized';
 
 const ListaAsistencias = ({ user }) => {
   const { institucionId, convenioId, institucionN, convenioN, fechaIncio, fechaFin } = useParams();
@@ -60,11 +64,13 @@ const ListaAsistencias = ({ user }) => {
   };
 
   const convertirFecha = (fecha) => {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
     return new Date(fecha).toLocaleDateString('es-ES', options);
   };
 
-  const consulta = async () => {
+
+  const consulta = () => {
+    console.log(filtroFechaFinal);
     // Validar que ambas fechas estén seleccionadas
     if (!filtroFechaInicial || !filtroFechaFinal) {
       Swal.fire({
@@ -77,52 +83,64 @@ const ListaAsistencias = ({ user }) => {
 
     const querydb = getFirestore();
     const conveniosCollection = collection(querydb, 'convenios');
-    try {
-      const convenioDoc = await getDoc(doc(conveniosCollection, convenioId));
-      const convenioDias = convenioDoc.data().dias.map((fecha) => convertirTimestampAFecha(fecha));
-      setDesayuno(convenioDoc.data().desayuno);
-      setAlmuerzo(convenioDoc.data().almuerzo);
-      setFechas(convenioDias);
-    } catch (error) {
-      console.error('Error al obtener el documento de convenios:', error);
-    }
 
-    //Datos Asistencias
-    const beneficiariosCollection = collection(querydb, 'beneficiarios');
-    const beneficiariosQuery = query(beneficiariosCollection, where('convenioId', '==', convenioId));
-    try {
-      const querySnapshot = await getDocs(beneficiariosQuery);
-      const arregloBeneficiarios = querySnapshot.docs.map((benf) => ({
-        nombre: benf.data().nombre || '',
-        desayuno: benf.data().desayuno || [],
-        almuerzo: benf.data().almuerzo || [],
-      }));
-      setData(arregloBeneficiarios);
+    // Obtener datos del convenio
+    getDoc(doc(conveniosCollection, convenioId))
+      .then((convenioDoc) => {
+        const convenioDias = convenioDoc.data().dias.map((fecha) => convertirTimestampAFecha(fecha));
+        console.log("Fechas:")
+        console.log(convenioDias);
+        setDesayuno(convenioDoc.data().desayuno);
+        setAlmuerzo(convenioDoc.data().almuerzo);
+        setFechas(convenioDias);
 
-    } catch (error) {
-      console.error('Error al obtener documentos:', error);
-    }
-    const indices = indicesFechasFiltradas(filtroFechaInicial, filtroFechaFinal);
-    setFechasFiltradas(filtrarFechas(filtroFechaInicial, filtroFechaFinal));
-    setAsistenciaDesayuno(desayunoBeneficiario(datos, indices));
-    setAsistenciaAlmuerzo(almuerzoBeneficiario(datos, indices));
+        // Datos Asistencias
+        const beneficiariosCollection = collection(querydb, 'beneficiarios');
+        const beneficiariosQuery = query(beneficiariosCollection, where('convenioId', '==', convenioId));
+
+        // Obtener documentos de beneficiarios
+        return getDocs(beneficiariosQuery);
+      })
+      .then((querySnapshot) => {
+        const arregloBeneficiarios = querySnapshot.docs.map((benf) => ({
+          nombre: benf.data().nombre || '',
+          desayuno: benf.data().desayuno || [],
+          almuerzo: benf.data().almuerzo || [],
+        }));
+        setData(arregloBeneficiarios);
+
+        const indices = indicesFechasFiltradas(filtroFechaInicial, filtroFechaFinal);
+        setFechasFiltradas(filtrarFechas(indices));
+        console.log(fechasFiltradas);
+        setAsistenciaDesayuno(desayunoBeneficiario(datos, indices));
+        setAsistenciaAlmuerzo(almuerzoBeneficiario(datos, indices));
+      })
+      .catch((error) => {
+        console.error('Error al obtener documentos:', error);
+      });
   };
 
   const indicesFechasFiltradas = (fechaInicial, fechaFinal) => {
-    const fechasFiltradas = fechas.filter((fecha, index) => {
-      return fecha >= convertirFecha(fechaInicial) && fecha <= convertirFecha(fechaFinal);
-    });
-    const indices = fechas.map((fecha, index) => {
-      return fechasFiltradas.includes(fecha) ? index : null;
-    }).filter(index => index !== null);
-    return indices;
+    const indiceFechaInicio = fechas.indexOf(convertirFecha(fechaInicial));
+    const indiceFechaFin = fechas.indexOf(convertirFecha(fechaFinal));
+
+    if (indiceFechaInicio === -1 || indiceFechaFin === -1) {
+      // Lanzar notificación de error con SweetAlert
+      Swal.fire({
+        icon: 'error',
+        title: 'La fecha no pertenece al convenio',
+        text: 'Por favor, selecciona fechas válidas.',
+      });
+      return [];
+    }
+    return [indiceFechaInicio, indiceFechaFin];
   };
 
-  const filtrarFechas = (fechaInicial, fechaFinal) => {
-    const fechasFiltradas = fechas.filter(fecha => {
-      return fecha >= convertirFecha(fechaInicial) && fecha <= convertirFecha(fechaFinal);
-    });
-    return (fechasFiltradas);
+
+  const filtrarFechas = (indices) => {
+    const fechasFiltradas = fechas.slice(indices[0], indices[1] + 1);
+    console.log("Fechas Filtradas:", fechasFiltradas);
+    return fechasFiltradas;
   };
 
   const desayunoBeneficiario = (datos, indices) => {
@@ -149,7 +167,7 @@ const ListaAsistencias = ({ user }) => {
 
   const renderTablaDesayuno = () => {
     return (
-      <div>
+      <div className="centered-container">
         <Typography variant="h6" gutterBottom>
           Desayuno
         </Typography>
@@ -157,9 +175,9 @@ const ListaAsistencias = ({ user }) => {
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px' }}>Nombre</TableCell>
+                <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Nombre</TableCell>
                 {fechasFiltradas.map((dia, index) => (
-                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px' }} key={index}>{dia}</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', maxWidth: '50px', fontSize: '12px' }} key={index}>{dia}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -185,13 +203,13 @@ const ListaAsistencias = ({ user }) => {
         <Typography variant="h6" gutterBottom>
           Almuerzo
         </Typography>
-        <Paper>
-          <Table size="small" style={{ tableLayout: 'fixed' }}>
+        <Paper style={{ overflowX: 'auto' }}>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Nombre</TableCell>
                 {fechasFiltradas.map((dia, index) => (
-                  <TableCell className="fecha-cell" key={index} style={{ backgroundColor: '#890202', color: 'white', maxWidth: '20px', fontSize: '12px' }}>{dia}</TableCell>
+                  <TableCell className="fecha-cell" key={index} style={{ backgroundColor: '#890202', color: 'white', maxWidth: '50px', fontSize: '12px' }}>{dia}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -213,7 +231,40 @@ const ListaAsistencias = ({ user }) => {
 
 
   const exportarExcel = () => {
+    if (asistenciaDesayuno.length === 0 && asistenciaAlmuerzo.length === 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'No hay datos para exportar',
+      });
+      return;
+    }
 
+    const workbook = XLSX.utils.book_new();
+
+    // Obtener el nombre del convenio
+
+    // Hoja Desayuno (si el servicio es "todos" o "desayuno")
+    if (asistenciaDesayuno.length > 0 && (filtroServicio === 'todos' || filtroServicio === 'desayuno')) {
+      const desayunoData = [
+        ['Nombre', ...fechasFiltradas],
+        ...asistenciaDesayuno.map((item) => [item.nombre, ...item.asistencia_desayuno.map((dia) => (dia === 'A' ? 'A' : 'F'))]),
+      ];
+      const desayunoSheet = XLSX.utils.aoa_to_sheet(desayunoData);
+      XLSX.utils.book_append_sheet(workbook, desayunoSheet, `Desayuno`);
+    }
+
+    // Hoja Almuerzo (si el servicio es "todos" o "almuerzo")
+    if (asistenciaAlmuerzo.length > 0 && (filtroServicio === 'todos' || filtroServicio === 'almuerzo')) {
+      const almuerzoData = [
+        ['Nombre', ...fechasFiltradas],
+        ...asistenciaAlmuerzo.map((item) => [item.nombre, ...item.asistencia_almuerzo.map((dia) => (dia === 'A' ? 'A' : 'F'))]),
+      ];
+      const almuerzoSheet = XLSX.utils.aoa_to_sheet(almuerzoData);
+      XLSX.utils.book_append_sheet(workbook, almuerzoSheet, `Almuerzo`);
+    }
+
+    // Descargar el archivo
+    XLSX.writeFile(workbook, `asistencias_${convenioN}.xlsx`);
   };
 
   return (
@@ -236,7 +287,6 @@ const ListaAsistencias = ({ user }) => {
         <h3>{convenioN}</h3>
         <h3>Fecha de Incio: {fechaIncio} Fecha Final: {fechaFin}</h3>
       </div>
-
 
 
       <div className="filter-asistencia">

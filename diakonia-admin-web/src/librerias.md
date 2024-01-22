@@ -28,3 +28,6 @@ npm install react-slick slick-carousel
 npm install pdf-lib
 npm install moment
 npm install react-image-gallery
+npm install react-perfect-scrollbar
+npm install @mui/x-data-grid
+npm install react-virtualized
