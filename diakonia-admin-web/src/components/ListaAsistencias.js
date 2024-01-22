@@ -68,10 +68,58 @@ const ListaAsistencias = ({ user }) => {
     return new Date(fecha).toLocaleDateString('es-ES', options);
   };
 
+  const convertirFormatoFecha = (fecha) => {
+    const [dia, mes, anio] = fecha.split('-');
+    const diaFormateado = dia.replace(/^0+/, '');
+    const mesFormateado = mes.replace(/^0+/, '');
+    return `${diaFormateado}/${mesFormateado}/${anio}`;
+  };
+
+
+  const consultaAutomatica = (fechaInicial,fechaFinal) => {
+    const querydb = getFirestore();
+    const conveniosCollection = collection(querydb, 'convenios');
+    // Obtener datos del convenio
+    getDoc(doc(conveniosCollection, convenioId))
+      .then((convenioDoc) => {
+        const convenioDias = convenioDoc.data().dias.map((fecha) => convertirTimestampAFecha(fecha));
+        setFechas(convenioDias);
+        setDesayuno(convenioDoc.data().desayuno);
+        setAlmuerzo(convenioDoc.data().almuerzo);
+        // Datos Asistencias
+        const beneficiariosCollection = collection(querydb, 'beneficiarios');
+        const beneficiariosQuery = query(beneficiariosCollection, where('convenioId', '==', convenioId));
+        // Obtener documentos de beneficiarios
+        return getDocs(beneficiariosQuery);
+      })
+      .then((querySnapshot) => {
+        const arregloBeneficiarios = querySnapshot.docs.map((benf) => ({
+          nombre: benf.data().nombre || '',
+          desayuno: benf.data().desayuno || [],
+          almuerzo: benf.data().almuerzo || [],
+        }));
+        setData(arregloBeneficiarios);
+
+        const indices = indicesFechasFiltradas2(fechaInicial, fechaFinal);
+        console.log(indices);
+        setFechasFiltradas(filtrarFechas(indices));
+        console.log(fechasFiltradas);
+        setAsistenciaDesayuno(desayunoBeneficiario(datos, indices));
+        setAsistenciaAlmuerzo(almuerzoBeneficiario(datos, indices));
+      })
+      .catch((error) => {
+        console.error('Error al obtener documentos:', error);
+      });
+  }
+
 
   const consulta = () => {
-    console.log(filtroFechaFinal);
     // Validar que ambas fechas estén seleccionadas
+    if (!filtroFechaInicial && !filtroFechaFinal) {  
+      consultaAutomatica(convertirFormatoFecha(fechaIncio),convertirFormatoFecha(fechaFin));
+      return true;
+    }
+
     if (!filtroFechaInicial || !filtroFechaFinal) {
       Swal.fire({
         icon: 'error',
@@ -88,16 +136,12 @@ const ListaAsistencias = ({ user }) => {
     getDoc(doc(conveniosCollection, convenioId))
       .then((convenioDoc) => {
         const convenioDias = convenioDoc.data().dias.map((fecha) => convertirTimestampAFecha(fecha));
-        console.log("Fechas:")
-        console.log(convenioDias);
+        setFechas(convenioDias);
         setDesayuno(convenioDoc.data().desayuno);
         setAlmuerzo(convenioDoc.data().almuerzo);
-        setFechas(convenioDias);
-
         // Datos Asistencias
         const beneficiariosCollection = collection(querydb, 'beneficiarios');
         const beneficiariosQuery = query(beneficiariosCollection, where('convenioId', '==', convenioId));
-
         // Obtener documentos de beneficiarios
         return getDocs(beneficiariosQuery);
       })
@@ -136,6 +180,24 @@ const ListaAsistencias = ({ user }) => {
     return [indiceFechaInicio, indiceFechaFin];
   };
 
+  const indicesFechasFiltradas2 = (fechaInicial, fechaFinal) => {
+    console.log(fechas);
+    const indiceFechaInicio = fechas.indexOf(fechaInicial);
+    const indiceFechaFin = fechas.indexOf(fechaFinal);
+    console.log(indiceFechaInicio);
+    console.log(indiceFechaFin);
+
+    if (indiceFechaInicio === -1 || indiceFechaFin === -1) {
+      // Lanzar notificación de error con SweetAlert
+      Swal.fire({
+        icon: 'error',
+        title: 'La fecha no pertenece al convenio',
+        text: 'Por favor, selecciona fechas válidas.',
+      });
+      return [];
+    }
+    return [indiceFechaInicio, indiceFechaFin];
+  };
 
   const filtrarFechas = (indices) => {
     const fechasFiltradas = fechas.slice(indices[0], indices[1] + 1);
@@ -231,6 +293,7 @@ const ListaAsistencias = ({ user }) => {
 
 
   const exportarExcel = () => {
+    console.log(asistenciaDesayuno);
     if (asistenciaDesayuno.length === 0 && asistenciaAlmuerzo.length === 0) {
       Swal.fire({
         icon: 'info',
