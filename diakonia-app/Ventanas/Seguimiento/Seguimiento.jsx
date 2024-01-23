@@ -44,7 +44,6 @@ const Seguimiento = () => {
   };
 
   const navegar = (nombreBeneficiario, idBeneficiario) => {
-    console.log(idBeneficiario);
     navigation.navigate('OpcionesSeguimiento', { nombreBeneficiario, idBeneficiario });
   };
 

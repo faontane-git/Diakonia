@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
-
+import { useAuth } from '../AuthContext';
 
 const OpcionesSeguimiento = () => {
   const navigation = useNavigation();
@@ -14,37 +14,39 @@ const OpcionesSeguimiento = () => {
 
   const { nombreBeneficiario } = route.params;
   const { idBeneficiario } = route.params;
+  const { convenioId } = useAuth();
 
   useEffect(() => {
     const obtenerDatos = async () => {
       const querydb = getFirestore();
       const beneficiariosCollection = collection(querydb, 'beneficiarios');
-      const beneficiariosQuery = query(beneficiariosCollection, where('cedula', '==', idBeneficiario));
+      const beneficiariosQuery = query(beneficiariosCollection, where('cedula', '==', idBeneficiario), where('convenioId', '==', convenioId));
+    
       try {
         const querySnapshot = await getDocs(beneficiariosQuery);
-        const beneficiarioData = querySnapshot.docs.map((benf) => ({ id: benf.id, ...benf.data() }))[0];
+        const beneficiarioData = querySnapshot.docs[0]?.data() || {};
+        const arreglo = beneficiarioData.fechas_seguimiento || [];
+  
         // Obtener fechas de seguimiento y pesos del beneficiario
-        if (beneficiarioData.fechasSeguimiento) {
-          const fechasSeguimiento = beneficiarioData.fecha_seguimiento.map((timestamp) => {
+        if (arreglo.length > 0) {
+          const fechasSeguimiento = beneficiarioData.fechas_seguimiento.map((timestamp) => {
             return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
           });
-
+    
           const peso = beneficiarioData.pesos;
           const hgb = beneficiarioData.hgb;
           const talla = beneficiarioData.talla;
-
-
+    
           setFecha(fechasSeguimiento);
           setPeso(peso);
           setHGB(hgb);
           setTalla(talla);
-        }else{
+        } else {
           setFecha([0]);
           setPeso([0]);
           setHGB([0]);
           setTalla([0]);
         }
-
       } catch (error) {
         console.error('Error al obtener documentos:', error);
       }

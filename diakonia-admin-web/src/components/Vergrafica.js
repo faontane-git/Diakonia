@@ -38,14 +38,11 @@ const VerGrafica = ({ user }) => {
 
   const exportToXLSX = () => {
     const wsData = data.fechas_seguimiento.map((mes, index) => ({
-      Fechas: mes,
+      Fechas: convertirTimestampAFecha(mes),
       'Peso(KG)': data.pesos[index],
       'Talla(M)': data.talla[index],
       'HGB(g/dL)': data.hgb[index],
     }));
-
-    // Agrega el nombre del beneficiario en la primera celda
-    wsData.unshift({ Beneficiario: data.nombre });
 
     const ws = XLSX.utils.json_to_sheet(wsData);
 
