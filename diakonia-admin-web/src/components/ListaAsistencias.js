@@ -181,11 +181,8 @@ const ListaAsistencias = ({ user }) => {
   };
 
   const indicesFechasFiltradas2 = (fechaInicial, fechaFinal) => {
-    console.log(fechas);
     const indiceFechaInicio = fechas.indexOf(fechaInicial);
     const indiceFechaFin = fechas.indexOf(fechaFinal);
-    console.log(indiceFechaInicio);
-    console.log(indiceFechaFin);
 
     if (indiceFechaInicio === -1 || indiceFechaFin === -1) {
       // Lanzar notificación de error con SweetAlert
