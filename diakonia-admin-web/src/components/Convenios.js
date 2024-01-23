@@ -393,19 +393,15 @@ const Convenios = () => {
   return (
     <div className="centered-container">
       <Cabecera />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
-        </div>
 
-        <div id='titulo' style={{ marginLeft: '25em' }}>
-          <h1>Lista de convenios de {institucionN}</h1>
-        </div>
+      <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          Volver
+        </Button>
       </div>
 
-      <h3>Estado: {institucionActiva ? 'Activo' : 'Inactivo'}</h3>
+      <h1>Lista de convenios </h1>
+      <h3>Institución: {institucionN} Estado: {institucionActiva ? 'Activo' : 'Inactivo'}</h3>
 
       <FormControl component="fieldset">
         {(institucionActiva) && (

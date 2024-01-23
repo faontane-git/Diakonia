@@ -23,8 +23,8 @@ const EditarBeneficiario = ({ user }) => {
   const [paisOrigen, setPaisOrigen] = useState('');
   const [paises, setPaises] = useState([]);
 
-  const [desayuno, setDesayuno] =useState([]);
-  const [almuerzo, setAlmuerzo] =useState([]);
+  const [desayuno, setDesayuno] = useState([]);
+  const [almuerzo, setAlmuerzo] = useState([]);
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -110,16 +110,14 @@ const EditarBeneficiario = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <h3>Institución: {institucionN}</h3>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+        <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+          <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
-      </div>
+        <h1>Editar Beneficiario</h1>
+        <h3>Institución: {institucionN}</h3>
         <h3>Convenio: {convenioN} || Asistencias {"->"} {desayuno.length > 0 && `Desayuno: ${desayuno.filter(item => item === 1).length} `} {almuerzo.length > 0 && `Almuerzo: ${almuerzo.filter(item => item === 1).length} `}</h3>
-        <h3>Editar Beneficiario</h3>
       </div>
 
       <form id="form_ebeneficiario" onSubmit={handleSubmit}>

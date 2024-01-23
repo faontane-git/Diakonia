@@ -177,17 +177,17 @@ const LeerExcel = ({ user }) => {
     const beneficiarioCollection = collection(firestore, 'beneficiarios');
     const ConvenioColect = collection(firestore, "convenios");
     const ConvenioRef = doc(ConvenioColect, convenioId);
-  
+
     try {
       const convenioDoc = await getDoc(ConvenioRef);
-  
+
       if (convenioDoc.exists()) {
         const inicio = convenioDoc.data().fecha_inicial.seconds * 1000;
         const final = convenioDoc.data().fecha_final.seconds * 1000;
         const diferenciaEnMilisegundos = final - inicio;
-  
+
         for (const beneficiario of Nbeneficiarios) {
-          if (beneficiario.cedula=== '' || data.cedulas.includes(beneficiario.cedula)) {
+          if (beneficiario.cedula === '' || data.cedulas.includes(beneficiario.cedula)) {
             console.log("entra")
             repetidos.push(beneficiario);
             /*Swal.fire({
@@ -199,12 +199,14 @@ const LeerExcel = ({ user }) => {
             for (let i = 0; i <= diferenciaEnMilisegundos; i += 24 * 60 * 60 * 1000) {
               const fechaActual = new Date(inicio + i);
               beneficiario.dias.push(fechaActual);
-              if(convenioDoc.data().desayuno=== true){
-              beneficiario.desayuno.push(0);}
-              if(convenioDoc.data().almuerzo=== true){
-              beneficiario.almuerzo.push(0);} // Agregar 0 al campo almuerzo
+              if (convenioDoc.data().desayuno === true) {
+                beneficiario.desayuno.push(0);
+              }
+              if (convenioDoc.data().almuerzo === true) {
+                beneficiario.almuerzo.push(0);
+              } // Agregar 0 al campo almuerzo
             }
-  
+
             await addDoc(beneficiarioCollection, beneficiario).catch((error) => {
               const errorCode = error.code;
               const errorMessage = error.message;
@@ -214,7 +216,7 @@ const LeerExcel = ({ user }) => {
         }
         console.log(repetidos)
         if (repetidos.length > 0) {
-          
+
           const descargarExcel = await Swal.fire({
             title: 'Beneficiarios Repetidos o con Mal Formato',
             text: '¿Desea descargar un Excel con estos beneficiarios?',
@@ -225,8 +227,9 @@ const LeerExcel = ({ user }) => {
           });
           if (descargarExcel.isConfirmed) {
             descargarExcelRepetidos();
-          }}
-  
+          }
+        }
+
         Swal.fire({
           title: 'Beneficiarios Agregados',
           text: 'Se han agregado los beneficiarios correctamente',
@@ -241,23 +244,21 @@ const LeerExcel = ({ user }) => {
       alert('Error al añadir beneficiarios');
     }
   }
-  
+
 
 
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-      <h1>Institución: {institucionN}</h1>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
-        </div>
+      <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          Volver
+        </Button>
       </div>
 
-      <h3>Añadir Beneficiarios</h3>
+      <h1>Añadir Beneficiarios</h1>
+      <h3>Institución: {institucionN}</h3>
       <h3>¡Por favor, suba el Excel con la información solicitada!</h3>
       <input type="file" onChange={handleFileUpload} />
       {Nbeneficiarios.length > 0 && (

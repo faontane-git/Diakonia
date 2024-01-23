@@ -91,16 +91,15 @@ const CredencialesComponent = () => {
 
   return (
     <div className="App">
-      <Cabecera/>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          <Button variant="contained" style={{ marginLeft: '60%', marginTop:'10px', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
       </div>
       <Carnet datos={datosCredencial} />
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <Button onClick={descargarCredenciales} variant="contained" color="primary">
           Descargar
         </Button>

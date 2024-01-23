@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc,serverTimestamp  } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import '../estilos/EditarConvenio.css';
 import { Button } from '@mui/material';
 import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
@@ -279,17 +279,13 @@ const EditarConvenio = () => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div id='volver'>
-            <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-              Volver
-            </Button>
-          </div>
-
-          <div id='titulo' style={{ marginLeft: '29.5em' }}>
-            <h1>Editar Convenio</h1>
-          </div>
+        <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+          <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+            Volver
+          </Button>
         </div>
+
+        <h1>Editar Convenio</h1>
       </div>
 
       <form id="form_econvenio" onSubmit={handleSubmit}>
@@ -352,7 +348,7 @@ const EditarConvenio = () => {
 
         <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
       </form>
-    </div>
+    </div >
   );
 };
 

@@ -120,21 +120,21 @@ const ListaBeneficiarios = ({ user }) => {
     const hoy = new Date();
     let edad = hoy.getFullYear() - fechaNac.getFullYear();
     // Verificar si aún no ha pasado el cumpleaños este año
-    if (hoy.getMonth() < mesNac || 
+    if (hoy.getMonth() < mesNac ||
       (hoy.getMonth() === mesNac && hoy.getDate() < diaNac)) {
       edad--;
     }
     return edad;
   };
-  
-  
+
+
 
   const exportarTabla = (dataToExport) => {
     const ws = XLSX.utils.json_to_sheet(dataToExport.map(({ nombre, cedula, fecha_nacimiento, genero, numero_de_personas_menores_en_el_hogar, numero_de_personas_mayores_en_el_hogar }) => ({
       Nombre: nombre,
       Cédula: cedula,
       'Fecha de nacimiento': convertirTimestampAFecha(fecha_nacimiento),
-      'Edad':calcularEdad(fecha_nacimiento),
+      'Edad': calcularEdad(fecha_nacimiento),
       Género: genero,
       'N° de personas < que viven con el beneficiario': numero_de_personas_menores_en_el_hogar,
       'N° de personas > que viven con el beneficiario': numero_de_personas_mayores_en_el_hogar,
@@ -213,18 +213,16 @@ const ListaBeneficiarios = ({ user }) => {
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
-        </div>
 
-        <div id='titulo' style={{ marginLeft: '24em' }}>
-          <h1>Lista de Beneficiarios de {institucionN}</h1>
-        </div>
+      <div style={{ textAlign: 'left',marginLeft:'30px',marginTop:'10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          Volver
+        </Button>
       </div>
 
+
+      <h1>Lista de Beneficiarios</h1>
+      <h3>Institución: {institucionN}</h3>
       <h3>Convenio: {convenioN} Estado: {conveniosActiva ? 'Activo' : 'Finalizado'}</h3>
       <h3>Servicios: {data[0]?.desayuno.length !== 0 ? 'Desayuno ' : ''}{data[0]?.almuerzo.length !== 0 ? 'Almuerzo' : ''}</h3>
 

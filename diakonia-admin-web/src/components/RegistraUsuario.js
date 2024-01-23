@@ -161,24 +161,17 @@ const RegistroUsuario = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-      </div>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+        <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+          <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
 
-        <div id='titulo' style={{ marginLeft: '32.0em' }}>
-          <h1>Crear Usuario</h1>
-        </div>
+        <h1>Crear Usuario</h1>
       </div>
-
-
+      
       <form id="form_rusuario" onSubmit={handleSubmit}>
-
-
 
         <div id="txtUemail">
           <label htmlFor="email">Nombre Completo</label>

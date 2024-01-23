@@ -84,27 +84,15 @@ const AsistenciaConvenios = () => {
     <div className="centered-container">
       <Cabecera />
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id="volver">
-          <Button
-            variant="contained"
-            style={{
-              marginLeft: '60%',
-              backgroundColor: '#890202',
-              color: 'white',
-            }}
-            onClick={goBack}
-          >
-            Volver
-          </Button>
-        </div>
-
-        <div id="titulo" style={{ marginLeft: '32em' }}>
-          <h1>Asistencias</h1>
-        </div>
+      <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack} >
+          Volver
+        </Button>
       </div>
 
-      <h3>Seleccione un Convenio de {institucionN}</h3>
+      <h1>Asistencias</h1>
+      <h3>{institucionN}</h3>
+      <h3>Seleccione un Convenio</h3>
 
       <FormControl component="fieldset">
         <RadioGroup

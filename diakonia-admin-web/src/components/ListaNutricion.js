@@ -238,18 +238,14 @@ const ListaBeneficiarios = ({ user }) => {
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
-        </div>
-
-        <div id='titulo' style={{ marginLeft: '25.5em' }}>
-          <h1>Lista de Nutrición de {institucionN}</h1>
-        </div>
+      <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          Volver
+        </Button>
       </div>
 
+      <h1>Lista de Nutrición</h1>
+      <h3>Institución: {institucionN}</h3>
       <h3>Convenio: {convenioN}</h3>
 
       <FormControl component="fieldset">

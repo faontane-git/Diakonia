@@ -59,7 +59,7 @@ const VerGrafica = ({ user }) => {
   };
 
   function ordenarFechas(fechas) {
-    if(fechas===undefined){
+    if (fechas === undefined) {
       return [];
     }
     const fechas_copia = [...fechas];
@@ -69,39 +69,38 @@ const VerGrafica = ({ user }) => {
 
   function ordenarFechasYDatosPorFecha(fechas, datos) {
     // Crear un array de objetos con propiedades para la fecha y los datos de HGB
-    if(fechas===undefined){
+    if (fechas === undefined) {
       return [];
     }
-    const datos_ordenados=[];
-    
+    const datos_ordenados = [];
+
     const fechas_copia = [...fechas];
-    const fechas_ordenadas= fechas_copia.sort();
-    
+    const fechas_ordenadas = fechas_copia.sort();
+
     fechas_ordenadas.map((fecha) => {
-      const index= fechas.findIndex(fechaElement => fechaElement === fecha);
+      const index = fechas.findIndex(fechaElement => fechaElement === fecha);
       datos_ordenados.push(datos[index]);
     })
-    return  datos_ordenados;
+    return datos_ordenados;
   }
 
   return (
     <div className="centered-container">
       <Cabecera user={user} />
-      <h1>Nutricion gráfica de {data.nombre}</h1>
-
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
-        </div>
+      <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          Volver
+        </Button>
       </div>
+
+      <h1>Nutricion gráfica</h1>
+      <h3>{data.nombre}</h3>
 
       <div id="graficas" style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
             fechas={ordenarFechas(data.fechas_seguimiento).map((timestamp) => convertirTimestampAFecha(timestamp))}
-            datos={ordenarFechasYDatosPorFecha(data.fechas_seguimiento,data.pesos)}
+            datos={ordenarFechasYDatosPorFecha(data.fechas_seguimiento, data.pesos)}
             dato="Peso"
           />
         </div>
@@ -109,7 +108,7 @@ const VerGrafica = ({ user }) => {
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
             fechas={ordenarFechas(data.fechas_seguimiento).map((timestamp) => convertirTimestampAFecha(timestamp))}
-            datos={ordenarFechasYDatosPorFecha(data.fechas_seguimiento,data.talla)}
+            datos={ordenarFechasYDatosPorFecha(data.fechas_seguimiento, data.talla)}
             dato="Talla"
           />
         </div>
@@ -117,7 +116,7 @@ const VerGrafica = ({ user }) => {
         <div style={{ width: '50%', height: '50%' }}>
           <LinesChart
             fechas={ordenarFechas(data.fechas_seguimiento).map((timestamp) => convertirTimestampAFecha(timestamp))}
-            datos={ordenarFechasYDatosPorFecha(data.fechas_seguimiento,data.hgb)}
+            datos={ordenarFechasYDatosPorFecha(data.fechas_seguimiento, data.hgb)}
             dato="HGB"
           />
         </div>
@@ -127,19 +126,19 @@ const VerGrafica = ({ user }) => {
         <Table className="table">
           <TableHead>
             <TableRow>
-              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fechas</TableCell>
-              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Peso(KG)</TableCell>
-              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Talla(M)</TableCell>
-              <TableCell  id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>HGB(g/dL)</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Fechas</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Peso(KG)</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>Talla(M)</TableCell>
+              <TableCell id='cuerpo_tabla' style={{ backgroundColor: '#890202', color: 'white', fontSize: '16px' }}>HGB(g/dL)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {ordenarFechas(data.fechas_seguimiento).map((mes, index) => (
               <TableRow key={index}>
                 <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{convertirTimestampAFecha(mes)}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fechas_seguimiento,data.pesos)[index]}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fechas_seguimiento,data.talla)[index]}</TableCell>
-                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fechas_seguimiento,data.hgb)[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fechas_seguimiento, data.pesos)[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fechas_seguimiento, data.talla)[index]}</TableCell>
+                <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{ordenarFechasYDatosPorFecha(data.fechas_seguimiento, data.hgb)[index]}</TableCell>
               </TableRow>
             ))}
           </TableBody>

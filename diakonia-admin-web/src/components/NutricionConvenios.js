@@ -79,19 +79,14 @@ const NutricionConvenios = () => {
     <div className="centered-container">
       <Cabecera />
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
-            Volver
-          </Button>
-        </div>
-
-        <div id='titulo' style={{ marginLeft: '32em' }}>
-          <h1>Nutrición</h1>
-        </div>
+      <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+        <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+          Volver
+        </Button>
       </div>
 
-      <h1>Lista de convenios de {institucionN}</h1>
+      <h1>Nutrición</h1>
+      <h1>Lista de convenios</h1>
       <h3>Seleccione un Convenio de {institucionN}</h3>
 
       <FormControl component="fieldset">
@@ -175,7 +170,7 @@ const NutricionConvenios = () => {
           <p id="especial">¡No hay convenios disponibles!</p>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
