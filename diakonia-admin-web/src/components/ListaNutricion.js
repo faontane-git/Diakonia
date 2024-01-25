@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { useParams, Link } from 'react-router-dom';
 import Cabecera from './Cabecera';
 import '../estilos/ListaNutricion.css';
@@ -25,6 +26,7 @@ import {
 import { Search } from '@mui/icons-material'; import { toBeInvalid } from '@testing-library/jest-dom/matchers';
 import { differenceInYears, differenceInMonths } from 'date-fns';
 import * as XLSX from 'xlsx';
+
 
 
 
@@ -128,6 +130,15 @@ const ListaBeneficiarios = ({ user }) => {
           const hoja = new Uint8Array(e.target.result);
           const workbook = XLSX.read(hoja, { type: 'array' });
 
+          if (workbook.SheetNames.length < 4) {
+            Swal.fire({
+              title: 'Error',
+              text: 'Por favor, seleccione un excel con 4 hojas mínimo.',
+              icon: 'error',
+            });
+            return;
+        }
+
           workbook.Props = {
             ...workbook.Props,
             language: 'es-ES' // Reemplaza 'es-ES' con el código de idioma correcto
@@ -226,7 +237,7 @@ const ListaBeneficiarios = ({ user }) => {
           //XLSX.utils.sheet_add_json(firstSheet, firstSheetData, { header: 1, skipHeader: true });
 
           // Guardar el workbook modificado
-          XLSX.writeFile(workbook, 'modified_lista_beneficiarios.xlsx');
+          XLSX.writeFile(workbook, `Seguimiento_Nutricional_${convenioN}.xlsx`);
         };
         reader.readAsArrayBuffer(file);
       }
@@ -280,7 +291,7 @@ const ListaBeneficiarios = ({ user }) => {
               variant="contained"
               style={{ backgroundColor: '#890202', color: 'white', marginBottom: '10px' }}
             >
-              Modificar Excel
+              Agregar al formato Excel
             </Button>
           </>
         )}
