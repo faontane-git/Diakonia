@@ -170,11 +170,7 @@ const ListaAsistencias = ({ user }) => {
 
     if (indiceFechaInicio === -1 || indiceFechaFin === -1) {
       // Lanzar notificación de error con SweetAlert
-      Swal.fire({
-        icon: 'error',
-        title: 'La fecha no pertenece al convenio',
-        text: 'Por favor, selecciona fechas válidas.',
-      });
+     
       return [];
     }
     return [indiceFechaInicio, indiceFechaFin];
@@ -185,12 +181,7 @@ const ListaAsistencias = ({ user }) => {
     const indiceFechaFin = fechas.indexOf(fechaFinal);
 
     if (indiceFechaInicio === -1 || indiceFechaFin === -1) {
-      // Lanzar notificación de error con SweetAlert
-      Swal.fire({
-        icon: 'error',
-        title: 'La fecha no pertenece al convenio',
-        text: 'Por favor, selecciona fechas válidas.',
-      });
+
       return [];
     }
     return [indiceFechaInicio, indiceFechaFin];
