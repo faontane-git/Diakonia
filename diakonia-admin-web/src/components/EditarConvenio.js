@@ -4,7 +4,7 @@ import Cabecera from './Cabecera';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFirestore, doc, updateDoc, query, collection, where, getDocs, setDoc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import '../estilos/EditarConvenio.css';
-import { Button } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { useAuthContext } from './AuthContext'; // Ruta real a tu AuthContext
 
 const EditarConvenio = () => {
@@ -348,6 +348,9 @@ const EditarConvenio = () => {
 
         <button id="buttonBRegistrar" type="submit">Cambiar Datos</button>
       </form>
+
+      
+
     </div >
   );
 };

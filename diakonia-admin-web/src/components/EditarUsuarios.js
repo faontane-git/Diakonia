@@ -10,12 +10,12 @@ const EditarInstitucion = ({ user }) => {
   const { usuarioId } = useParams();
   const navigate = useNavigate();
 
-  const [nombre, setNombre]= useState('')
+  const [nombre, setNombre] = useState('')
   const [rol, setRol] = useState('');
   const [institucionId, setInstitucionId] = useState('');
   const [institucionN, setInstitucionN] = useState('');
   const [correo, setCorreo] = useState('');
-  const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(rol==="Registrador");
+  const [mostrarBarraAdicional, setMostrarBarraAdicional] = useState(rol === "Registrador");
   const [roloriginal, setRoloriginal] = useState('');
   //const [institucionIdoriginal, setInstitucionIdoriginal]= useState('');
   const [institucionNoriginal, setInstitucionNoriginal] = useState('');
@@ -23,7 +23,8 @@ const EditarInstitucion = ({ user }) => {
   const [convenios, setConvenios] = useState([])
   const [convenioN, setConvenioN] = useState('')
   const [convenioId, setConvenioId] = useState('')
-
+  const [nombreLocked, setNombreLocked] = useState(false);
+  const [rolLocked, setRolLocked] = useState(false);
   const [data, setData] = useState([]);
 
   function esActivo(convenio) {
@@ -53,6 +54,11 @@ const EditarInstitucion = ({ user }) => {
         console.log(beneficiarioData);
         // Asignar valores iniciales a los estados
         setNombre(beneficiarioData.nombre || '')
+        // Verificar si el correo es "diakoniaweb3@gmail.com" y bloquear los campos
+        if (beneficiarioData.correo === "diakoniaweb3@gmail.com") {
+          setNombreLocked(true);  // Agrega un estado para bloquear el campo nombre
+          setRolLocked(true);     // Agrega un estado para bloquear el campo rol
+        }
         setCorreo(beneficiarioData.correo || '');
         setRoloriginal(beneficiarioData.rol || '');
         setInstitucionNoriginal(beneficiarioData.institucionN || '');
@@ -124,8 +130,8 @@ const EditarInstitucion = ({ user }) => {
         }
       }
       );
-      setMostrarBarraAdicional(rol==="Registrador");
-      
+      setMostrarBarraAdicional(rol === "Registrador");
+
     }
   }, [institucionId]);
 
@@ -134,18 +140,14 @@ const EditarInstitucion = ({ user }) => {
     <div>
       <div className="centered-container">
         <Cabecera user={user} />
-      </div>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div id='volver'>
-          <Button variant="contained" style={{ marginLeft: '60%', backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
+        <div style={{ textAlign: 'left', marginLeft: '30px', marginTop: '10px' }}>
+          <Button variant="contained" style={{ backgroundColor: '#890202', color: 'white' }} onClick={goBack}>
             Volver
           </Button>
         </div>
 
-        <div id='titulo' style={{ marginLeft: '32.0em' }}>
-          <h1>Editar Usuario</h1>
-        </div>
+        <h1>Editar Usuario</h1>
       </div>
 
       <form id="form_eusuario" onSubmit={handleSubmit}>
@@ -160,20 +162,26 @@ const EditarInstitucion = ({ user }) => {
             id="email_usuario"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
+            disabled={nombreLocked} // Bloquear el campo si nombreLocked es true
           />
         </div>
         <div id="txtUrol">
           <label htmlFor="rol">Nuevo Rol</label>
-          <select id="rol" value={rol} onChange={(e) => {
-            setRol(e.target.value);
-            setMostrarBarraAdicional(e.target.value === "Registrador");
-            if (e.target.value !== "Registrador") {
-              setInstitucionId("DiakoníaWeb");
-              setInstitucionN("DiakoníaWeb");
-              setConvenioId("DiakoníaWeb");
-              setConvenioN("DiakoníaWeb");
-            }
-          }}>
+          <select
+            id="rol"
+            value={rol}
+            onChange={(e) => {
+              setRol(e.target.value);
+              setMostrarBarraAdicional(e.target.value === "Registrador");
+              if (e.target.value !== "Registrador") {
+                setInstitucionId("DiakoníaWeb");
+                setInstitucionN("DiakoníaWeb");
+                setConvenioId("DiakoníaWeb");
+                setConvenioN("DiakoníaWeb");
+              }
+            }}
+            disabled={rolLocked} // Bloquear el campo si rolLocked es true
+          >
             <option value="Administrador">Administrador</option>
             <option value="Editor">Editor</option>
             <option value="Registrador">Registrador</option>
@@ -182,39 +190,39 @@ const EditarInstitucion = ({ user }) => {
 
         {mostrarBarraAdicional && (
           <>
-          <div id="txtUrol">
-            <label htmlFor="rol">Institución a la que pertenece:</label>
-            <select id="rol" value={institucionId} onChange={(e) => {
-              setInstitucionId(e.target.value);
-              const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
-              setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
-              setConvenioId("");
-              setConvenioN("");
-            }}>
-              <option value="" disabled selected>Selecciona una institucion</option>
-              {data.map((institucion) => (
-                <option value={institucion.id}>{institucion.nombre}</option>
-              ))}
-            </select>
-          </div>
+            <div id="txtUrol">
+              <label htmlFor="rol">Institución a la que pertenece:</label>
+              <select id="rol" value={institucionId} onChange={(e) => {
+                setInstitucionId(e.target.value);
+                const selectedInstitucion = data.find((institucion) => institucion.id === e.target.value);
+                setInstitucionN(selectedInstitucion?.nombre); // Use optional chaining for safety
+                setConvenioId("");
+                setConvenioN("");
+              }}>
+                <option value="" disabled selected>Selecciona una institucion</option>
+                {data.map((institucion) => (
+                  <option value={institucion.id}>{institucion.nombre}</option>
+                ))}
+              </select>
+            </div>
 
 
-        {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
-          <label htmlFor="convenios">Convenio</label>
-          <select id="convenios" value={convenioId+"/"+convenioN} onChange={(e) => {
-            const valores = e.target.value.split("/");
-            console.log(valores);
-            setConvenioId(valores[0]);         
-            setConvenioN(valores[1]);
-            console.log("convenio", convenioId, convenioN)
-            }}>
-            <option value="" /*disabled selected*/>Selecciona un convenio</option>
-            {convenios.filter(esActivo).map((convenio) => (
-              <option key={convenio.id} value={convenio.id+"/"+convenio.nombre}>{convenio.nombre}</option>
-            ))}
-          </select>
-        </div>)}
-          
+            {convenioId !== "DiakoníaWeb" && (<div id="txtConvenios">
+              <label htmlFor="convenios">Convenio</label>
+              <select id="convenios" value={convenioId + "/" + convenioN} onChange={(e) => {
+                const valores = e.target.value.split("/");
+                console.log(valores);
+                setConvenioId(valores[0]);
+                setConvenioN(valores[1]);
+                console.log("convenio", convenioId, convenioN)
+              }}>
+                <option value="" /*disabled selected*/>Selecciona un convenio</option>
+                {convenios.filter(esActivo).map((convenio) => (
+                  <option key={convenio.id} value={convenio.id + "/" + convenio.nombre}>{convenio.nombre}</option>
+                ))}
+              </select>
+            </div>)}
+
           </>
         )}
 

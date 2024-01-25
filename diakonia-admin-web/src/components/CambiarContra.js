@@ -61,30 +61,31 @@ const CambiarContra = () => {
   async function handleChangePassword(event) {
     event.preventDefault();
     if (currentPassword === newPassword) {
-      if(currentPassword.length < 6){
+      if (currentPassword.length < 6) {
         Swal.fire({
           title: 'Error',
           text: '¡La contraseña debe tener 6 caracteres mínimo!',
           icon: 'error',
         });
         return;
-      }else{
-      try {
-        const hashi = await hashPassword(currentPassword);
-        ActualizarUsuario(user.id, hashi)
-        Swal.fire({
-          title: 'Error',
-          text: '¡La contraseña debe tener 6 caracteres mínimo!',
-          icon: 'error',
-        });
-        goBack();
-      } catch (error) {
-        Swal.fire({
-          title: 'Error',
-          text: '¡Error al cambiar contraseña!',
-          icon: 'error',
-        });
-      }}
+      } else {
+        try {
+          const hashi = await hashPassword(currentPassword);
+          ActualizarUsuario(user.id, hashi)
+          Swal.fire({
+            title: 'Error',
+            text: '¡La contraseña debe tener 6 caracteres mínimo!',
+            icon: 'error',
+          });
+          goBack();
+        } catch (error) {
+          Swal.fire({
+            title: 'Error',
+            text: '¡Error al cambiar contraseña!',
+            icon: 'error',
+          });
+        }
+      }
     } else {
       Swal.fire({
         title: 'Error',
@@ -110,6 +111,7 @@ const CambiarContra = () => {
             id="n_contraseña"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
+            disabled={user.email === 'diakoniaweb3@gmail.com'}
           />
         </div>
 
@@ -120,6 +122,7 @@ const CambiarContra = () => {
             id="n_contraseña"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            disabled={user.email === 'diakoniaweb3@gmail.com'}
           />
         </div>
 

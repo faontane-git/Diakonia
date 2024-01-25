@@ -19,7 +19,8 @@ const Talla = () => {
 
   // Datos para el gráfico de Talla en metros
   const heightData = {
-    labels: datosLimpios.fechas,
+    label_fechas: datosLimpios.fechas,
+    labels: datosLimpios.fechas.map((_, index) => (index + 1).toString()), // Usar números en lugar de fechas
     datasets: [
       {
         data: datosLimpios.tallas,
@@ -97,9 +98,9 @@ const Talla = () => {
             <Text style={[styles.txtFecha, styles.tableCellHeader, styles.tableCellBorder]}>Fecha</Text>
             <Text style={[styles.txtTalla, styles.tableCellHeader, styles.tableCellBorder]}>Talla (m)</Text>
           </View>
-          {heightData.labels.map((label, index) => (
+          {heightData.label_fechas.map((label, index) => (
             <View key={index} style={[styles.tableRow, styles.tableRowBorder]}>
-              <Text style={[styles.tableCell, styles.tableCellBorder]}>{label}</Text>
+              <Text style={[styles.tableCell, styles.tableCellBorder]}>{index + 1}{')'}{label}</Text>
               <Text style={[styles.tableCell, styles.tableCellBorder]}>{heightData.datasets[0].data[index]}</Text>
             </View>
           ))}

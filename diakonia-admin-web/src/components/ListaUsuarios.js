@@ -27,6 +27,17 @@ const ListaUsuarios = ({ usuarios }) => {
   };
 
   async function eliminarUsuario(usuario) {
+    console.log(usuario);
+    if (usuario.correo == "diakoniaweb3@gmail.com") {
+      Swal.fire({
+        title: 'Advertencia',
+        text: '¡No se puede eliminar este usuario!',
+        icon: 'warning',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Entendido',
+      });
+      return true;
+    }
     // Mostrar la alerta de confirmación
     const result = await Swal.fire({
       title: 'Advertencia',
@@ -43,7 +54,7 @@ const ListaUsuarios = ({ usuarios }) => {
     if (result.isConfirmed) {
       try {
         const querydb = getFirestore();
-        const docRef = doc(querydb, 'usuarios', usuario);
+        const docRef = doc(querydb, 'usuarios', usuario.id);
 
         // Eliminar el documento del usuario en Firestore
         await deleteDoc(docRef);
@@ -74,7 +85,7 @@ const ListaUsuarios = ({ usuarios }) => {
     XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
     XLSX.writeFile(wb, 'usuarios.xlsx');
   };
-
+ 
   return (
     <div className="centered-container">
       <h1>Lista de Usuarios</h1>
@@ -139,13 +150,14 @@ const ListaUsuarios = ({ usuarios }) => {
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>{usuario.convenioN}</TableCell>
                   <TableCell id='cuerpo_tabla' style={{ fontSize: '14px' }}>
                     <Link to={`/usuarios/editar-usuario/${usuario.id}`}>
-                      <Button variant="contained" style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
+                      <Button variant="contained"
+                        style={{ backgroundColor: '#4caf50', color: 'white', margin: '5px', fontSize: '14px' }}>
                         Editar
                       </Button>
                     </Link>
                     <Button
                       variant="contained"
-                      onClick={() => eliminarUsuario(usuario.id)}
+                      onClick={() => eliminarUsuario(usuario)}
                       style={{ backgroundColor: '#f44336', margin: '5px', fontSize: '14px' }}
                     >
                       Eliminar

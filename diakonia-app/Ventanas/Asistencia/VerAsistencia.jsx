@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const VerAsistencia = () => {
   const { institucionId } = useAuth();
@@ -17,20 +18,48 @@ const VerAsistencia = () => {
   const [arregloBeneficiarios, setArregloBeneficiario] = useState([]);
   const [asistenciasIndex, setIndice] = useState(-1);
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: 'Desayuno', value: 'Desayuno' },
+    { label: 'Almuerzo', value: 'Almuerzo' },
+  ]);
 
   const handleOptionPress = (option) => {
     navigation.navigate(option);
   };
 
-  const onChange = (event, selectedDate) => {
+  useEffect(() => {
+    // Esta función se ejecutará al montar el componente
+    const cargarDatos = async () => {
+      setLoading(true);
+
+      await consulta();
+
+      // Actualiza asistenciasIndex según la nueva fecha seleccionada
+      const nuevaFechaSeleccionada = convertirFormato(date);
+      const nuevoIndice = arregloFechas.indexOf(nuevaFechaSeleccionada);
+      setIndice(nuevoIndice);
+
+      setLoading(false);
+    };
+
+    cargarDatos(); // Llama a la función al montar el componente
+  }, []); // El array vacío asegura que este efecto solo se ejecute al montar el componente
+
+  const onChange = async (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
+      setLoading(true);
       setDate(selectedDate);
-      consulta();
+      await consulta();
+      const nuevaFechaSeleccionada = convertirFormato(selectedDate);
+      const nuevoIndice = arregloFechas.indexOf(nuevaFechaSeleccionada);
+      setIndice(nuevoIndice);
+      setLoading(false);
     }
   };
-
 
   const buscar = (texto) => {
     setBusqueda(texto);
@@ -53,16 +82,12 @@ const VerAsistencia = () => {
 
       setData(beneficiariosData);
 
-      // Agregar bucle para consultar cada beneficiario
       for (const beneficiario of beneficiariosData) {
         await consultaBeneficiario(beneficiario.id);
       }
 
-
       const conveniosCollection = collection(querydb, 'convenios');
-      // Aquí asumo que `idEspecifico` es el id que estás buscando
       const idEspecifico = convenioId;
-
       const convenioDocRef = doc(conveniosCollection, idEspecifico);
       const convenioDocSnapshot = await getDoc(convenioDocRef);
 
@@ -77,18 +102,15 @@ const VerAsistencia = () => {
           convertirTimestampAFecha(fecha)
         );
         setArregloNombresFechas(listaNombresFechas);
-        const asistenciasFechaSeleccionadaIndex = listaNombresFechas.indexOf(convertirFormato(date));
-        setIndice(asistenciasFechaSeleccionadaIndex);
       } else {
         console.log('No se encontró ningún documento con el ID especificado.');
       }
     } catch (error) {
       console.error('Error al obtener documentos:', error);
     } finally {
-      setLoading(false); // Oculta la pantalla de carga al finalizar la consulta
+      setLoading(false);
     }
   };
-
 
   const consultaBeneficiario = async (beneficiarioId) => {
     const querydb = getFirestore();
@@ -99,12 +121,9 @@ const VerAsistencia = () => {
       if (beneficiarioDoc.exists()) {
         const beneficiarioData = beneficiarioDoc.data();
         const nombre = beneficiarioData.nombre;
-        const listaDesayunos = beneficiarioData.desayuno;
-        const diasAsistencia = beneficiarioData.dias.map((fecha) => convertirTimestampAFecha(fecha));
-        // ARMAR OBJETO
         const beneficiarioObjeto = {
           nombre: nombre,
-          desayuno: listaDesayunos,
+          desayuno: beneficiarioData.desayuno,
           almuerzo: beneficiarioData.almuerzo,
         };
         setArregloBeneficiario(beneficiarioObjeto);
@@ -115,8 +134,6 @@ const VerAsistencia = () => {
       console.error('Error al obtener el beneficiario:', error);
     }
   };
-
-
 
   const convertirTimestampAFecha = (timestamp) => {
     const fecha = new Date(timestamp.seconds * 1000);
@@ -131,8 +148,6 @@ const VerAsistencia = () => {
     return number < 10 ? `0${number}` : number;
   };
 
-
-
   const convertirFormato = (date) => {
     const formattedDate = new Intl.DateTimeFormat('es-ES', {
       day: '2-digit',
@@ -142,38 +157,39 @@ const VerAsistencia = () => {
     return formattedDate;
   };
 
-  /*
-  const asistenciasFechaSeleccionada = arregloNombresFechas.filter((item) =>
-    item.fechas.includes(convertirFormato(date))
-  );
-  */
-
-  /*
-    const filtroPorNombre = arregloNombresFechas.filter(
-      (item) => item.nombre.toLowerCase().includes(busqueda.toLowerCase())
-    );
-  */
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <View style={styles.imagesContainer}>
-          <Image
-            style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
-            source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
-          />
-          <TouchableOpacity
-            style={[styles.buttonCont, { marginTop: 0, marginLeft: 140 }]}
-            onPress={() => handleOptionPress('Asistencia')}
-          >
-            <Text style={styles.buttonText}>Regresar</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Asistencia</Text>
-          <Text style={styles.title}>{convenioN}</Text>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.imagesContainer}>
+        <Image
+          style={[styles.image, { marginTop: 0, marginLeft: -70 }]}
+          source={require('../../assets/imagenes/logoMenu-banco-alimentos.png')}
+        />
+        <TouchableOpacity
+          style={[styles.buttonCont, { marginTop: 0, marginLeft: 140 }]}
+          onPress={() => handleOptionPress('Asistencia')}
+        >
+          <Text style={styles.buttonText}>Regresar</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>Asistencia</Text>
+        <Text style={styles.title}>{convenioN}</Text>
+        <Text style={styles.subTitle}>Seleccione un item y luego seleccione una fecha</Text>
+      </View>
 
-        <View>
+      <View>
+        <DropDownPicker
+          open={open}
+          value={value}
+          items={items}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+          style={styles.dropdown}
+        />
+      </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={{ marginTop: 10, marginLeft: '5%' }}>
           <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
             style={{
@@ -193,17 +209,11 @@ const VerAsistencia = () => {
             <DateTimePicker value={date} mode="date" display="default" onChange={onChange} />
           )}
         </View>
-        <Text style={{ marginTop: '5%', marginLeft: '5%' }}>Fecha seleccionada: {convertirFormato(date)}</Text>
 
-        {/* TextInput para búsqueda */}
-        <TextInput
-          style={styles.buscador}
-          placeholder="Buscar Nombre"
-          onChangeText={buscar}
-          value={busqueda}
-        />
+        <View style={{ marginLeft: '5%' }}>
+          <Text style={{ marginTop: '5%', marginLeft: '5%' }}>Fecha seleccionada: {convertirFormato(date)}</Text>
+        </View>
 
-        {/* Tabla de Datos */}
         <View style={styles.tableContainer}>
           <Text style={styles.tableTitle}>Beneficiarios</Text>
           <View style={[styles.tableRow, styles.tableHeader]}>
@@ -211,25 +221,34 @@ const VerAsistencia = () => {
             <Text style={[styles.tableCell, styles.tableCellHeader]}>Asistencia</Text>
           </View>
 
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>Cargando...</Text>
+            </View>
+          )}
 
           {data.map((nombreFecha, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableCellHeader]}>{nombreFecha.nombre}</Text>
               <Text style={styles.tableCell}>
-                {/* Utilizando el índice de la fecha seleccionada */}
-                {asistenciasIndex !== -1
-                  ? arregloBeneficiarios.desayuno[asistenciasIndex] === 0
-                    ? "F"
-                    : "A"
-                  : null}
+                {/* Utilizando el índice de la fecha seleccionada y la opción del DropDownPicker */}
+                {asistenciasIndex !== -1 &&
+                  (value === 'Desayuno'
+                    ? nombreFecha.desayuno[asistenciasIndex] === 0
+                      ? 'F'
+                      : 'A'
+                    : value === 'Almuerzo'
+                      ? nombreFecha.almuerzo[asistenciasIndex] === 0
+                        ? 'F'
+                        : 'A'
+                      : null)}
               </Text>
             </View>
           ))}
-
-
         </View>
-      </View>
-    </ScrollView>
+
+      </ScrollView>
+    </View>
   );
 };
 
@@ -248,6 +267,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#333',
     fontWeight: 'bold',
+    alignSelf: 'center',
+    textAlign: 'center',
+  },
+  subTitle: {
+    marginTop: 5,
+    fontSize: 14,
+    color: '#333',
     alignSelf: 'center',
     textAlign: 'center',
   },
@@ -329,6 +355,21 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: 20,
+  }, loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
 

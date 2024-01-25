@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, Alert, TextInput, TouchableOpacity } fro
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import { Timestamp } from 'firebase/firestore';
-import { getFirestore, collection, doc, query, where, getDoc, getDocs,updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, query, where, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { onSnapshot } from 'firebase/firestore';
 
 const TomarAsistencia = () => {
@@ -72,11 +72,12 @@ const TomarAsistencia = () => {
             const beneficiarioCollection = collection(firestore, 'beneficiarios');
 
             // Realiza una consulta para obtener el beneficiario por su cédula
-            const querySnapshot = await getDocs(query(beneficiarioCollection, where('cedula', '==', cedula)));
+            const querySnapshot = await getDocs(query(beneficiarioCollection, where('cedula', '==', cedula), where('convenioId', '==', convenioId)));
 
-            if (querySnapshot.docs) {
+            if (querySnapshot.docs && querySnapshot.docs.length > 0) {
                 const beneficiarioDoc = querySnapshot.docs[0];
                 const nombreBeneficiario = beneficiarioDoc.data().nombre;
+
                 if (servicio === "Almuerzo") {
                     const fechaHoy = currentDate;
                     const arregloDias = beneficiarioDoc.data().dias;
@@ -84,32 +85,80 @@ const TomarAsistencia = () => {
                         return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
                     });
                     const arregloAlmuerzo = beneficiarioDoc.data().almuerzo;
+
                     console.log(arregloFechas);
                     console.log(beneficiarioDoc.data().almuerzo);
 
                     // Encuentra el índice de la fechaHoy en el arregloFechas
                     const indiceFechaHoy = arregloFechas.findIndex((fecha) => fecha === fechaHoy);
+                    console.log(indiceFechaHoy);
 
                     // Si se encuentra la fecha en el arreglo, actualiza el valor en arregloAlmuerzo
                     if (indiceFechaHoy !== -1) {
-                        arregloAlmuerzo[indiceFechaHoy] = 1;
+                        if (arregloAlmuerzo[indiceFechaHoy] == 1) {
+                            Alert.alert('¡Notificación!', '¡La asistencia ya ha sido registrada!');
+                        } else {
+                            arregloAlmuerzo[indiceFechaHoy] = 1;
 
-                        // Ahora puedes actualizar el documento en la base de datos si es necesario
-                        await updateDoc(doc(beneficiarioCollection, beneficiarioDoc.id), {
-                            almuerzo: arregloAlmuerzo
-                        });
+                            // Ahora puedes actualizar el documento en la base de datos si es necesario
+                            await updateDoc(doc(beneficiarioCollection, beneficiarioDoc.id), {
+                                almuerzo: arregloAlmuerzo
+                            });
+
+                            Alert.alert('¡Notificación!', 'Asistencia de almuerzo registrada correctamente');
+                        }
+
                     } else {
                         console.log('La fecha de hoy no se encontró en el arreglo de fechas.');
+                        Alert.alert('¡La fecha no pertenece a la duración del convenio!');
                     }
-                    if (servicio == "Desayuno") {
 
+                } else if (servicio === "Desayuno") {
+                    const fechaHoy = currentDate;
+                    const arregloDias = beneficiarioDoc.data().dias;
+                    const arregloFechas = arregloDias.map((timestamp) => {
+                        return new Date(timestamp.seconds * 1000).toLocaleDateString('es-ES');
+                    });
+                    const arregloDesayuno = beneficiarioDoc.data().desayuno;
+
+                    console.log(arregloFechas);
+                    console.log(beneficiarioDoc.data().desayuno);
+
+                    // Encuentra el índice de la fechaHoy en el arregloFechas
+                    const indiceFechaHoy = arregloFechas.findIndex((fecha) => fecha === fechaHoy);
+                    console.log(indiceFechaHoy);
+
+                    if (indiceFechaHoy !== -1) {
+                        if (arregloDesayuno[indiceFechaHoy] == 1) {
+                            Alert.alert('¡Notificación!', '¡La asistencia ya ha sido registrada!');
+                        } else {
+                            arregloDesayuno[indiceFechaHoy] = 1;
+
+                            // Ahora puedes actualizar el documento en la base de datos si es necesario
+                            await updateDoc(doc(beneficiarioCollection, beneficiarioDoc.id), {
+                                desayuno: arregloDesayuno
+                            });
+
+                            Alert.alert('¡Notificación!', 'Asistencia de almuerzo registrada correctamente');
+                        }
+
+                    } else {
+                        console.log('La fecha de hoy no se encontró en el arreglo de fechas.');
+                        Alert.alert('¡La fecha no pertenece a la duración del convenio!');
                     }
                 } else {
-                    console.log('No se encontró un beneficiario con la cédula proporcionada');
+                    console.log('Servicio no reconocido');
+                    alert('Servicio no reconocido');
                 }
+
+            } else {
+                console.log('No se encontró un beneficiario con la cédula proporcionada');
+                Alert.alert('¡Notificación!', 'No se encontró un beneficiario con la cédula proporcionada');
             }
+
         } catch (error) {
             console.error('Error al registrar asistencia por cédula:', error);
+            alert('Error al registrar asistencia por cédula: ' + error.message);
         }
     };
 
@@ -166,13 +215,13 @@ const TomarAsistencia = () => {
                     {
                         text: 'OK',
                         onPress: () => {
-                            //navigation.navigate('Asistencia');
+                            navigation.navigate('Asistencia');
                         },
                     },
                 ],
                 { cancelable: false }
             );
-            setServicio('Desayuno');
+            setServicio('¡No disponible!');
         } else {
             if (desayuno_hora) {
                 setServicio('Desayuno');
