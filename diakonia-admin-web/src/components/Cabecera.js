@@ -80,7 +80,7 @@ function Cabecera() {
             }
 
             {user.rol === "Administrador" &&
-              <li className={isTabActive('/usuarios/horarios') ? 'opcion active' : 'opcion'}>
+              <li className={isTabActive('/historico') ? 'opcion active' : 'opcion'}>
                 <Link to="/historico">Histórico</Link>
               </li>
             }

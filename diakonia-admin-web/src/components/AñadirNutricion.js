@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Cabecera from "./Cabecera";
 import { getFirestore, doc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
-import { Button } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const AñadirNutricion = ({user}) => {
   const { institucionId, institucionN, convenioId, convenioN } = useParams();
@@ -141,30 +141,32 @@ const AñadirNutricion = ({user}) => {
         <h3>¡Porfavor suba el excel con la información solicitada!</h3>
         <input type="file" onChange={handleFileUpload} />
         {Nbeneficiarios.length > 0 && (
-          <table>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Fecha de Nacimiento</th>
-                <th>Fecha de Registro</th>
-                <th>Peso</th>
-                <th>Talla</th>
-                <th>HGB</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Nbeneficiarios.map((Nbeneficiario, index) => (
-                <tr key={index}>
-                  <td>{Nbeneficiario.nombre}</td>
-                  <td>{Nbeneficiario.cedula}</td>
-                  <td>{convertirTimestampAFecha(Nbeneficiario.fechas_seguimiento)}</td>
-                  <td>{Nbeneficiario.pesos}</td>
-                  <td>{Nbeneficiario.talla}</td>
-                  <td>{Nbeneficiario.hgb}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Nombre</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Cédula</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Fecha de Registro</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Peso</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>Talla</TableCell>
+                  <TableCell style={{ backgroundColor: '#890202', color: 'white', margin: '5px', fontSize: '12px', maxWidth: '80px' }}>HGB</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Nbeneficiarios.map((Nbeneficiario, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{Nbeneficiario.nombre}</TableCell>
+                    <TableCell>{Nbeneficiario.cedula}</TableCell>
+                    <TableCell>{convertirTimestampAFecha(Nbeneficiario.fechas_seguimiento)}</TableCell>
+                    <TableCell>{Nbeneficiario.pesos}</TableCell>
+                    <TableCell>{Nbeneficiario.talla}</TableCell>
+                    <TableCell>{Nbeneficiario.hgb}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
         {Nbeneficiarios.length > 0 && (
           <button onClick={añadir}>Añadir</button>
