@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal, Button, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirestore, doc,collection, getDocs, query, where,getDoc } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
 import bcrypt from 'react-native-bcrypt';
 
@@ -35,6 +35,14 @@ const Login = () => {
         const institucionN = userData.institucionN;
         const convenioId = userData.convenioId;
         const convenioN = userData.convenioN;
+        // Retrieve data from "instituciones" collection using institucionId
+        const institucionesCollection = collection(db, 'instituciones');
+        const institucionDoc = await getDoc(doc(institucionesCollection, institucionId));
+        const institucionData = institucionDoc.data();
+        if(!institucionData.activo){
+          Alert.alert('¡Notificación','¡La institución está inactivada, consulte con su administrador!');
+          return true;
+        }
 
         const passwordMatch = bcrypt.compareSync(password, userData.contraseña);
 
